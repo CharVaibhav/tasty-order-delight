@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,30 +12,48 @@ interface NavbarProps {
 
 const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
   
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  
+  const isActive = (path: string) => location.pathname === path;
   
   return (
     <div className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-food-orange">
+            <Link to="/" className="text-2xl font-bold text-food-orange">
               Tasty<span className="text-food-gray-dark">Delight</span>
-            </h1>
+            </Link>
           </div>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-food-gray-dark hover:text-food-orange transition-colors">
+            <Link 
+              to="/" 
+              className={`text-food-gray-dark hover:text-food-orange transition-colors ${
+                isActive('/') ? 'text-food-orange font-medium' : ''
+              }`}
+            >
               Menu
-            </a>
-            <a href="#" className="text-food-gray-dark hover:text-food-orange transition-colors">
+            </Link>
+            <Link 
+              to="/about" 
+              className={`text-food-gray-dark hover:text-food-orange transition-colors ${
+                isActive('/about') ? 'text-food-orange font-medium' : ''
+              }`}
+            >
               About
-            </a>
-            <a href="#" className="text-food-gray-dark hover:text-food-orange transition-colors">
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`text-food-gray-dark hover:text-food-orange transition-colors ${
+                isActive('/contact') ? 'text-food-orange font-medium' : ''
+              }`}
+            >
               Contact
-            </a>
+            </Link>
             <Button 
               onClick={toggleCart}
               variant="outline" 
@@ -54,7 +72,7 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
             </Button>
           </div>
           
-          {/* Mobile Cart Button */}
+          {/* Mobile Menu Button and Cart */}
           <div className="md:hidden flex items-center">
             <Button 
               onClick={toggleCart}
@@ -93,15 +111,33 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
         {isMenuOpen && (
           <div className="md:hidden pt-4 pb-3 border-t mt-3">
             <div className="flex flex-col space-y-3">
-              <a href="#" className="text-food-gray-dark hover:text-food-orange px-3 py-2">
+              <Link 
+                to="/" 
+                className={`text-food-gray-dark hover:text-food-orange px-3 py-2 ${
+                  isActive('/') ? 'text-food-orange font-medium' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Menu
-              </a>
-              <a href="#" className="text-food-gray-dark hover:text-food-orange px-3 py-2">
+              </Link>
+              <Link 
+                to="/about" 
+                className={`text-food-gray-dark hover:text-food-orange px-3 py-2 ${
+                  isActive('/about') ? 'text-food-orange font-medium' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 About
-              </a>
-              <a href="#" className="text-food-gray-dark hover:text-food-orange px-3 py-2">
+              </Link>
+              <Link 
+                to="/contact" 
+                className={`text-food-gray-dark hover:text-food-orange px-3 py-2 ${
+                  isActive('/contact') ? 'text-food-orange font-medium' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
         )}
