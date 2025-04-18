@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { api, MenuItem } from '@/lib/api/api';
 import { useCart } from '@/lib/context/CartContext';
 import { Layout } from '@/components/layout/Layout';
-import { toast } from '@/components/ui/use-toast';
-import { Plus, Minus } from 'lucide-react';
-import { formatPrice } from '@/utils/formatters';
+import { useToast } from '@/components/ui/use-toast';
 import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
-import { categories, menuItems } from '@/data/menuData';
-import { useToast } from '@/components/ui/use-toast';
+import PopularItemsMarquee from '@/components/PopularItemsMarquee';
+import { categories, menuItems as defaultMenuItems } from '@/data/menuData';
 
 interface MenuPageProps {
   hideLayout?: boolean;
 }
 
 export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Main Dishes');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
   const { toast } = useToast();
 
@@ -29,12 +25,12 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const items = await api.getMenuItems();
-        setMenuItems(items);
+        const fetchedItems = await api.getMenuItems();
+        setMenuItems(fetchedItems.length > 0 ? fetchedItems : defaultMenuItems);
         setError(null);
       } catch (err) {
-        setError('Failed to load menu items. Please try again later.');
-        console.error(err);
+        console.error('Failed to fetch menu items, using default data:', err);
+        setMenuItems(defaultMenuItems);
       } finally {
         setLoading(false);
       }
@@ -45,19 +41,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
 
   const handleAddToCart = async (item: MenuItem) => {
     try {
-      console.log("Adding item to cart:", item);
+      addItem(item);
       
-      // Add to local cart state
-      addItem({
-        _id: item._id,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        category: item.category,
-        imageUrl: item.imageUrl,
-        isAvailable: item.isAvailable,
-      });
-
       // Record in MongoDB
       await api.addToCart(customerId, {
         productId: item._id,
@@ -84,10 +69,6 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     }
   };
 
-  const isItemInCart = (itemId: string) => {
-    return items.findIndex(cartItem => cartItem._id === itemId) !== -1;
-  };
-
   const getCartItem = (itemId: string) => {
     return items.find(cartItem => cartItem._id === itemId);
   };
@@ -100,27 +81,62 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     }
   };
 
-  const filteredItems = menuItems.filter(item => item.category === selectedCategory);
+  const filteredItems = selectedCategory === 'all' 
+    ? menuItems 
+    : menuItems.filter(item => {
+        const categoryMap: Record<string, string> = {
+          'appetizers': 'Appetizers',
+          'main-dishes': 'Main Courses',
+          'sides': 'Sides',
+          'desserts': 'Desserts',
+          'beverages': 'Drinks'
+        };
+        return item.category === categoryMap[selectedCategory];
+      });
 
   const content = (
     <div className="space-y-8">
-      <CategorySelector 
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
+      <PopularItemsMarquee 
+        items={menuItems.filter(item => item.category === "Main Courses")}
+        onAddToCart={handleAddToCart}
+        onRemoveFromCart={removeItem}
+        onUpdateQuantity={handleUpdateQuantity}
+        cartItems={items}
       />
 
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100">Categories</h2>
+        <CategorySelector 
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredItems.map(item => (
-          <FoodCard
-            key={item._id}
-            item={item}
-            onAddToCart={handleAddToCart}
-            itemInCart={getCartItem(item._id)}
-            onRemoveFromCart={removeItem}
-            onUpdateQuantity={handleUpdateQuantity}
-          />
-        ))}
+        {filteredItems.length === 0 ? (
+          <div className="col-span-full text-center py-8">
+            <p className="text-gray-500 dark:text-gray-400">No dishes found in this category.</p>
+            <Button
+              variant="link"
+              onClick={() => setSelectedCategory('all')}
+              className="text-food-orange hover:text-food-orange-dark mt-2"
+            >
+              View all dishes
+            </Button>
+          </div>
+        ) : (
+          filteredItems.map(item => (
+            <FoodCard
+              key={item._id}
+              item={item}
+              onAddToCart={handleAddToCart}
+              itemInCart={getCartItem(item._id)}
+              onRemoveFromCart={removeItem}
+              onUpdateQuantity={handleUpdateQuantity}
+            />
+          ))
+        )}
       </div>
     </div>
   );
@@ -134,7 +150,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
       <Layout>
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-food-orange"></div>
           </div>
         </div>
       </Layout>

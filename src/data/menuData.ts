@@ -22,126 +22,100 @@ export interface MenuItem {
   category: string;
   imageUrl: string;
   isAvailable: boolean;
-  popular?: boolean;
 }
 
-export interface CartItem extends MenuItem {
+export type CartItem = MenuItem & {
   quantity: number;
-}
+};
 
-export interface Category {
-  id: string;
-  name: string;
-  icon?: string;
-}
-
-export const categories: Category[] = [
-  { id: "all", name: "All" },
-  { id: "appetizers", name: "Appetizers" },
-  { id: "main-dishes", name: "Main Dishes" },
-  { id: "sides", name: "Sides" },
-  { id: "desserts", name: "Desserts" },
-  { id: "beverages", name: "Beverages" },
+export const categories = [
+  { id: 'appetizers', name: 'Appetizers' },
+  { id: 'main-dishes', name: 'Main Dishes' },
+  { id: 'sides', name: 'Sides' },
+  { id: 'desserts', name: 'Desserts' },
+  { id: 'beverages', name: 'Beverages' },
 ];
 
 export const menuItems: MenuItem[] = [
   {
-    _id: "1",
-    name: "Butter Chicken",
-    description: "Tender chicken pieces in rich, creamy tomato gravy with butter and spices",
-    price: 399,
-    imageUrl: steakImg,
-    category: "Main Courses",
+    _id: '1',
+    name: 'Classic Margherita Pizza',
+    description: 'Fresh tomatoes, mozzarella, basil, and olive oil',
+    price: 14.99,
+    category: 'Main Courses',
+    imageUrl: '/images/dishes/margherita-pizza.jpg',
     isAvailable: true,
   },
   {
-    _id: "2",
-    name: "Paneer Tikka",
-    description: "Grilled cottage cheese marinated in spiced yogurt with bell peppers and onions",
-    price: 299,
-    imageUrl: caesarSaladImg,
-    category: "Appetizers",
+    _id: '2',
+    name: 'Chicken Caesar Salad',
+    description: 'Crisp romaine lettuce, grilled chicken, parmesan, and Caesar dressing',
+    price: 12.99,
+    category: 'Appetizers',
+    imageUrl: '/images/dishes/caesar-salad.jpg',
     isAvailable: true,
   },
   {
-    _id: "3",
-    name: "Masala Dosa",
-    description: "Crispy rice crepe filled with spiced potato filling, served with sambar and chutney",
-    price: 199,
-    imageUrl: pizzaPepperoniImg,
-    category: "Main Courses",
+    _id: '3',
+    name: 'Spaghetti Carbonara',
+    description: 'Pasta with creamy egg sauce, pancetta, and pecorino cheese',
+    price: 16.99,
+    category: 'Main Courses',
+    imageUrl: '/images/dishes/carbonara.jpg',
     isAvailable: true,
   },
   {
-    _id: "4",
-    name: "Chicken Biryani",
-    description: "Fragrant basmati rice cooked with tender chicken and aromatic spices",
-    price: 349,
-    imageUrl: pastaImg,
-    category: "Main Courses",
+    _id: '4',
+    name: 'Garlic Bread',
+    description: 'Toasted bread with garlic butter and herbs',
+    price: 5.99,
+    category: 'Sides',
+    imageUrl: '/images/dishes/garlic-bread.jpg',
     isAvailable: true,
   },
   {
-    _id: "5",
-    name: "Garlic Naan",
-    description: "Fresh baked Indian bread with garlic and butter",
-    price: 79,
-    imageUrl: pizzaMargheritaImg,
-    category: "Sides",
+    _id: '5',
+    name: 'Tiramisu',
+    description: 'Classic Italian dessert with coffee-soaked ladyfingers and mascarpone cream',
+    price: 8.99,
+    category: 'Desserts',
+    imageUrl: '/images/dishes/tiramisu.jpg',
     isAvailable: true,
   },
   {
-    _id: "6",
-    name: "Samosa",
-    description: "Crispy pastry filled with spiced potatoes and peas",
-    price: 89,
-    imageUrl: samosaImg,
-    category: "Appetizers",
+    _id: '6',
+    name: 'Italian Red Wine',
+    description: 'Premium red wine from Italian vineyards',
+    price: 29.99,
+    category: 'Drinks',
+    imageUrl: '/images/dishes/red-wine.jpg',
     isAvailable: true,
   },
   {
-    _id: "7",
-    name: "Gulab Jamun",
-    description: "Sweet milk dough balls soaked in sugar syrup",
-    price: 149,
-    imageUrl: gulabJamunImg,
-    category: "Desserts",
+    _id: '7',
+    name: 'Bruschetta',
+    description: 'Toasted bread topped with tomatoes, garlic, and fresh basil',
+    price: 9.99,
+    category: 'Appetizers',
+    imageUrl: '/images/dishes/bruschetta.jpg',
     isAvailable: true,
   },
   {
-    _id: "8",
-    name: "Mango Lassi",
-    description: "Refreshing yogurt drink blended with sweet mango pulp",
-    price: 129,
-    imageUrl: mangoLassiImg,
-    category: "Drinks",
+    _id: '8',
+    name: 'Grilled Salmon',
+    description: 'Fresh salmon fillet with lemon herb butter',
+    price: 24.99,
+    category: 'Main Courses',
+    imageUrl: '/images/dishes/grilled-salmon.jpg',
     isAvailable: true,
   },
   {
-    _id: "9",
-    name: "Dal Makhani",
-    description: "Creamy black lentils simmered overnight with butter and spices",
-    price: 249,
-    imageUrl: dalMakhaniImg,
-    category: "Main Courses",
+    _id: '9',
+    name: 'Chocolate Lava Cake',
+    description: 'Warm chocolate cake with a molten center',
+    price: 9.99,
+    category: 'Desserts',
+    imageUrl: '/images/dishes/chocolate-lava-cake.jpg',
     isAvailable: true,
   },
-  {
-    _id: "10",
-    name: "Rasmalai",
-    description: "Soft cottage cheese dumplings in saffron-flavored milk",
-    price: 179,
-    imageUrl: rasmalaiImg,
-    category: "Desserts",
-    isAvailable: true,
-  },
-  {
-    _id: "11",
-    name: "Masala Chai",
-    description: "Traditional Indian spiced tea with milk",
-    price: 89,
-    imageUrl: dessertImg,
-    category: "Drinks",
-    isAvailable: true,
-  }
 ];

@@ -1,45 +1,45 @@
-
-import { useState } from 'react';
-import { Category } from '@/data/menuData';
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 
 interface CategorySelectorProps {
-  categories: Category[];
+  categories: { id: string; name: string }[];
   selectedCategory: string;
-  onSelectCategory: (categoryId: string) => void;
+  onSelectCategory: (category: string) => void;
 }
 
-const CategorySelector = ({
+const CategorySelector: React.FC<CategorySelectorProps> = ({
   categories,
   selectedCategory,
   onSelectCategory,
-}: CategorySelectorProps) => {
-  const [isScrollable, setIsScrollable] = useState(false);
-
+}) => {
   return (
-    <div className="w-full mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-food-gray-dark">Categories</h2>
-      <div 
-        className={cn(
-          "flex gap-2 pb-2 overflow-x-auto scrollbar-hide", 
-          isScrollable ? "justify-start" : "justify-start md:justify-center"
-        )}
+    <div className="flex flex-wrap gap-3">
+      <Button
+        key="all"
+        variant={selectedCategory === 'all' ? 'default' : 'outline'}
+        onClick={() => onSelectCategory('all')}
+        className={`rounded-full ${
+          selectedCategory === 'all'
+            ? 'bg-food-orange hover:bg-food-orange-dark text-white'
+            : 'text-food-gray-dark hover:text-food-orange hover:border-food-orange dark:text-gray-300'
+        }`}
       >
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => onSelectCategory(category.id)}
-            className={cn(
-              "px-4 py-2 rounded-full whitespace-nowrap transition-all",
-              selectedCategory === category.id
-                ? "bg-food-orange text-white shadow-md"
-                : "bg-white border border-gray-200 text-food-gray-dark hover:bg-food-orange-light hover:text-white"
-            )}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
+        All
+      </Button>
+      {categories.map((category) => (
+        <Button
+          key={category.id}
+          variant={selectedCategory === category.id ? 'default' : 'outline'}
+          onClick={() => onSelectCategory(category.id)}
+          className={`rounded-full ${
+            selectedCategory === category.id
+              ? 'bg-food-orange hover:bg-food-orange-dark text-white'
+              : 'text-food-gray-dark hover:text-food-orange hover:border-food-orange dark:text-gray-300'
+          }`}
+        >
+          {category.name}
+        </Button>
+      ))}
     </div>
   );
 };
