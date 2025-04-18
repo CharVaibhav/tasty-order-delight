@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CartItem } from '@/data/menuData';
 import { format } from 'date-fns';
+import { formatPrice } from '@/utils/formatters';
 
 interface OrderTicketProps {
   orderNumber: string;
@@ -66,27 +66,27 @@ export const OrderTicket: React.FC<OrderTicketProps> = ({
           {items.map((item) => (
             <div key={item._id} className="flex justify-between">
               <span>{item.quantity}x {item.name}</span>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <span>{formatPrice(item.price * item.quantity)}</span>
             </div>
           ))}
         </div>
         
-        <div className="border-t pt-2 space-y-1">
+        <div className="border-t pt-2">
           <div className="flex justify-between">
             <span>Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between">
             <span>Tax (8%):</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>{formatPrice(tax)}</span>
           </div>
           <div className="flex justify-between">
             <span>Delivery Fee:</span>
-            <span>${deliveryFee.toFixed(2)}</span>
+            <span>{formatPrice(deliveryFee)}</span>
           </div>
           <div className="flex justify-between font-bold border-t pt-1">
             <span>Total:</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{formatPrice(total)}</span>
           </div>
         </div>
         
