@@ -1,3 +1,4 @@
+
 export interface MenuItem {
   _id: string;
   name: string;
@@ -51,7 +52,7 @@ export const menuItems: MenuItem[] = [
     name: "Masala Dosa",
     description: "Crispy rice crepe filled with spiced potato filling, served with sambar and chutney",
     price: 199,
-    imageUrl: "https://images.unsplash.com/photo-1630383249896-483b1756db26?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1610192244261-3f33de3f48e1?q=80&w=500&auto=format&fit=crop",
     category: "Main Courses",
     isAvailable: true,
   },
@@ -69,7 +70,7 @@ export const menuItems: MenuItem[] = [
     name: "Garlic Naan",
     description: "Fresh baked Indian bread with garlic and butter",
     price: 79,
-    imageUrl: "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=500&auto=format&fit=crop",
     category: "Sides",
     isAvailable: true,
   },
@@ -87,7 +88,7 @@ export const menuItems: MenuItem[] = [
     name: "Gulab Jamun",
     description: "Sweet milk dough balls soaked in sugar syrup",
     price: 149,
-    imageUrl: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1615832494223-d0d99bde396b?q=80&w=500&auto=format&fit=crop",
     category: "Desserts",
     isAvailable: true,
   },
@@ -96,7 +97,7 @@ export const menuItems: MenuItem[] = [
     name: "Mango Lassi",
     description: "Refreshing yogurt drink blended with sweet mango pulp",
     price: 129,
-    imageUrl: "https://images.unsplash.com/photo-1626784215021-2e39ccf971cd?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1559855190-b19370f00e34?q=80&w=500&auto=format&fit=crop",
     category: "Drinks",
     isAvailable: true,
   },
@@ -105,7 +106,7 @@ export const menuItems: MenuItem[] = [
     name: "Dal Makhani",
     description: "Creamy black lentils simmered overnight with butter and spices",
     price: 249,
-    imageUrl: "https://images.unsplash.com/photo-1626100134610-cb1a3c697c07?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1628294895950-9805252327bc?q=80&w=500&auto=format&fit=crop",
     category: "Main Courses",
     isAvailable: true,
   },
@@ -114,7 +115,7 @@ export const menuItems: MenuItem[] = [
     name: "Rasmalai",
     description: "Soft cottage cheese dumplings in saffron-flavored milk",
     price: 179,
-    imageUrl: "https://images.unsplash.com/photo-1589301570440-0714e2d898d6?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1631452180539-96aca7d48617?q=80&w=500&auto=format&fit=crop",
     category: "Desserts",
     isAvailable: true,
   },

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import CategorySelector from '@/components/CategorySelector';
@@ -23,7 +22,16 @@ const Index = () => {
     if (selectedCategory === 'all') {
       setFilteredItems(menuItems);
     } else {
-      setFilteredItems(menuItems.filter(item => item.category === selectedCategory));
+      const categoryMap: Record<string, string> = {
+        'appetizers': 'Appetizers',
+        'main-dishes': 'Main Courses',
+        'sides': 'Sides',
+        'desserts': 'Desserts',
+        'beverages': 'Drinks'
+      };
+      
+      const categoryToFilter = categoryMap[selectedCategory];
+      setFilteredItems(menuItems.filter(item => item.category === categoryToFilter));
     }
   }, [selectedCategory]);
 
@@ -84,16 +92,20 @@ const Index = () => {
               onSelectCategory={setSelectedCategory}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
-              {filteredItems.map(item => (
-                <FoodCard
-                  key={item._id}
-                  item={item}
-                  onAddToCart={handleAddToCart}
-                  itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
-                  onRemoveFromCart={removeItem}
-                  onUpdateQuantity={updateQuantity}
-                />
-              ))}
+              {filteredItems.length > 0 ? (
+                filteredItems.map(item => (
+                  <FoodCard
+                    key={item._id}
+                    item={item}
+                    onAddToCart={handleAddToCart}
+                    itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
+                    onRemoveFromCart={removeItem}
+                    onUpdateQuantity={updateQuantity}
+                  />
+                ))
+              ) : (
+                <p className="col-span-full text-center py-12 text-gray-500">No items found in this category.</p>
+              )}
             </div>
           </div>
         </div>
