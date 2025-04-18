@@ -1,12 +1,15 @@
 import React from 'react';
 import Marquee from 'react-fast-marquee';
 import { Link } from 'react-router-dom';
-import { Bowl } from 'lucide-react';
-import { useCart } from '../hooks/useCart';
+import { Salad, Menu } from 'lucide-react';
+import { useCart } from '@/lib/context/CartContext';
+import { Button } from '@/components/ui/button';
+import { formatPrice } from '@/utils/formatters';
 
 const Header: React.FC = () => {
-  const { cartItems } = useCart();
+  const { items: cartItems } = useCart();
   const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
@@ -19,8 +22,8 @@ const Header: React.FC = () => {
           pauseOnHover={true}
         >
           <div className="flex items-center space-x-8 px-4">
-            <span className="text-orange-500">🔥 Special Offers!</span>
-            <span>Order above ₹999 for free delivery</span>
+            <span className="text-food-orange">🔥 Special Offers!</span>
+            <span>Order above {formatPrice(999)} for free delivery</span>
             <span className="text-green-500">👨‍🍳 Fresh Indian cuisine made daily</span>
             <span>New items added to our menu!</span>
           </div>
@@ -31,28 +34,84 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-orange-600">
+          <Link to="/" className="text-2xl font-bold text-food-orange">
             Tasty Order Delight
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-orange-600">Home</Link>
-            <Link to="/menu" className="text-gray-700 hover:text-orange-600">Menu</Link>
-            <Link to="/about" className="text-gray-700 hover:text-orange-600">About</Link>
-            <Link to="/contact" className="text-gray-700 hover:text-orange-600">Contact</Link>
+            <Link to="/" className="text-gray-700 hover:text-food-orange transition-colors">
+              Home
+            </Link>
+            <Link to="/menu" className="text-gray-700 hover:text-food-orange transition-colors">
+              Menu
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-food-orange transition-colors">
+              About
+            </Link>
+            <Link to="/contact" className="text-gray-700 hover:text-food-orange transition-colors">
+              Contact
+            </Link>
           </nav>
 
           {/* Cart Icon */}
-          <Link to="/cart" className="relative">
-            <Bowl className="h-6 w-6 text-gray-700 hover:text-orange-600" />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </Link>
+          <div className="flex items-center space-x-4">
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon" className="relative">
+                <Salad className="h-6 w-6 text-gray-700 hover:text-food-orange transition-colors" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-food-orange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-cart-bounce">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Menu className="h-6 w-6 text-gray-700" />
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <nav className="md:hidden py-4 space-y-2">
+            <Link 
+              to="/" 
+              className="block px-4 py-2 text-gray-700 hover:bg-food-orange/10 hover:text-food-orange rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/menu" 
+              className="block px-4 py-2 text-gray-700 hover:bg-food-orange/10 hover:text-food-orange rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Menu
+            </Link>
+            <Link 
+              to="/about" 
+              className="block px-4 py-2 text-gray-700 hover:bg-food-orange/10 hover:text-food-orange rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About
+            </Link>
+            <Link 
+              to="/contact" 
+              className="block px-4 py-2 text-gray-700 hover:bg-food-orange/10 hover:text-food-orange rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
+            </Link>
+          </nav>
+        )}
       </div>
     </header>
   );

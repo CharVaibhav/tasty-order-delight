@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { OrderConfirmation } from '@/components/OrderConfirmation';
-import { api } from '@/lib/api/api';
-import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 
 interface PaymentFormData {
@@ -23,11 +21,9 @@ export const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { clearCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod'>('card');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [orderNumber, setOrderNumber] = useState('');
   const [formData, setFormData] = useState<PaymentFormData>({
     cardNumber: '',
     cardHolder: '',
@@ -57,49 +53,25 @@ export const PaymentPage: React.FC = () => {
     try {
       toast({
         title: "Processing payment...",
-        description: "Please wait while we process your order.",
+        description: "Please wait while we process your payment.",
       });
-
-      // Create the order
-      const order = await api.createOrder(
-        {
-          customerId: orderDetails.customerId,
-          firstName: orderDetails.customerName.split(' ')[0],
-          lastName: orderDetails.customerName.split(' ').slice(1).join(' '),
-          email: '', // Optional
-          phone: orderDetails.customerPhone,
-          address: orderDetails.customerAddress,
-        },
-        orderDetails.items.map(item => ({
-          productId: item._id,
-          productName: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        }))
-      );
-
-      if (!order || !order.order_id) {
-        throw new Error('Invalid order response from server');
-      }
 
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Show success message
       toast({
-        title: "Order placed successfully!",
+        title: "Payment successful!",
         description: "Your order has been confirmed.",
       });
 
-      setOrderNumber(order.order_id);
       setShowConfirmation(true);
-      clearCart(); // Clear the cart after successful order
 
     } catch (error) {
-      console.error('Payment/Order error:', error);
+      console.error('Payment error:', error);
       toast({
-        title: "Failed to place order",
-        description: error instanceof Error ? error.message : "Please try again later",
+        title: "Payment failed",
+        description: "Please check your payment details and try again.",
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -210,7 +182,7 @@ export const PaymentPage: React.FC = () => {
           <OrderConfirmation
             isOpen={showConfirmation}
             onClose={handleConfirmationClose}
-            orderNumber={orderNumber}
+            orderNumber={orderDetails.orderId}
             items={orderDetails.items}
             subtotal={orderDetails.subtotal}
             tax={orderDetails.tax}
