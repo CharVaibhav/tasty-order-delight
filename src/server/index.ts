@@ -19,9 +19,28 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Connect to databases
-connectMongoDB();
-testPGConnection();
+// Initialize databases and start server
+const initializeServer = async () => {
+  try {
+    // Connect to databases
+    await connectMongoDB();
+    await testPGConnection();
+    
+    // Create necessary tables
+    await createCustomerTable();
+    await createOrderTables();
+    
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to initialize server:', error);
+    process.exit(1);
+  }
+};
+
+initializeServer();
 
 // API Routes
 // Menu routes
@@ -111,15 +130,41 @@ app.post('/api/orders', async (req, res) => {
   try {
     const { customerData, cartItems } = req.body;
     
-    if (!customerData || !cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    // Validate request data
+    if (!customerData || !cartItems) {
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        details: 'Both customerData and cartItems are required' 
+      });
+    }
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      return res.status(400).json({ 
+        error: 'Invalid cart items',
+        details: 'Cart items must be a non-empty array' 
+      });
+    }
+
+    if (!customerData.customerId) {
+      return res.status(400).json({ 
+        error: 'Invalid customer data',
+        details: 'Customer ID is required' 
+      });
     }
     
     const order = await OrderService.createOrder(customerData, cartItems);
+    
+    if (!order) {
+      throw new Error('Failed to create order in database');
+    }
+    
     res.status(201).json(order);
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Failed to create order' });
+    res.status(500).json({ 
+      error: 'Failed to create order',
+      details: error instanceof Error ? error.message : 'Unknown error occurred'
+    });
   }
 });
 
@@ -153,9 +198,4 @@ app.get('/api/orders/:orderId', async (req, res) => {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 }); 

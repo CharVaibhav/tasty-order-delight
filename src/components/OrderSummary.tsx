@@ -71,6 +71,10 @@ const OrderSummary = ({
         }))
       );
 
+      if (!order || !order.order_id) {
+        throw new Error('Invalid order response from server');
+      }
+
       setOrderNumber(order.order_id);
       setShowConfirmation(true);
       
@@ -80,9 +84,10 @@ const OrderSummary = ({
         onOrderComplete();
       }, 5000);
     } catch (error) {
+      console.error('Order creation error:', error);
       toast({
         title: "Failed to place order",
-        description: "Please try again later",
+        description: error instanceof Error ? error.message : "Please check your connection and try again",
         variant: "destructive",
       });
     } finally {
