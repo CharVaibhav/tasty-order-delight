@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ShoppingCart, Plus, Minus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -88,3 +89,6 @@ export function Cart() {
     </Sheet>
   );
 }
+
+// Add default export
+export default Cart;

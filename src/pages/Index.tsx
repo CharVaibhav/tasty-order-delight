@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
-import Cart from '@/components/Cart';
+import { Cart } from '@/components/Cart';  // Change to named import
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
