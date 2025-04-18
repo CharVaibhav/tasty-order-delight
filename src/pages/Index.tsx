@@ -7,12 +7,15 @@ import Cart from '@/components/Cart';
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useCart } from '@/lib/context/CartContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filteredItems, setFilteredItems] = useState<MenuItem[]>(menuItems);
+  const { items: cartItems, addItem, removeItem, updateQuantity, clearCart } = useCart();
+  const { toast } = useToast();
 
   // Filter menu items when category changes
   useEffect(() => {
@@ -24,33 +27,13 @@ const Index = () => {
   }, [selectedCategory]);
 
   const handleAddToCart = (item: MenuItem) => {
-    setCartItems(prev => {
-      const existingItem = prev.find(cartItem => cartItem.id === item.id);
-      if (existingItem) {
-        return prev.map(cartItem => 
-          cartItem.id === item.id 
-            ? { ...cartItem, quantity: cartItem.quantity + 1 } 
-            : cartItem
-        );
-      }
-      return [...prev, { ...item, quantity: 1 }];
+    addItem(item);
+    
+    toast({
+      title: "Added to cart",
+      description: `${item.name} has been added to your cart.`,
+      duration: 2000,
     });
-  };
-
-  const handleRemoveFromCart = (id: string) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
-  };
-
-  const handleUpdateQuantity = (id: string, quantity: number) => {
-    setCartItems(prev => 
-      prev.map(item => 
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
   };
 
   const toggleCart = () => {
@@ -83,8 +66,8 @@ const Index = () => {
             <PopularItemsMarquee
               items={menuItems.filter(item => item.popular)}
               onAddToCart={handleAddToCart}
-              onRemoveFromCart={handleRemoveFromCart}
-              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveFromCart={removeItem}
+              onUpdateQuantity={updateQuantity}
               cartItems={cartItems}
             />
           </div>
@@ -105,8 +88,8 @@ const Index = () => {
                   item={item}
                   onAddToCart={handleAddToCart}
                   itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
-                  onRemoveFromCart={handleRemoveFromCart}
-                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemoveFromCart={removeItem}
+                  onUpdateQuantity={updateQuantity}
                 />
               ))}
             </div>
@@ -116,11 +99,11 @@ const Index = () => {
         {/* Cart Sidebar */}
         <Cart
           isOpen={isCartOpen}
-          onClose={toggleCart}
+          onClose={() => setIsCartOpen(false)}
           cartItems={cartItems}
-          onRemoveItem={handleRemoveFromCart}
-          onUpdateQuantity={handleUpdateQuantity}
-          onClearCart={handleClearCart}
+          onRemoveItem={removeItem}
+          onUpdateQuantity={updateQuantity}
+          onClearCart={clearCart}
         />
       </div>
     </Layout>

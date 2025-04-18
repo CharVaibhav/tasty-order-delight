@@ -1,21 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
-// Define types
-export interface CartItem {
-  id: string;
-  productId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  category: string;
-}
+import { CartItem } from '@/data/menuData';
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, 'id'>) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (item: Omit<CartItem, 'quantity'>) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -57,38 +48,38 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   // Add item to cart
-  const addItem = (item: Omit<CartItem, 'id'>) => {
+  const addItem = (item: Omit<CartItem, 'quantity'>) => {
     setItems(prevItems => {
       // Check if item already exists in cart
-      const existingItemIndex = prevItems.findIndex(i => i.productId === item.productId);
+      const existingItemIndex = prevItems.findIndex(i => i.id === item.id);
       
       if (existingItemIndex >= 0) {
         // Update quantity if item exists
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += item.quantity;
+        updatedItems[existingItemIndex].quantity += 1;
         return updatedItems;
       } else {
-        // Add new item with generated ID
-        return [...prevItems, { ...item, id: uuidv4() }];
+        // Add new item with quantity 1
+        return [...prevItems, { ...item, quantity: 1 }];
       }
     });
   };
 
   // Remove item from cart
-  const removeItem = (productId: string) => {
-    setItems(prevItems => prevItems.filter(item => item.productId !== productId));
+  const removeItem = (id: string) => {
+    setItems(prevItems => prevItems.filter(item => item.id !== id));
   };
 
   // Update item quantity
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId);
+      removeItem(id);
       return;
     }
     
     setItems(prevItems => 
       prevItems.map(item => 
-        item.productId === productId ? { ...item, quantity } : item
+        item.id === id ? { ...item, quantity } : item
       )
     );
   };
