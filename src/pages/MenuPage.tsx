@@ -8,15 +8,22 @@ import { Layout } from '@/components/layout/Layout';
 import { toast } from '@/components/ui/use-toast';
 import { Plus, Minus } from 'lucide-react';
 import { formatPrice } from '@/utils/formatters';
+import CategorySelector from '@/components/CategorySelector';
+import FoodCard from '@/components/FoodCard';
+import { categories, menuItems } from '@/data/menuData';
+import { useToast } from '@/components/ui/use-toast';
 
-const categories = ['Appetizers', 'Main Dishes', 'Sides', 'Desserts', 'Beverages'];
+interface MenuPageProps {
+  hideLayout?: boolean;
+}
 
-export const MenuPage: React.FC = () => {
+export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Main Dishes');
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -95,6 +102,33 @@ export const MenuPage: React.FC = () => {
 
   const filteredItems = menuItems.filter(item => item.category === selectedCategory);
 
+  const content = (
+    <div className="space-y-8">
+      <CategorySelector 
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredItems.map(item => (
+          <FoodCard
+            key={item._id}
+            item={item}
+            onAddToCart={handleAddToCart}
+            itemInCart={getCartItem(item._id)}
+            onRemoveFromCart={removeItem}
+            onUpdateQuantity={handleUpdateQuantity}
+          />
+        ))}
+      </div>
+    </div>
+  );
+
+  if (hideLayout) {
+    return content;
+  }
+
   if (loading) {
     return (
       <Layout>
@@ -129,84 +163,9 @@ export const MenuPage: React.FC = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">Our Menu</h1>
-        
-        <Tabs defaultValue="Main Dishes" className="w-full">
-          <TabsList className="grid grid-cols-5 mb-8">
-            {categories.map(category => (
-              <TabsTrigger 
-                key={category} 
-                value={category}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          
-          <TabsContent value={selectedCategory}>
-            {filteredItems.length === 0 ? (
-              <p className="text-center text-gray-500">No items available in this category.</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredItems.map(item => {
-                  const cartItem = getCartItem(item._id);
-                  
-                  return (
-                    <Card key={item._id} className="overflow-hidden">
-                      {item.imageUrl && (
-                        <div className="h-48 overflow-hidden">
-                          <img 
-                            src={item.imageUrl} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <CardHeader>
-                        <CardTitle>{item.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-gray-600 mb-2">{item.description}</p>
-                        <p className="font-bold text-lg">${formatPrice(item.price)}</p>
-                      </CardContent>
-                      <CardFooter>
-                        {!cartItem ? (
-                          <Button 
-                            className="w-full bg-food-orange hover:bg-food-orange-dark text-white" 
-                            onClick={() => handleAddToCart(item)}
-                          >
-                            Add to Cart
-                          </Button>
-                        ) : (
-                          <div className="flex items-center justify-between w-full">
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              onClick={() => handleUpdateQuantity(item._id, (cartItem.quantity || 1) - 1)}
-                              className="h-8 w-8 border-food-orange text-food-orange"
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="mx-2 font-medium">{cartItem.quantity}</span>
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              onClick={() => handleUpdateQuantity(item._id, (cartItem.quantity || 1) + 1)}
-                              className="h-8 w-8 border-food-orange text-food-orange"
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        )}
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
+        <p className="text-food-gray dark:text-gray-300 mb-8">Discover our delicious dishes</p>
+        {content}
       </div>
     </Layout>
   );
