@@ -1,73 +1,145 @@
-# Welcome to your Lovable project
+# The Digital Diner - Restaurant Ordering System
 
-## Project info
+A full-stack web application for "The Digital Diner" restaurant, allowing customers to browse the menu, add items to a cart, and place pickup orders.
 
-**URL**: https://lovable.dev/projects/56112891-8fc0-4a38-a9da-59252020f6a6
+## Tech Stack
 
-## How can I edit this code?
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS, Shadcn UI
+- **Backend**: Node.js, Express
+- **Databases**: 
+  - MongoDB (for menu items and cart operations)
+  - PostgreSQL (for customer information and orders)
 
-There are several ways of editing your application.
+## Database Design Justification
 
-**Use Lovable**
+### MongoDB
+- **Menu Items**: Used for storing menu items due to its flexible schema, allowing for easy addition of new fields or categories without schema migrations.
+- **Cart Operations**: Used for tracking cart operations (add/remove) as it's event-based data that doesn't require complex relationships.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/56112891-8fc0-4a38-a9da-59252020f6a6) and start prompting.
+### PostgreSQL
+- **Customer Information**: Used for storing structured customer data due to its relational nature and ACID properties.
+- **Orders**: Used for storing order information as it requires relationships between customers and order items, and benefits from PostgreSQL's transaction support.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Features
 
-**Use your preferred IDE**
+- **Menu Display**: Browse menu items by category
+- **Shopping Cart**: Add/remove items, view cart contents and total price
+- **Order Placement**: Submit orders with customer information
+- **Order History**: View past orders associated with a customer
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## API Endpoints
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Menu
+- `GET /api/menu` - Get all menu items
+- `GET /api/menu/category/:category` - Get menu items by category
+- `GET /api/menu/:id` - Get a specific menu item
 
-Follow these steps:
+### Cart
+- `POST /api/cart/add` - Add an item to the cart
+- `POST /api/cart/remove` - Remove an item from the cart
+- `GET /api/cart/history/:customerId` - Get cart history for a customer
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Orders
+- `POST /api/orders` - Create a new order
+- `GET /api/orders/customer/:customerId` - Get orders for a customer
+- `GET /api/orders/:orderId` - Get a specific order
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Setup Instructions
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Prerequisites
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+- Node.js (v14 or higher)
+- MongoDB (v4.4 or higher)
+- PostgreSQL (v12 or higher)
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+# MongoDB Configuration
+MONGODB_URI=mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2
+
+# PostgreSQL Configuration
+PG_USER=postgres
+PG_HOST=localhost
+PG_DATABASE=tasty_order_delight
+PG_PASSWORD=postgres
+PG_PORT=5432
+
+# Server Configuration
+PORT=5000
 ```
 
-**Edit a file directly in GitHub**
+### Installation
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/digital-diner.git
+   cd digital-diner
+   ```
 
-**Use GitHub Codespaces**
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-## What technologies are used for this project?
+4. Start the backend server:
+   ```
+   npm run server:dev
+   ```
 
-This project is built with:
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Frontend (Netlify)
 
-## How can I deploy this project?
+1. Build the frontend:
+   ```
+   npm run build
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/56112891-8fc0-4a38-a9da-59252020f6a6) and click on Share -> Publish.
+2. Deploy to Netlify:
+   - Create an account on [Netlify](https://www.netlify.com/)
+   - Connect your GitHub repository to Netlify
+   - Set the build command to `npm run build`
+   - Set the publish directory to `dist`
+   - Add environment variables:
+     - `VITE_API_URL`: Your backend API URL (e.g., `https://your-backend.herokuapp.com/api`)
 
-## Can I connect a custom domain to my Lovable project?
+3. Alternatively, use the Netlify CLI:
+   ```
+   npm install -g netlify-cli
+   netlify login
+   netlify deploy --dir=dist --prod
+   ```
 
-Yes, you can!
+4. For local testing with a mock API:
+   - Create a `.env` file in the root directory with:
+     ```
+     VITE_API_URL=http://localhost:5000/api
+     ```
+   - Run the development server:
+     ```
+     npm run dev
+     ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Assumptions and Challenges
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Assumptions
+- Customers are identified by their phone number or email
+- No user authentication is required for this prototype
+- Orders are for pickup only (no delivery)
+
+### Challenges
+- Managing state between MongoDB and PostgreSQL
+- Ensuring data consistency across databases
+- Handling concurrent cart operations
+
+## License
+
+MIT
