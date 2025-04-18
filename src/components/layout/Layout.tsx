@@ -13,24 +13,24 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-primary text-white shadow-md">
+      <header className="bg-food-orange text-white shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">
             The Digital Diner
           </Link>
           <nav className="flex items-center space-x-6">
-            <Link to="/" className="hover:text-primary-foreground">
+            <Link to="/" className="hover:text-food-cream transition-colors">
               Menu
             </Link>
-            <Link to="/cart" className="relative hover:text-primary-foreground">
+            <Link to="/cart" className="relative hover:text-food-cream transition-colors">
               <ShoppingCart className="h-6 w-6" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium">
                   {totalItems}
                 </span>
               )}
             </Link>
-            <Link to="/orders" className="hover:text-primary-foreground">
+            <Link to="/orders" className="hover:text-food-cream transition-colors">
               My Orders
             </Link>
           </nav>
@@ -38,13 +38,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main content */}
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow">
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-100 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-600">
+      <footer className="bg-food-gray-dark text-white py-6">
+        <div className="container mx-auto px-4 text-center">
           <p>&copy; {new Date().getFullYear()} The Digital Diner. All rights reserved.</p>
         </div>
       </footer>

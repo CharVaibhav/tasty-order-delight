@@ -18,18 +18,18 @@ const PopularItemsMarquee: React.FC<PopularItemsMarqueeProps> = ({
   onUpdateQuantity,
   cartItems,
 }) => {
-  // Get one item from each category
-  const categories = ['appetizer', 'main', 'dessert', 'beverage', 'special'];
-  const popularItemsByCategory = categories.map(category => {
-    const categoryItems = items.filter(item => item.category === category);
-    return categoryItems.length > 0 ? categoryItems[0] : null;
-  }).filter(Boolean) as MenuItem[];
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="overflow-hidden py-6 bg-food-orange/5">
-      <div className="flex animate-marquee">
-        {[...popularItemsByCategory, ...popularItemsByCategory].map((item, index) => (
-          <div key={`${item.id}-${index}`} className="flex-shrink-0 w-64 mx-4">
+    <div className="overflow-hidden py-6 bg-food-orange/5 relative">
+      <div className="flex space-x-6 animate-scroll">
+        {[...items, ...items].map((item, index) => (
+          <div 
+            key={`${item.id}-${index}`} 
+            className="flex-shrink-0 w-72"
+          >
             <FoodCard
               item={item}
               onAddToCart={onAddToCart}
