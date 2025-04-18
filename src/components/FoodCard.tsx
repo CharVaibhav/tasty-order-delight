@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/use-toast";
 import { MenuItem, CartItem } from '@/data/menuData';
+import { formatPrice } from '@/utils/formatters';
 
 interface FoodCardProps {
   item: MenuItem;
@@ -69,7 +69,7 @@ const FoodCard = ({
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold text-food-gray-dark">{item.name}</h3>
-          <span className="font-bold text-food-orange">${item.price.toFixed(2)}</span>
+          <span className="font-bold text-food-orange">{formatPrice(item.price)}</span>
         </div>
         <p className="text-gray-500 text-sm mb-4 flex-grow">{item.description}</p>
         <div className="flex mt-auto">

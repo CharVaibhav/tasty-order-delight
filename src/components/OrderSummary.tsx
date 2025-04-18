@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import { OrderConfirmation } from './OrderConfirmation';
 import { api } from '@/lib/api/api';
 import { useCart } from '@/lib/context/CartContext';
+import { formatPrice } from '@/utils/formatters';
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -37,7 +37,6 @@ const OrderSummary = ({
   const deliveryFee = 2.99;
   const total = subtotal + tax + deliveryFee;
 
-  // Check if all required fields are filled
   const isFormValid = name.trim() !== '' && phone.trim() !== '' && address.trim() !== '';
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +53,6 @@ const OrderSummary = ({
     setIsSubmitting(true);
     
     try {
-      // Create order through API
       const order = await api.createOrder(
         {
           customerId,
@@ -79,7 +77,6 @@ const OrderSummary = ({
       setOrderNumber(order.order_id);
       setShowConfirmation(true);
       
-      // After successful order
       setTimeout(() => {
         setShowConfirmation(false);
         onOrderComplete();
@@ -163,27 +160,27 @@ const OrderSummary = ({
                   <span className="text-gray-600">
                     {item.quantity} × {item.name}
                   </span>
-                  <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>
                 </div>
               ))}
               <Separator className="my-2" />
               <div className="space-y-1 pt-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax (8%)</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>{formatPrice(tax)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
-                  <span>${deliveryFee.toFixed(2)}</span>
+                  <span>{formatPrice(deliveryFee)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-medium text-lg">
                   <span>Total</span>
-                  <span className="text-food-orange">${total.toFixed(2)}</span>
+                  <span className="text-food-orange">{formatPrice(total)}</span>
                 </div>
               </div>
             </div>
@@ -196,7 +193,7 @@ const OrderSummary = ({
             className="w-full bg-food-orange hover:bg-food-orange-dark text-white h-12"
             disabled={!isFormValid || isSubmitting}
           >
-            {isSubmitting ? 'Processing...' : `Pay $${total.toFixed(2)}`}
+            {isSubmitting ? 'Processing...' : `Pay ${formatPrice(total)}`}
           </Button>
           <Button
             type="button"

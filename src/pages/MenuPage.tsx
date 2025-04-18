@@ -7,14 +7,15 @@ import { useCart } from '@/lib/context/CartContext';
 import { Layout } from '@/components/layout/Layout';
 import { toast } from '@/components/ui/use-toast';
 import { Plus, Minus } from 'lucide-react';
+import { formatPrice } from '@/utils/formatters';
 
-const categories = ['Appetizers', 'Main Courses', 'Desserts', 'Drinks'];
+const categories = ['Appetizers', 'Main Dishes', 'Sides', 'Desserts', 'Beverages'];
 
 export const MenuPage: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Main Courses');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Main Dishes');
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
 
   useEffect(() => {
@@ -130,8 +131,8 @@ export const MenuPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-center">Our Menu</h1>
         
-        <Tabs defaultValue="Main Courses" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-8">
+        <Tabs defaultValue="Main Dishes" className="w-full">
+          <TabsList className="grid grid-cols-5 mb-8">
             {categories.map(category => (
               <TabsTrigger 
                 key={category} 
@@ -167,7 +168,7 @@ export const MenuPage: React.FC = () => {
                       </CardHeader>
                       <CardContent>
                         <p className="text-gray-600 mb-2">{item.description}</p>
-                        <p className="font-bold text-lg">${item.price.toFixed(2)}</p>
+                        <p className="font-bold text-lg">${formatPrice(item.price)}</p>
                       </CardContent>
                       <CardFooter>
                         {!cartItem ? (
