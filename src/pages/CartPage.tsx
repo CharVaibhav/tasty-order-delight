@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '@/utils/formatters';
+import { Slider } from '@/components/ui/slider';
 
 export const CartPage: React.FC = () => {
   const { 
@@ -73,7 +74,7 @@ export const CartPage: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-4 w-48">
                         <Button
                           variant="outline"
                           size="icon"
@@ -83,13 +84,16 @@ export const CartPage: React.FC = () => {
                           <Minus className="h-4 w-4" />
                         </Button>
                         
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => handleQuantityChange(item._id, parseInt(e.target.value) || 0)}
-                          className="w-16 text-center border rounded-md p-1"
-                          min="0"
-                        />
+                        <div className="flex-1">
+                          <Slider
+                            value={[item.quantity]}
+                            min={0}
+                            max={10}
+                            step={1}
+                            onValueChange={(value) => handleQuantityChange(item._id, value[0])}
+                            className="[&_[role=slider]]:bg-food-orange [&_[role=slider]]:border-food-orange [&_[role=slider]]:focus:ring-food-orange [&_[role=track]]:bg-food-orange/20 [&_[role=range]]:bg-food-orange"
+                          />
+                        </div>
                         
                         <Button
                           variant="outline"
@@ -110,6 +114,9 @@ export const CartPage: React.FC = () => {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
+                  </div>
+                  <div className="mt-2 text-right text-sm text-gray-600">
+                    Quantity: {item.quantity}
                   </div>
                 </CardContent>
               </Card>
