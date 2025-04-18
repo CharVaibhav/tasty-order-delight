@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, RequestHandler, NextFunction } from 'express';
 import cors from 'cors';
 import { connectMongoDB, testPGConnection } from '../lib/db/config';
 import { createCustomerTable } from '../lib/db/models/Customer';
@@ -44,112 +44,112 @@ initializeServer();
 
 // API Routes
 // Menu routes
-app.get('/api/menu', async (req, res) => {
+const getAllMenuItems: RequestHandler = async (_req, res, next): Promise<void> => {
   try {
     const menuItems = await MenuService.getAllMenuItems();
     res.json(menuItems);
   } catch (error) {
-    console.error('Error fetching menu items:', error);
-    res.status(500).json({ error: 'Failed to retrieve menu items' });
+    next(error);
   }
-});
+};
 
-app.get('/api/menu/category/:category', async (req, res) => {
+const getMenuItemsByCategory: RequestHandler<{ category: string }> = async (req, res, next): Promise<void> => {
   try {
     const { category } = req.params;
     const menuItems = await MenuService.getMenuItemsByCategory(category);
     res.json(menuItems);
   } catch (error) {
-    console.error(`Error fetching menu items for category ${req.params.category}:`, error);
-    res.status(500).json({ error: 'Failed to retrieve menu items by category' });
+    next(error);
   }
-});
+};
 
-app.get('/api/menu/:id', async (req, res) => {
+const getMenuItemById: RequestHandler<{ id: string }> = async (req, res, next): Promise<void> => {
   try {
     const { id } = req.params;
     const menuItem = await MenuService.getMenuItemById(id);
     
     if (!menuItem) {
-      return res.status(404).json({ error: 'Menu item not found' });
+      res.status(404).json({ error: 'Menu item not found' });
+      return;
     }
     
     res.json(menuItem);
   } catch (error) {
-    console.error(`Error fetching menu item with id ${req.params.id}:`, error);
-    res.status(500).json({ error: 'Failed to fetch menu item' });
+    next(error);
   }
-});
+};
 
 // Cart routes
-app.post('/api/cart/add', async (req, res) => {
+const addToCart: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const { customerId, productData } = req.body;
     
     if (!customerId || !productData) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
     }
     
     const cartOperation = await CartService.addToCart(customerId, productData);
     res.status(201).json(cartOperation);
   } catch (error) {
-    console.error('Error adding to cart:', error);
-    res.status(500).json({ error: 'Failed to add item to cart' });
+    next(error);
   }
-});
+};
 
-app.post('/api/cart/remove', async (req, res) => {
+const removeFromCart: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const { customerId, productData } = req.body;
     
     if (!customerId || !productData) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
     }
     
     const cartOperation = await CartService.removeFromCart(customerId, productData);
     res.status(201).json(cartOperation);
   } catch (error) {
-    console.error('Error removing from cart:', error);
-    res.status(500).json({ error: 'Failed to remove item from cart' });
+    next(error);
   }
-});
+};
 
-app.get('/api/cart/history/:customerId', async (req, res) => {
+const getCartHistory: RequestHandler<{ customerId: string }> = async (req, res, next): Promise<void> => {
   try {
     const { customerId } = req.params;
     const cartHistory = await CartService.getCartHistory(customerId);
     res.json(cartHistory);
   } catch (error) {
-    console.error('Error fetching cart history:', error);
-    res.status(500).json({ error: 'Failed to fetch cart history' });
+    next(error);
   }
-});
+};
 
 // Order routes
-app.post('/api/orders', async (req, res) => {
+const createOrder: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const { customerData, cartItems } = req.body;
     
     // Validate request data
     if (!customerData || !cartItems) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         error: 'Missing required fields',
         details: 'Both customerData and cartItems are required' 
       });
+      return;
     }
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         error: 'Invalid cart items',
         details: 'Cart items must be a non-empty array' 
       });
+      return;
     }
 
     if (!customerData.customerId) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         error: 'Invalid customer data',
         details: 'Customer ID is required' 
       });
+      return;
     }
     
     const order = await OrderService.createOrder(customerData, cartItems);
@@ -160,42 +160,49 @@ app.post('/api/orders', async (req, res) => {
     
     res.status(201).json(order);
   } catch (error) {
-    console.error('Error creating order:', error);
-    res.status(500).json({ 
-      error: 'Failed to create order',
-      details: error instanceof Error ? error.message : 'Unknown error occurred'
-    });
+    next(error);
   }
-});
+};
 
-app.get('/api/orders/customer/:customerId', async (req, res) => {
+const getOrdersByCustomerId: RequestHandler<{ customerId: string }> = async (req, res, next): Promise<void> => {
   try {
     const { customerId } = req.params;
     const orders = await OrderService.getOrdersByCustomerId(customerId);
     res.json(orders);
   } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ error: 'Failed to fetch customer orders' });
+    next(error);
   }
-});
+};
 
-app.get('/api/orders/:orderId', async (req, res) => {
+const getOrderById: RequestHandler<{ orderId: string }> = async (req, res, next): Promise<void> => {
   try {
     const { orderId } = req.params;
     const order = await OrderService.getOrderById(orderId);
     
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      res.status(404).json({ error: 'Order not found' });
+      return;
     }
     
     res.json(order);
   } catch (error) {
-    console.error('Error fetching order:', error);
-    res.status(500).json({ error: 'Failed to fetch order' });
+    next(error);
   }
-});
+};
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+const healthCheck: RequestHandler = (_req, res): void => {
   res.status(200).json({ status: 'ok' });
-}); 
+};
+
+// Route handlers
+app.get('/api/menu', getAllMenuItems);
+app.get('/api/menu/category/:category', getMenuItemsByCategory);
+app.get('/api/menu/:id', getMenuItemById);
+app.post('/api/cart/add', addToCart);
+app.post('/api/cart/remove', removeFromCart);
+app.get('/api/cart/history/:customerId', getCartHistory);
+app.post('/api/orders', createOrder);
+app.get('/api/orders/customer/:customerId', getOrdersByCustomerId);
+app.get('/api/orders/:orderId', getOrderById);
+app.get('/health', healthCheck); 
