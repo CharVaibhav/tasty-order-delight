@@ -8,6 +8,7 @@ import { CartItem } from '@/data/menuData';
 import { toast } from '@/components/ui/use-toast';
 import { OrderConfirmation } from './OrderConfirmation';
 import { api } from '@/lib/api/api';
+import { useCart } from '@/lib/context/CartContext';
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -22,6 +23,7 @@ const OrderSummary = ({
   onBackToCart,
   onOrderComplete,
 }: OrderSummaryProps) => {
+  const { customerId } = useCart();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -34,10 +36,13 @@ const OrderSummary = ({
   const deliveryFee = 2.99;
   const total = subtotal + tax + deliveryFee;
 
+  // Check if all required fields are filled
+  const isFormValid = name.trim() !== '' && phone.trim() !== '' && address.trim() !== '';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !phone || !address) {
+    if (!isFormValid) {
       toast({
         title: "Please fill out all required fields",
         variant: "destructive",
@@ -51,6 +56,7 @@ const OrderSummary = ({
       // Create order through API
       const order = await api.createOrder(
         {
+          customerId,
           firstName: name.split(' ')[0],
           lastName: name.split(' ').slice(1).join(' '),
           email: '', // Optional
@@ -58,7 +64,7 @@ const OrderSummary = ({
           address,
         },
         cartItems.map(item => ({
-          productId: item.productId,
+          productId: item.id,
           productName: item.name,
           quantity: item.quantity,
           price: item.price,
@@ -86,73 +92,63 @@ const OrderSummary = ({
   return (
     <>
       <form onSubmit={handleSubmit} className="flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          <Button 
-            type="button"
-            variant="ghost" 
-            className="flex items-center text-gray-600 mb-4 -ml-2 hover:bg-transparent hover:text-food-orange"
-            onClick={onBackToCart}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to cart
-          </Button>
-          
-          <div>
-            <h3 className="text-lg font-medium mb-3">Delivery Information</h3>
-            <div className="space-y-3">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number *
-                </label>
-                <Input
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Your phone number"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Delivery Address *
-                </label>
-                <Textarea
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Your delivery address"
-                  rows={3}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                  Order Notes (Optional)
-                </label>
-                <Textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Special instructions for your order"
-                  rows={2}
-                />
-              </div>
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name *
+              </label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Doe"
+                required
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number *
+              </label>
+              <Input
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="(555) 123-4567"
+                required
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Delivery Address *
+              </label>
+              <Textarea
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="123 Main St, Apt 4B, City, State 12345"
+                required
+                rows={2}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                Order Notes (Optional)
+              </label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Special instructions, allergies, etc."
+                rows={2}
+              />
             </div>
           </div>
           
-          <div>
+          <div className="mt-6">
             <h3 className="text-lg font-medium mb-3">Order Summary</h3>
             <div className="bg-gray-50 rounded-lg p-4">
               {cartItems.map((item) => (
@@ -187,13 +183,22 @@ const OrderSummary = ({
           </div>
         </div>
         
-        <div className="border-t p-4">
+        <div className="border-t p-4 space-y-3">
           <Button
             type="submit"
             className="w-full bg-food-orange hover:bg-food-orange-dark text-white h-12"
-            disabled={isSubmitting}
+            disabled={!isFormValid || isSubmitting}
           >
-            {isSubmitting ? 'Processing...' : 'Place Order'}
+            {isSubmitting ? 'Processing...' : `Pay $${total.toFixed(2)}`}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBackToCart}
+            className="w-full"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Cart
           </Button>
         </div>
       </form>

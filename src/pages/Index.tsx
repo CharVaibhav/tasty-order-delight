@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
+import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import Cart from '@/components/Cart';
 import { categories, menuItems, CartItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
@@ -57,9 +57,6 @@ const Index = () => {
     setIsCartOpen(!isCartOpen);
   };
 
-  // Get popular items
-  const popularItems = menuItems.filter(item => item.popular);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar cartItems={cartItems} toggleCart={toggleCart} />
@@ -80,53 +77,41 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Popular Items Section */}
-      {popularItems.length > 0 && (
-        <div className="container mx-auto px-4 py-10">
-          <h2 className="text-2xl font-bold mb-6 text-food-gray-dark">Popular Items</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {popularItems.map(item => (
-              <FoodCard
-                key={item.id}
-                item={item}
-                onAddToCart={handleAddToCart}
-                itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
-                onRemoveFromCart={handleRemoveFromCart}
-                onUpdateQuantity={handleUpdateQuantity}
-              />
-            ))}
-          </div>
-          <Separator className="my-12" />
+      {/* Popular Items Marquee */}
+      <div className="py-8">
+        <div className="container mx-auto px-4 mb-6">
+          <h2 className="text-2xl font-bold text-food-gray-dark">Popular Items</h2>
         </div>
-      )}
+        <PopularItemsMarquee
+          items={menuItems}
+          onAddToCart={handleAddToCart}
+          onRemoveFromCart={handleRemoveFromCart}
+          onUpdateQuantity={handleUpdateQuantity}
+          cartItems={cartItems}
+        />
+        <Separator className="my-12" />
+      </div>
       
       {/* Main Menu Section */}
-      <div id="menu" className="container mx-auto px-4 py-6 mb-12">
+      <div id="menu" className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold text-food-gray-dark mb-6">Our Menu</h2>
         <CategorySelector
           categories={categories}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
-        
-        {filteredItems.length === 0 ? (
-          <div className="text-center py-16">
-            <h3 className="text-xl font-medium text-gray-800 mb-2">No items found</h3>
-            <p className="text-gray-500">Try selecting a different category</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredItems.map(item => (
-              <FoodCard
-                key={item.id}
-                item={item}
-                onAddToCart={handleAddToCart}
-                itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
-                onRemoveFromCart={handleRemoveFromCart}
-                onUpdateQuantity={handleUpdateQuantity}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          {filteredItems.map(item => (
+            <FoodCard
+              key={item.id}
+              item={item}
+              onAddToCart={handleAddToCart}
+              itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
+              onRemoveFromCart={handleRemoveFromCart}
+              onUpdateQuantity={handleUpdateQuantity}
+            />
+          ))}
+        </div>
       </div>
       
       {/* Footer */}
@@ -163,7 +148,7 @@ const Index = () => {
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
+        items={cartItems}
         onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onClearCart={handleClearCart}

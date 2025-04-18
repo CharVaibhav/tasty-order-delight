@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock, MapPin, Phone, Mail } from 'lucide-react';
+import { Clock, MapPin, Phone, Mail, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const AboutPage = () => {
   return (
@@ -11,6 +13,18 @@ const AboutPage = () => {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto"
       >
+        <div className="mb-8">
+          <Link to="/">
+            <Button 
+              variant="ghost" 
+              className="flex items-center text-food-orange hover:bg-food-orange/10"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+        
         <h1 className="text-4xl font-bold text-food-orange mb-8">About The Digital Diner</h1>
         
         <div className="grid md:grid-cols-2 gap-8 mb-12">
