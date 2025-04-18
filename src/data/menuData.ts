@@ -1,18 +1,19 @@
-import { dishImages } from '@/lib/constants/images';
-import burgerImg from '@/assets/images/dishes/burger.jpg';
-import pizzaMargheritaImg from '@/assets/images/dishes/pizza-margherita.jpg';
-import pastaImg from '@/assets/images/dishes/pasta.jpg';
-import sushiImg from '@/assets/images/dishes/sushi.jpg';
-import pizzaPepperoniImg from '@/assets/images/dishes/pizza-pepperoni.jpg';
-import steakImg from '@/assets/images/dishes/steak.jpg';
-import caesarSaladImg from '@/assets/images/dishes/caesar-salad.jpg';
-import dessertImg from '@/assets/images/dishes/dessert.jpg';
-import dalMakhaniImg from '@/assets/images/dishes/Dal-Makhani-Blog.jpg';
-import rasmalaiImg from '@/assets/images/dishes/Rasmalai-recipe@palates-desire.jpg';
-import gulabJamunImg from '@/assets/images/dishes/gulabjamun.jpeg';
-import mangoLassiImg from '@/assets/images/dishes/mango-lassi.jpg';
-import samosaImg from '@/assets/images/dishes/Samosas-with-Potatoes-and-Peas-2-1.jpg';
-import masalaDosaImg from '@/assets/images/dishes/masala-dosa.jpg';
+import { dishImages } from '../lib/constants/images';
+import burgerImg from '../assets/images/dishes/burger.jpg';
+import pizzaMargheritaImg from '../assets/images/dishes/pizza-margherita.jpg';
+import pastaImg from '../assets/images/dishes/pasta.jpg';
+import sushiImg from '../assets/images/dishes/sushi.jpg';
+import pizzaPepperoniImg from '../assets/images/dishes/pizza-pepperoni.jpg';
+import steakImg from '../assets/images/dishes/steak.jpg';
+import caesarSaladImg from '../assets/images/dishes/caesar-salad.jpg';
+import dessertImg from '../assets/images/dishes/dessert.jpg';
+import dalMakhaniImg from '../assets/images/dishes/Dal-Makhani-Blog.jpg';
+import rasmalaiImg from '../assets/images/dishes/Rasmalai-recipe@palates-desire.jpg';
+import gulabJamunImg from '../assets/images/dishes/gulabjamun.jpeg';
+import mangoLassiImg from '../assets/images/dishes/mango-lassi.jpg';
+import samosaImg from '../assets/images/dishes/Samosas-with-Potatoes-and-Peas-2-1.jpg';
+import masalaDosaImg from '../assets/images/dishes/masala-dosa.jpg';
+import biryaniImg from '../assets/images/dishes/Chicken-Biryani.jpg';
 
 export interface MenuItem {
   _id: string;
@@ -75,11 +76,11 @@ export const menuItems: MenuItem[] = [
   },
   {
     _id: '5',
-    name: 'Biryani',
-    description: 'Fragrant basmati rice cooked with aromatic spices and your choice of vegetables or meat',
+    name: 'Chicken Biryani',
+    description: 'Fragrant basmati rice cooked with tender chicken, aromatic spices, and caramelized onions',
     price: 399,
     category: 'Main Courses',
-    imageUrl: pastaImg,
+    imageUrl: biryaniImg,
     isAvailable: true,
   },
   {
