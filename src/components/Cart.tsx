@@ -6,54 +6,18 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
-import { CartItem } from '@/data/menuData';
 
-interface CartProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  cartItems?: CartItem[];
-  onRemoveItem?: (id: string) => void;
-  onUpdateQuantity?: (id: string, quantity: number) => void;
-  onClearCart?: () => void;
-}
-
-const Cart: React.FC<CartProps> = ({ 
-  isOpen, 
-  onClose, 
-  cartItems: externalCartItems, 
-  onRemoveItem, 
-  onUpdateQuantity 
-}) => {
+export function Cart() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart();
-  
-  // Use external cart items if provided, otherwise use context items
-  const displayItems = externalCartItems || items;
-  
-  // Use external handlers if provided, otherwise use context handlers
-  const handleUpdateQuantity = (id: string, quantity: number) => {
-    if (onUpdateQuantity) {
-      onUpdateQuantity(id, quantity);
-    } else {
-      updateQuantity(id, quantity);
-    }
-  };
-  
-  const handleRemoveItem = (id: string) => {
-    if (onRemoveItem) {
-      onRemoveItem(id);
-    } else {
-      removeItem(id);
-    }
-  };
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose && onClose()}>
+    <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
           <ShoppingCart className="h-5 w-5" />
-          {displayItems.length > 0 && (
+          {items.length > 0 && (
             <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
-              {displayItems.length}
+              {items.length}
             </span>
           )}
         </Button>
@@ -64,14 +28,14 @@ const Cart: React.FC<CartProps> = ({
         </SheetHeader>
         <Separator className="my-4" />
         <ScrollArea className="h-[calc(100vh-8rem)]">
-          {displayItems.length === 0 ? (
+          {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
               <ShoppingCart className="h-12 w-12 text-muted-foreground" />
               <p className="text-muted-foreground mt-2">Your cart is empty</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {displayItems.map((item) => (
+              {items.map((item) => (
                 <div key={item._id} className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>
@@ -84,7 +48,7 @@ const Cart: React.FC<CartProps> = ({
                       variant="outline"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)}
+                      onClick={() => updateQuantity(item._id, item.quantity - 1)}
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -93,7 +57,7 @@ const Cart: React.FC<CartProps> = ({
                       variant="outline"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item._id, item.quantity + 1)}
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -101,7 +65,7 @@ const Cart: React.FC<CartProps> = ({
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive"
-                      onClick={() => handleRemoveItem(item._id)}
+                      onClick={() => removeItem(item._id)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -111,7 +75,7 @@ const Cart: React.FC<CartProps> = ({
             </div>
           )}
         </ScrollArea>
-        {displayItems.length > 0 && (
+        {items.length > 0 && (
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
             <div className="flex items-center justify-between mb-4">
               <span className="font-medium">Total</span>
@@ -124,5 +88,3 @@ const Cart: React.FC<CartProps> = ({
     </Sheet>
   );
 }
-
-export default Cart;

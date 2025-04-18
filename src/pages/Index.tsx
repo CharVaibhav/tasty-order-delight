@@ -85,10 +85,10 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
               {filteredItems.map(item => (
                 <FoodCard
-                  key={item._id}
+                  key={item.id}
                   item={item}
                   onAddToCart={handleAddToCart}
-                  itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
+                  itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
                   onRemoveFromCart={removeItem}
                   onUpdateQuantity={updateQuantity}
                 />
