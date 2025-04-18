@@ -20,8 +20,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   onPriceRangeChange,
 }) => {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-3">
+    <div className="w-full space-y-6">
+      <div className="flex flex-wrap gap-3 justify-center">
         <Button
           key="all"
           variant={selectedCategory === 'all' ? 'default' : 'outline'}
@@ -50,7 +50,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
         ))}
       </div>
 
-      <div className="max-w-md">
+      <div className="w-full md:w-72 ml-auto">
         <PriceRangeSlider
           maxPrice={maxPrice}
           value={priceRange}

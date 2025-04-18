@@ -98,16 +98,22 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
 
   const content = (
     <div className="space-y-8">
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100">Categories</h2>
-        <CategorySelector 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          maxPrice={maxPrice}
-          priceRange={priceRange}
-          onPriceRangeChange={setPriceRange}
-        />
+      <div className="flex flex-col items-center mb-12">
+        <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100 text-center">Categories</h2>
+        <div className="w-full max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div className="md:flex-1">
+              <CategorySelector 
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                maxPrice={maxPrice}
+                priceRange={priceRange}
+                onPriceRangeChange={setPriceRange}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -179,8 +185,10 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
-        <p className="text-food-gray dark:text-gray-300 mb-8">Discover our delicious dishes</p>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
+          <p className="text-food-gray dark:text-gray-300">Discover our delicious dishes</p>
+        </div>
         {content}
       </div>
     </Layout>

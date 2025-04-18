@@ -67,7 +67,7 @@ const Cart: React.FC<CartProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose && onClose()}>
-      <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col h-full">
+      <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col h-full z-50">
         <SheetHeader>
           <SheetTitle className="text-xl font-bold">Your Cart</SheetTitle>
         </SheetHeader>
@@ -86,37 +86,21 @@ const Cart: React.FC<CartProps> = ({
             ) : (
               <div className="space-y-4">
                 {displayItems.map((item) => (
-                  <div key={item._id} className="flex flex-col p-4 border rounded-lg">
-                    <div className="flex items-center space-x-4 mb-2">
-                      {item.imageUrl && (
-                        <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
-                          <img
-                            src={item.imageUrl}
-                            alt={item.name}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex flex-1 items-center justify-between">
-                        <div>
-                          <h3 className="font-medium">{item.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {formatPrice(item.price)}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive hover:text-destructive/90"
-                            onClick={() => handleRemoveItem(item._id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                  <div key={item._id} className="flex flex-col p-4 border rounded-lg bg-white dark:bg-gray-800">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="font-medium">{item.name}</h3>
+                        <p className="text-sm text-gray-500">{formatPrice(item.price)}</p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => handleRemoveItem(item._id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    
                     <div className="flex items-center justify-between pl-20">
                       <div className="flex items-center space-x-2">
                         <Button
@@ -174,14 +158,12 @@ const Cart: React.FC<CartProps> = ({
               <span>{formatPrice(total)}</span>
             </div>
             <div className="space-y-2 pb-4">
-              <Link to="/checkout" className="w-full">
-                <Button 
-                  className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
-                  onClick={handleCheckout}
-                >
-                  Checkout
-                </Button>
-              </Link>
+              <Button 
+                className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
+                onClick={handleCheckout}
+              >
+                Checkout
+              </Button>
               <Button 
                 variant="outline" 
                 className="w-full"
