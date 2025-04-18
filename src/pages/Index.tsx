@@ -28,6 +28,7 @@ const Index = () => {
 
   const handleAddToCart = (item: MenuItem) => {
     addItem(item);
+    setIsCartOpen(true);
     
     toast({
       title: "Added to cart",

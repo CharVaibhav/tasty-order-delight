@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ShoppingCart, X, Trash2, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,7 @@ const Cart = ({
         onClick={onClose}
       ></div>
       
-      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out">
+      <div className="fixed inset-x-0 right-0 max-w-md w-full h-full bg-white shadow-xl flex flex-col z-50">
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center">
             <ShoppingCart className="h-5 w-5 mr-2 text-food-orange" />
@@ -151,7 +150,7 @@ const Cart = ({
                   onClick={handleProceedToCheckout}
                   className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
                 >
-                  Checkout
+                  Proceed to Checkout
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button

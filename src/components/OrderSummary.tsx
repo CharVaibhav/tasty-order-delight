@@ -74,8 +74,9 @@ const OrderSummary = ({
       setOrderNumber(order.order_id);
       setShowConfirmation(true);
       
-      // After 5 seconds, close the cart
+      // After successful order
       setTimeout(() => {
+        setShowConfirmation(false);
         onOrderComplete();
       }, 5000);
     } catch (error) {
