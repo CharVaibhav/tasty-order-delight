@@ -6,6 +6,7 @@ export interface MenuItem {
   category: string;
   imageUrl: string;
   isAvailable: boolean;
+  popular?: boolean;
 }
 
 export interface CartItem extends MenuItem {
