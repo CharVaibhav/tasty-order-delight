@@ -4,6 +4,7 @@ import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import Cart from '@/components/Cart';
+import SearchBar from '@/components/SearchBar';
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -14,14 +15,16 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filteredItems, setFilteredItems] = useState<MenuItem[]>(menuItems);
+  const [searchTerm, setSearchTerm] = useState('');
   const { items: cartItems, addItem, removeItem, updateQuantity, clearCart } = useCart();
   const { toast } = useToast();
 
-  // Filter menu items when category changes
+  // Filter menu items when category or search term changes
   useEffect(() => {
-    if (selectedCategory === 'all') {
-      setFilteredItems(menuItems);
-    } else {
+    let filtered = menuItems;
+
+    // Apply category filter
+    if (selectedCategory !== 'all') {
       const categoryMap: Record<string, string> = {
         'appetizers': 'Appetizers',
         'main-dishes': 'Main Courses',
@@ -31,9 +34,21 @@ const Index = () => {
       };
       
       const categoryToFilter = categoryMap[selectedCategory];
-      setFilteredItems(menuItems.filter(item => item.category === categoryToFilter));
+      filtered = filtered.filter(item => item.category === categoryToFilter);
     }
-  }, [selectedCategory]);
+
+    // Apply search filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(searchLower) ||
+        item.description.toLowerCase().includes(searchLower) ||
+        item.category.toLowerCase().includes(searchLower)
+      );
+    }
+
+    setFilteredItems(filtered);
+  }, [selectedCategory, searchTerm]);
 
   const handleAddToCart = (item: MenuItem) => {
     addItem(item);
@@ -68,23 +83,48 @@ const Index = () => {
 
         <Separator className="my-8" />
 
-        <CategorySelector 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {filteredItems.map(item => (
-            <FoodCard
-              key={item._id}
-              item={item}
-              onAddToCart={handleAddToCart}
-              itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
-              onRemoveFromCart={removeItem}
-              onUpdateQuantity={updateQuantity}
+        <div className="flex flex-col md:flex-row gap-4 items-start mb-8">
+          <div className="w-full md:w-64">
+            <CategorySelector 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
             />
-          ))}
+          </div>
+          <div className="flex-1">
+            <SearchBar 
+              onSearch={setSearchTerm}
+              className="mb-6"
+              placeholder="Search by name, description, or category..."
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredItems.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500">No dishes found matching your criteria.</p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSelectedCategory('all');
+                    }}
+                    className="text-food-orange hover:underline mt-2"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              ) : (
+                filteredItems.map(item => (
+                  <FoodCard
+                    key={item._id}
+                    item={item}
+                    onAddToCart={handleAddToCart}
+                    itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
+                    onRemoveFromCart={removeItem}
+                    onUpdateQuantity={updateQuantity}
+                  />
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

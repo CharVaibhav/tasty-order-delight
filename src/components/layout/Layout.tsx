@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bowl } from 'lucide-react';
+import { Soup } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
+import Marquee from 'react-fast-marquee';
 
 interface LayoutProps {
   children: ReactNode;
@@ -46,7 +47,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               Contact
             </Link>
             <Link to="/cart" className="relative hover:text-food-cream transition-colors">
-              <Bowl className="h-6 w-6" />
+              <Soup className="h-6 w-6" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium">
                   {totalItems}
@@ -54,6 +55,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
             </Link>
           </nav>
+        </div>
+        <div className="bg-food-orange-dark py-2">
+          <Marquee
+            gradient={false}
+            speed={40}
+            pauseOnHover={true}
+          >
+            <div className="flex items-center space-x-8">
+              <span className="text-xl font-semibold">🎉 50% OFF on your first 5 orders! 🎉</span>
+              <span className="text-xl">|</span>
+              <span className="text-xl font-semibold">Limited time offer - Order now!</span>
+              <span className="text-xl">|</span>
+              <span className="text-xl font-semibold">Use code: FIRST50 at checkout</span>
+              <span className="text-xl">|</span>
+              <span className="text-xl font-semibold">🎉 50% OFF on your first 5 orders! 🎉</span>
+            </div>
+          </Marquee>
         </div>
       </header>
 
