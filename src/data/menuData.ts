@@ -1,3 +1,18 @@
+import { dishImages } from '@/lib/constants/images';
+import burgerImg from '@/assets/images/dishes/burger.jpg';
+import pizzaMargheritaImg from '@/assets/images/dishes/pizza-margherita.jpg';
+import pastaImg from '@/assets/images/dishes/pasta.jpg';
+import sushiImg from '@/assets/images/dishes/sushi.jpg';
+import pizzaPepperoniImg from '@/assets/images/dishes/pizza-pepperoni.jpg';
+import steakImg from '@/assets/images/dishes/steak.jpg';
+import caesarSaladImg from '@/assets/images/dishes/caesar-salad.jpg';
+import dessertImg from '@/assets/images/dishes/dessert.jpg';
+import dalMakhaniImg from '@/assets/images/dishes/dal-makhani.jpg';
+import rasmalaiImg from '@/assets/images/dishes/rasmalai.jpg';
+import gulabJamunImg from '@/assets/images/dishes/gulab-jamun.jpg';
+import mangoLassiImg from '@/assets/images/dishes/mango-lassi.jpg';
+import samosaImg from '@/assets/images/dishes/samosa.jpg';
+import masalaDosaImg from '@/assets/images/dishes/masala-dosa.jpg';
 
 export interface MenuItem {
   _id: string;
@@ -7,6 +22,7 @@ export interface MenuItem {
   category: string;
   imageUrl: string;
   isAvailable: boolean;
+  popular?: boolean;
 }
 
 export interface CartItem extends MenuItem {
@@ -34,7 +50,7 @@ export const menuItems: MenuItem[] = [
     name: "Butter Chicken",
     description: "Tender chicken pieces in rich, creamy tomato gravy with butter and spices",
     price: 399,
-    imageUrl: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?q=80&w=500&auto=format&fit=crop",
+    imageUrl: steakImg,
     category: "Main Courses",
     isAvailable: true,
   },
@@ -43,7 +59,7 @@ export const menuItems: MenuItem[] = [
     name: "Paneer Tikka",
     description: "Grilled cottage cheese marinated in spiced yogurt with bell peppers and onions",
     price: 299,
-    imageUrl: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=500&auto=format&fit=crop",
+    imageUrl: caesarSaladImg,
     category: "Appetizers",
     isAvailable: true,
   },
@@ -52,7 +68,7 @@ export const menuItems: MenuItem[] = [
     name: "Masala Dosa",
     description: "Crispy rice crepe filled with spiced potato filling, served with sambar and chutney",
     price: 199,
-    imageUrl: "https://images.unsplash.com/photo-1610192244261-3f33de3f48e1?q=80&w=500&auto=format&fit=crop",
+    imageUrl: masalaDosaImg,
     category: "Main Courses",
     isAvailable: true,
   },
@@ -61,7 +77,7 @@ export const menuItems: MenuItem[] = [
     name: "Chicken Biryani",
     description: "Fragrant basmati rice cooked with tender chicken and aromatic spices",
     price: 349,
-    imageUrl: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=500&auto=format&fit=crop",
+    imageUrl: pastaImg,
     category: "Main Courses",
     isAvailable: true,
   },
@@ -70,7 +86,7 @@ export const menuItems: MenuItem[] = [
     name: "Garlic Naan",
     description: "Fresh baked Indian bread with garlic and butter",
     price: 79,
-    imageUrl: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=500&auto=format&fit=crop",
+    imageUrl: pizzaMargheritaImg,
     category: "Sides",
     isAvailable: true,
   },
@@ -79,7 +95,7 @@ export const menuItems: MenuItem[] = [
     name: "Samosa",
     description: "Crispy pastry filled with spiced potatoes and peas",
     price: 89,
-    imageUrl: "https://images.unsplash.com/photo-1601050690717-94e538277055?q=80&w=500&auto=format&fit=crop",
+    imageUrl: samosaImg,
     category: "Appetizers",
     isAvailable: true,
   },
@@ -88,7 +104,7 @@ export const menuItems: MenuItem[] = [
     name: "Gulab Jamun",
     description: "Sweet milk dough balls soaked in sugar syrup",
     price: 149,
-    imageUrl: "https://images.unsplash.com/photo-1615832494223-d0d99bde396b?q=80&w=500&auto=format&fit=crop",
+    imageUrl: gulabJamunImg,
     category: "Desserts",
     isAvailable: true,
   },
@@ -97,7 +113,7 @@ export const menuItems: MenuItem[] = [
     name: "Mango Lassi",
     description: "Refreshing yogurt drink blended with sweet mango pulp",
     price: 129,
-    imageUrl: "https://images.unsplash.com/photo-1559855190-b19370f00e34?q=80&w=500&auto=format&fit=crop",
+    imageUrl: mangoLassiImg,
     category: "Drinks",
     isAvailable: true,
   },
@@ -106,7 +122,7 @@ export const menuItems: MenuItem[] = [
     name: "Dal Makhani",
     description: "Creamy black lentils simmered overnight with butter and spices",
     price: 249,
-    imageUrl: "https://images.unsplash.com/photo-1628294895950-9805252327bc?q=80&w=500&auto=format&fit=crop",
+    imageUrl: dalMakhaniImg,
     category: "Main Courses",
     isAvailable: true,
   },
@@ -115,7 +131,7 @@ export const menuItems: MenuItem[] = [
     name: "Rasmalai",
     description: "Soft cottage cheese dumplings in saffron-flavored milk",
     price: 179,
-    imageUrl: "https://images.unsplash.com/photo-1631452180539-96aca7d48617?q=80&w=500&auto=format&fit=crop",
+    imageUrl: rasmalaiImg,
     category: "Desserts",
     isAvailable: true,
   },
@@ -124,7 +140,7 @@ export const menuItems: MenuItem[] = [
     name: "Masala Chai",
     description: "Traditional Indian spiced tea with milk",
     price: 89,
-    imageUrl: "https://images.unsplash.com/photo-1561336526-2914f13ceb36?q=80&w=500&auto=format&fit=crop",
+    imageUrl: dessertImg,
     category: "Drinks",
     isAvailable: true,
   }
