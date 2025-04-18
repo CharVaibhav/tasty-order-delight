@@ -4,7 +4,7 @@ import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import Cart from '@/components/Cart';
-import SearchBar from '@/components/SearchBar';
+import CouponInput from '@/components/CouponInput';
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -16,6 +16,7 @@ const Index = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filteredItems, setFilteredItems] = useState<MenuItem[]>(menuItems);
   const [searchTerm, setSearchTerm] = useState('');
+  const [discount, setDiscount] = useState(0);
   const { items: cartItems, addItem, removeItem, updateQuantity, clearCart } = useCart();
   const { toast } = useToast();
 
@@ -61,6 +62,10 @@ const Index = () => {
     });
   };
 
+  const handleApplyCoupon = (discountValue: number) => {
+    setDiscount(discountValue);
+  };
+
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
@@ -83,47 +88,42 @@ const Index = () => {
 
         <Separator className="my-8" />
 
-        <div className="flex flex-col md:flex-row gap-4 items-start mb-8">
-          <div className="w-full md:w-64">
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6">
             <CategorySelector 
               categories={categories}
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
             />
+            <CouponInput onApplyCoupon={handleApplyCoupon} />
           </div>
-          <div className="flex-1">
-            <SearchBar 
-              onSearch={setSearchTerm}
-              className="mb-6"
-              placeholder="Search by name, description, or category..."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredItems.length === 0 ? (
-                <div className="col-span-full text-center py-8">
-                  <p className="text-gray-500">No dishes found matching your criteria.</p>
-                  <button
-                    onClick={() => {
-                      setSearchTerm('');
-                      setSelectedCategory('all');
-                    }}
-                    className="text-food-orange hover:underline mt-2"
-                  >
-                    Clear filters
-                  </button>
-                </div>
-              ) : (
-                filteredItems.map(item => (
-                  <FoodCard
-                    key={item._id}
-                    item={item}
-                    onAddToCart={handleAddToCart}
-                    itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
-                    onRemoveFromCart={removeItem}
-                    onUpdateQuantity={updateQuantity}
-                  />
-                ))
-              )}
-            </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredItems.length === 0 ? (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">No dishes found matching your criteria.</p>
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('all');
+                  }}
+                  className="text-food-orange hover:underline mt-2"
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              filteredItems.map(item => (
+                <FoodCard
+                  key={item._id}
+                  item={item}
+                  onAddToCart={handleAddToCart}
+                  itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
+                  onRemoveFromCart={removeItem}
+                  onUpdateQuantity={updateQuantity}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -135,6 +135,7 @@ const Index = () => {
         onRemoveItem={removeItem}
         onUpdateQuantity={updateQuantity}
         onClearCart={clearCart}
+        discount={discount}
       />
     </Layout>
   );
