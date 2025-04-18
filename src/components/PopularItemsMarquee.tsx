@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import FoodCard from './FoodCard';
-import { CartItem } from '@/data/menuData';
+import { MenuItem, CartItem } from '@/data/menuData';
 
 interface PopularItemsMarqueeProps {
-  items: CartItem[];
-  onAddToCart: (item: CartItem) => void;
+  items: MenuItem[];
+  onAddToCart: (item: MenuItem) => void;
   onRemoveFromCart: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   cartItems: CartItem[];
@@ -23,7 +23,7 @@ const PopularItemsMarquee: React.FC<PopularItemsMarqueeProps> = ({
   const popularItemsByCategory = categories.map(category => {
     const categoryItems = items.filter(item => item.category === category);
     return categoryItems.length > 0 ? categoryItems[0] : null;
-  }).filter(Boolean) as CartItem[];
+  }).filter(Boolean) as MenuItem[];
 
   return (
     <div className="overflow-hidden py-6 bg-food-orange/5">

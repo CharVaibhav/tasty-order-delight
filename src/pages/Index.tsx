@@ -4,7 +4,7 @@ import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import Cart from '@/components/Cart';
-import { categories, menuItems, CartItem } from '@/data/menuData';
+import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
@@ -12,7 +12,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [filteredItems, setFilteredItems] = useState(menuItems);
+  const [filteredItems, setFilteredItems] = useState<MenuItem[]>(menuItems);
 
   // Filter menu items when category changes
   useEffect(() => {
@@ -23,7 +23,7 @@ const Index = () => {
     }
   }, [selectedCategory]);
 
-  const handleAddToCart = (item: CartItem) => {
+  const handleAddToCart = (item: MenuItem) => {
     setCartItems(prev => {
       const existingItem = prev.find(cartItem => cartItem.id === item.id);
       if (existingItem) {
@@ -33,7 +33,7 @@ const Index = () => {
             : cartItem
         );
       }
-      return [...prev, item];
+      return [...prev, { ...item, quantity: 1 }];
     });
   };
 
@@ -83,7 +83,7 @@ const Index = () => {
           <h2 className="text-2xl font-bold text-food-gray-dark">Popular Items</h2>
         </div>
         <PopularItemsMarquee
-          items={menuItems}
+          items={menuItems.filter(item => item.popular)}
           onAddToCart={handleAddToCart}
           onRemoveFromCart={handleRemoveFromCart}
           onUpdateQuantity={handleUpdateQuantity}
@@ -148,7 +148,7 @@ const Index = () => {
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
         onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onClearCart={handleClearCart}
