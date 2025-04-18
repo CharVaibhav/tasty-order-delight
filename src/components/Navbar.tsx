@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { Bowl, Menu, X } from 'lucide-react'; // Replace ShoppingCart with Bowl
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CartItem } from '@/data/menuData';
@@ -59,7 +59,7 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
               variant="outline" 
               className="relative border-food-orange text-food-orange hover:bg-food-orange hover:text-white transition-all"
             >
-              <ShoppingCart className="h-5 w-5 mr-2" />
+              <Bowl className="h-5 w-5 mr-2" />
               <span>Cart</span>
               {totalItems > 0 && (
                 <Badge 
@@ -73,25 +73,26 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
           </div>
           
           {/* Mobile Menu Button and Cart */}
-          <div className="md:hidden flex items-center">
-            <Button 
-              onClick={toggleCart}
-              variant="outline" 
-              className="relative mr-2 border-food-orange text-food-orange"
-              size="sm"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <Badge 
-                  className={`absolute -top-2 -right-2 bg-food-orange text-white 
-                    ${cartItems.length > 0 ? 'animate-cart-bounce' : ''}`}
-                >
-                  {totalItems}
-                </Badge>
-              )}
-            </Button>
-            
-            {/* Mobile Menu Toggle */}
+
+        <div className="md:hidden flex items-center">
+          <Button 
+            onClick={toggleCart}
+            variant="outline" 
+            className="relative mr-2 border-food-orange text-food-orange"
+            size="sm"
+          >
+            <Bowl className="h-5 w-5" /> {/* Updated icon */}
+            {totalItems > 0 && (
+              <Badge 
+                className={`absolute -top-2 -right-2 bg-food-orange text-white 
+                  ${cartItems.length > 0 ? 'animate-cart-bounce' : ''}`}
+              >
+                {totalItems}
+              </Badge>
+            )}
+          </Button>
+          
+          {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="sm"

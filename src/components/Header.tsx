@@ -1,7 +1,7 @@
 import React from 'react';
 import Marquee from 'react-fast-marquee';
 import { Link } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
+import { Bowl } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 
 const Header: React.FC = () => {
@@ -45,7 +45,7 @@ const Header: React.FC = () => {
 
           {/* Cart Icon */}
           <Link to="/cart" className="relative">
-            <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-orange-600" />
+            <Bowl className="h-6 w-6 text-gray-700 hover:text-orange-600" />
             {cartItemCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {cartItemCount}
@@ -58,4 +58,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header; 
+export default Header;
