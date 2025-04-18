@@ -159,7 +159,7 @@ const OrderSummary = ({
             <h3 className="text-lg font-medium mb-3">Order Summary</h3>
             <div className="bg-gray-50 rounded-lg p-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="flex justify-between py-2">
+                <div key={item._id} className="flex justify-between py-2">
                   <span className="text-gray-600">
                     {item.quantity} × {item.name}
                   </span>
