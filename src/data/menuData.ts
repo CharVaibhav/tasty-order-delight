@@ -7,11 +7,11 @@ import pizzaPepperoniImg from '@/assets/images/dishes/pizza-pepperoni.jpg';
 import steakImg from '@/assets/images/dishes/steak.jpg';
 import caesarSaladImg from '@/assets/images/dishes/caesar-salad.jpg';
 import dessertImg from '@/assets/images/dishes/dessert.jpg';
-import dalMakhaniImg from '@/assets/images/dishes/dal-makhani.jpg';
-import rasmalaiImg from '@/assets/images/dishes/rasmalai.jpg';
-import gulabJamunImg from '@/assets/images/dishes/gulab-jamun.jpg';
+import dalMakhaniImg from '@/assets/images/dishes/Dal-Makhani-Blog.jpg';
+import rasmalaiImg from '@/assets/images/dishes/Rasmalai-recipe@palates-desire.jpg';
+import gulabJamunImg from '@/assets/images/dishes/gulabjamun.jpeg';
 import mangoLassiImg from '@/assets/images/dishes/mango-lassi.jpg';
-import samosaImg from '@/assets/images/dishes/samosa.jpg';
+import samosaImg from '@/assets/images/dishes/Samosas-with-Potatoes-and-Peas-2-1.jpg';
 import masalaDosaImg from '@/assets/images/dishes/masala-dosa.jpg';
 
 export interface MenuItem {
@@ -68,7 +68,7 @@ export const menuItems: MenuItem[] = [
     name: "Masala Dosa",
     description: "Crispy rice crepe filled with spiced potato filling, served with sambar and chutney",
     price: 199,
-    imageUrl: masalaDosaImg,
+    imageUrl: pizzaPepperoniImg,
     category: "Main Courses",
     isAvailable: true,
   },
