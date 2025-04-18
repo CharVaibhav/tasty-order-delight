@@ -51,39 +51,10 @@ const OrderSummary = ({
       });
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      const order = await api.createOrder(
-        {
-          customerId,
-          firstName: name.split(' ')[0],
-          lastName: name.split(' ').slice(1).join(' '),
-          email: '', // Optional
-          phone,
-          address,
-        },
-        cartItems.map(item => ({
-          productId: item._id,
-          productName: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        }))
-      );
-
-      if (!order || !order.order_id) {
-        throw new Error('Invalid order response from server');
-      }
-
-      setOrderNumber(order.order_id);
-      setShowConfirmation(true);
-      
-      setTimeout(() => {
-        setShowConfirmation(false);
-        onOrderComplete();
-      }, 5000);
-
       // Navigate to payment page with order details
       navigate('/payment', {
         state: {
@@ -102,13 +73,12 @@ const OrderSummary = ({
         }
       });
     } catch (error) {
-      console.error('Order creation error:', error);
+      console.error('Navigation error:', error);
       toast({
-        title: "Failed to place order",
-        description: error instanceof Error ? error.message : "Please check your connection and try again",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -213,7 +183,7 @@ const OrderSummary = ({
             className="w-full bg-food-orange hover:bg-food-orange-dark text-white h-12"
             disabled={!isFormValid || isSubmitting}
           >
-            {isSubmitting ? 'Processing...' : `Pay ${formatPrice(total)}`}
+            {isSubmitting ? 'Processing...' : `Continue to Payment`}
           </Button>
           <Button
             type="button"
@@ -226,21 +196,6 @@ const OrderSummary = ({
           </Button>
         </div>
       </form>
-
-      <OrderConfirmation
-        isOpen={showConfirmation}
-        onClose={() => setShowConfirmation(false)}
-        orderNumber={orderNumber}
-        items={cartItems}
-        subtotal={subtotal}
-        tax={tax}
-        deliveryFee={deliveryFee}
-        total={total}
-        customerName={name}
-        customerPhone={phone}
-        customerAddress={address}
-        notes={notes}
-      />
     </>
   );
 };

@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { OrderConfirmation } from '@/components/OrderConfirmation';
+import { api } from '@/lib/api/api';
+import { useCart } from '@/lib/context/CartContext';
+import { formatPrice } from '@/utils/formatters';
 
 interface PaymentFormData {
   cardNumber: string;
@@ -20,8 +23,11 @@ export const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { clearCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod'>('card');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
   const [formData, setFormData] = useState<PaymentFormData>({
     cardNumber: '',
     cardHolder: '',
@@ -44,24 +50,73 @@ export const PaymentPage: React.FC = () => {
     }));
   };
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simulate payment processing
-    setTimeout(() => {
-      setShowConfirmation(true);
-    }, 1500);
+    setIsProcessing(true);
 
-    toast({
-      title: "Processing payment...",
-      description: "Please wait while we process your payment.",
-    });
+    try {
+      toast({
+        title: "Processing payment...",
+        description: "Please wait while we process your order.",
+      });
+
+      // Create the order
+      const order = await api.createOrder(
+        {
+          customerId: orderDetails.customerId,
+          firstName: orderDetails.customerName.split(' ')[0],
+          lastName: orderDetails.customerName.split(' ').slice(1).join(' '),
+          email: '', // Optional
+          phone: orderDetails.customerPhone,
+          address: orderDetails.customerAddress,
+        },
+        orderDetails.items.map(item => ({
+          productId: item._id,
+          productName: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        }))
+      );
+
+      if (!order || !order.order_id) {
+        throw new Error('Invalid order response from server');
+      }
+
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Show success message
+      toast({
+        title: "Order placed successfully!",
+        description: "Your order has been confirmed.",
+      });
+
+      setOrderNumber(order.order_id);
+      setShowConfirmation(true);
+      clearCart(); // Clear the cart after successful order
+
+    } catch (error) {
+      console.error('Payment/Order error:', error);
+      toast({
+        title: "Failed to place order",
+        description: error instanceof Error ? error.message : "Please try again later",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
   };
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
     navigate('/');
   };
+
+  const isFormValid = paymentMethod === 'cod' || (
+    formData.cardNumber.trim() !== '' &&
+    formData.cardHolder.trim() !== '' &&
+    formData.expiryDate.trim() !== '' &&
+    formData.cvv.trim() !== ''
+  );
 
   return (
     <Layout>
@@ -139,8 +194,12 @@ export const PaymentPage: React.FC = () => {
               )}
 
               <div className="mt-6">
-                <Button type="submit" className="w-full">
-                  {paymentMethod === 'card' ? 'Pay Now' : 'Place Order'}
+                <Button 
+                  type="submit" 
+                  className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
+                  disabled={!isFormValid || isProcessing}
+                >
+                  {isProcessing ? 'Processing...' : paymentMethod === 'card' ? `Pay ${formatPrice(orderDetails.total)}` : 'Place Order'}
                 </Button>
               </div>
             </form>
@@ -151,7 +210,7 @@ export const PaymentPage: React.FC = () => {
           <OrderConfirmation
             isOpen={showConfirmation}
             onClose={handleConfirmationClose}
-            orderNumber={String(Math.floor(Math.random() * 1000000))}
+            orderNumber={orderNumber}
             items={orderDetails.items}
             subtotal={orderDetails.subtotal}
             tax={orderDetails.tax}
