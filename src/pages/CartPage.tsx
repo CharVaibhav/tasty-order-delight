@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useCart } from '@/lib/context/CartContext';
@@ -61,7 +62,7 @@ export const CartPage: React.FC = () => {
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 space-y-4">
             {items.map(item => (
-              <Card key={item.id}>
+              <Card key={item._id}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
@@ -74,7 +75,7 @@ export const CartPage: React.FC = () => {
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
                           className="h-8 w-8"
                         >
                           <Minus className="h-4 w-4" />
@@ -85,7 +86,7 @@ export const CartPage: React.FC = () => {
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
                           className="h-8 w-8"
                         >
                           <Plus className="h-4 w-4" />
@@ -95,7 +96,7 @@ export const CartPage: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item._id)}
                         className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -153,4 +154,4 @@ export const CartPage: React.FC = () => {
       </div>
     </Layout>
   );
-}; 
+};

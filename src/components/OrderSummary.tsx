@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ const OrderSummary = ({
           address,
         },
         cartItems.map(item => ({
-          productId: item.id,
+          productId: item._id,
           productName: item.name,
           quantity: item.quantity,
           price: item.price,

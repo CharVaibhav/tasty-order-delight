@@ -8,11 +8,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 
-export function Cart() {
+interface CartProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  cartItems?: any[];
+  onRemoveItem?: (id: string) => void;
+  onUpdateQuantity?: (id: string, quantity: number) => void;
+  onClearCart?: () => void;
+}
+
+export function Cart(props: CartProps) {
   const { items, updateQuantity, removeItem, totalPrice } = useCart();
 
   return (
-    <Sheet>
+    <Sheet open={props.isOpen} onOpenChange={props.onClose}>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
           <ShoppingCart className="h-5 w-5" />

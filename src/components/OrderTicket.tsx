@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CartItem } from '@/data/menuData';
@@ -63,7 +64,7 @@ export const OrderTicket: React.FC<OrderTicketProps> = ({
         <div>
           <div className="font-bold mb-1">Order Items:</div>
           {items.map((item) => (
-            <div key={item.id} className="flex justify-between">
+            <div key={item._id} className="flex justify-between">
               <span>{item.quantity}x {item.name}</span>
               <span>${(item.price * item.quantity).toFixed(2)}</span>
             </div>
@@ -103,4 +104,4 @@ export const OrderTicket: React.FC<OrderTicketProps> = ({
       </CardContent>
     </Card>
   );
-}; 
+};

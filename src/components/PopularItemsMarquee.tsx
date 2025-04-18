@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import FoodCard from './FoodCard';
@@ -27,13 +28,13 @@ const PopularItemsMarquee: React.FC<PopularItemsMarqueeProps> = ({
       <div className="flex space-x-6 animate-scroll">
         {[...items, ...items].map((item, index) => (
           <div 
-            key={`${item.id}-${index}`} 
+            key={`${item._id}-${index}`} 
             className="flex-shrink-0 w-72"
           >
             <FoodCard
               item={item}
               onAddToCart={onAddToCart}
-              itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
+              itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
               onRemoveFromCart={onRemoveFromCart}
               onUpdateQuantity={onUpdateQuantity}
             />
@@ -44,4 +45,4 @@ const PopularItemsMarquee: React.FC<PopularItemsMarqueeProps> = ({
   );
 };
 
-export default PopularItemsMarquee; 
+export default PopularItemsMarquee;

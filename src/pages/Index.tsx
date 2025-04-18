@@ -4,7 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
-import { Cart } from '@/components/Cart';  // Change to named import
+import Cart from '@/components/Cart';
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -66,7 +66,7 @@ const Index = () => {
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-food-gray-dark mb-6">Popular Items</h2>
             <PopularItemsMarquee
-              items={menuItems.filter(item => item.popular)}
+              items={menuItems.filter(item => item.category === "Main Courses")}
               onAddToCart={handleAddToCart}
               onRemoveFromCart={removeItem}
               onUpdateQuantity={updateQuantity}
@@ -86,10 +86,10 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
               {filteredItems.map(item => (
                 <FoodCard
-                  key={item.id}
+                  key={item._id}
                   item={item}
                   onAddToCart={handleAddToCart}
-                  itemInCart={cartItems.find(cartItem => cartItem.id === item.id)}
+                  itemInCart={cartItems.find(cartItem => cartItem._id === item._id)}
                   onRemoveFromCart={removeItem}
                   onUpdateQuantity={updateQuantity}
                 />
@@ -97,16 +97,6 @@ const Index = () => {
             </div>
           </div>
         </div>
-
-        {/* Cart Sidebar */}
-        <Cart
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-          onRemoveItem={removeItem}
-          onUpdateQuantity={updateQuantity}
-          onClearCart={clearCart}
-        />
       </div>
     </Layout>
   );

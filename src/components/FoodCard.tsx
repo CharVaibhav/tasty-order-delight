@@ -38,7 +38,7 @@ const FoodCard = ({
 
   const handleIncreaseQuantity = () => {
     if (itemInCart && onUpdateQuantity) {
-      onUpdateQuantity(item.id, itemInCart.quantity + 1);
+      onUpdateQuantity(item._id, itemInCart.quantity + 1);
     } else {
       handleAddToCart();
     }
@@ -46,9 +46,9 @@ const FoodCard = ({
 
   const handleDecreaseQuantity = () => {
     if (itemInCart && onUpdateQuantity && itemInCart.quantity > 1) {
-      onUpdateQuantity(item.id, itemInCart.quantity - 1);
+      onUpdateQuantity(item._id, itemInCart.quantity - 1);
     } else if (itemInCart && onRemoveFromCart) {
-      onRemoveFromCart(item.id);
+      onRemoveFromCart(item._id);
     }
   };
 
@@ -56,11 +56,11 @@ const FoodCard = ({
     <div className="food-card-shadow bg-white rounded-lg overflow-hidden flex flex-col">
       <div className="h-48 overflow-hidden relative">
         <img 
-          src={item.image} 
+          src={item.imageUrl} 
           alt={item.name} 
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
         />
-        {item.popular && (
+        {item.category === "Main Courses" && (
           <Badge className="absolute top-2 right-2 bg-food-orange text-white border-none">
             Popular
           </Badge>
@@ -73,12 +73,12 @@ const FoodCard = ({
         </div>
         <p className="text-gray-500 text-sm mb-4 flex-grow">{item.description}</p>
         <div className="flex mt-auto">
-          {item.vegetarian && (
+          {item.category === "Appetizers" && (
             <Badge variant="outline" className="mr-1 text-xs border-food-green text-food-green">
               Vegetarian
             </Badge>
           )}
-          {item.spicy && (
+          {item.category === "Main Courses" && (
             <Badge variant="outline" className="mr-1 text-xs border-food-red text-food-red">
               Spicy
             </Badge>
