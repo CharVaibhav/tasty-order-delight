@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { CartItem } from '@/data/menuData';
+import { useNavigate } from 'react-router-dom';
 
 interface CartProps {
   isOpen?: boolean;
@@ -26,6 +27,7 @@ const Cart: React.FC<CartProps> = ({
   onClearCart 
 }) => {
   const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const navigate = useNavigate();
   
   // Use external cart items if provided, otherwise use context items
   const displayItems = externalCartItems || items;
@@ -47,14 +49,21 @@ const Cart: React.FC<CartProps> = ({
     }
   };
 
+  const handleCheckout = () => {
+    if (onClose) {
+      onClose();
+    }
+    navigate('/checkout');
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose && onClose()}>
-      <SheetContent>
+      <SheetContent side="right" className="w-full sm:w-[400px]">
         <SheetHeader>
-          <SheetTitle>Your Cart</SheetTitle>
+          <SheetTitle className="text-xl font-bold">Your Cart</SheetTitle>
         </SheetHeader>
         <Separator className="my-4" />
-        <ScrollArea className="h-[calc(100vh-8rem)]">
+        <ScrollArea className="h-[calc(100vh-12rem)] pr-4">
           {displayItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
               <ShoppingCart className="h-12 w-12 text-muted-foreground" />
@@ -63,57 +72,84 @@ const Cart: React.FC<CartProps> = ({
           ) : (
             <div className="space-y-4">
               {displayItems.map((item) => (
-                <div key={item._id} className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {formatPrice(item.price)}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
+                <div key={item._id} className="flex flex-col p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex-1">
+                      <h3 className="font-medium">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {formatPrice(item.price)}
+                      </p>
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-destructive"
+                      className="h-8 w-8 text-destructive hover:text-destructive/90"
                       onClick={() => handleRemoveItem(item._id)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-food-orange text-food-orange hover:bg-food-orange hover:text-white"
+                        onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-8 text-center">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-food-orange text-food-orange hover:bg-food-orange hover:text-white"
+                        onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <span className="font-medium">
+                      {formatPrice(item.price * item.quantity)}
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </ScrollArea>
+        
         {displayItems.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-medium">Total</span>
-              <span className="font-medium">{formatPrice(totalPrice)}</span>
+          <div className="border-t pt-4 mt-4 space-y-4">
+            <div className="flex items-center justify-between font-medium">
+              <span>Total</span>
+              <span>{formatPrice(totalPrice)}</span>
             </div>
-            <Button className="w-full">Checkout</Button>
+            <div className="space-y-2">
+              <Button 
+                className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
+                onClick={handleCheckout}
+              >
+                Checkout
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  if (onClearCart) {
+                    onClearCart();
+                  }
+                }}
+              >
+                Clear Cart
+              </Button>
+            </div>
           </div>
         )}
       </SheetContent>
     </Sheet>
   );
-}
+};
 
 export default Cart;
