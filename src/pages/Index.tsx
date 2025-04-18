@@ -4,7 +4,6 @@ import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import Cart from '@/components/Cart';
-import CouponInput from '@/components/CouponInput';
 import { categories, menuItems, CartItem, MenuItem } from '@/data/menuData';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -89,14 +88,11 @@ const Index = () => {
         <Separator className="my-8" />
 
         <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6">
-            <CategorySelector 
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-            />
-            <CouponInput onApplyCoupon={handleApplyCoupon} />
-          </div>
+          <CategorySelector 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredItems.length === 0 ? (
@@ -136,6 +132,7 @@ const Index = () => {
         onUpdateQuantity={updateQuantity}
         onClearCart={clearCart}
         discount={discount}
+        onApplyCoupon={handleApplyCoupon}
       />
     </Layout>
   );
