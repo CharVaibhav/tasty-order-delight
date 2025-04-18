@@ -43,7 +43,7 @@ export const menuItems: MenuItem[] = [
     description: 'Fresh tomatoes, mozzarella, basil, and olive oil',
     price: 14.99,
     category: 'Main Courses',
-    imageUrl: '/images/dishes/margherita-pizza.jpg',
+    imageUrl: pizzaMargheritaImg,
     isAvailable: true,
   },
   {
@@ -52,7 +52,7 @@ export const menuItems: MenuItem[] = [
     description: 'Crisp romaine lettuce, grilled chicken, parmesan, and Caesar dressing',
     price: 12.99,
     category: 'Appetizers',
-    imageUrl: '/images/dishes/caesar-salad.jpg',
+    imageUrl: caesarSaladImg,
     isAvailable: true,
   },
   {
@@ -61,7 +61,7 @@ export const menuItems: MenuItem[] = [
     description: 'Pasta with creamy egg sauce, pancetta, and pecorino cheese',
     price: 16.99,
     category: 'Main Courses',
-    imageUrl: '/images/dishes/carbonara.jpg',
+    imageUrl: pastaImg,
     isAvailable: true,
   },
   {
@@ -70,7 +70,7 @@ export const menuItems: MenuItem[] = [
     description: 'Toasted bread with garlic butter and herbs',
     price: 5.99,
     category: 'Sides',
-    imageUrl: '/images/dishes/garlic-bread.jpg',
+    imageUrl: burgerImg,
     isAvailable: true,
   },
   {
@@ -79,7 +79,7 @@ export const menuItems: MenuItem[] = [
     description: 'Classic Italian dessert with coffee-soaked ladyfingers and mascarpone cream',
     price: 8.99,
     category: 'Desserts',
-    imageUrl: '/images/dishes/tiramisu.jpg',
+    imageUrl: dessertImg,
     isAvailable: true,
   },
   {
@@ -88,7 +88,7 @@ export const menuItems: MenuItem[] = [
     description: 'Premium red wine from Italian vineyards',
     price: 29.99,
     category: 'Drinks',
-    imageUrl: '/images/dishes/red-wine.jpg',
+    imageUrl: mangoLassiImg,
     isAvailable: true,
   },
   {
@@ -97,7 +97,7 @@ export const menuItems: MenuItem[] = [
     description: 'Toasted bread topped with tomatoes, garlic, and fresh basil',
     price: 9.99,
     category: 'Appetizers',
-    imageUrl: '/images/dishes/bruschetta.jpg',
+    imageUrl: samosaImg,
     isAvailable: true,
   },
   {
@@ -106,7 +106,7 @@ export const menuItems: MenuItem[] = [
     description: 'Fresh salmon fillet with lemon herb butter',
     price: 24.99,
     category: 'Main Courses',
-    imageUrl: '/images/dishes/grilled-salmon.jpg',
+    imageUrl: steakImg,
     isAvailable: true,
   },
   {
@@ -115,7 +115,7 @@ export const menuItems: MenuItem[] = [
     description: 'Warm chocolate cake with a molten center',
     price: 9.99,
     category: 'Desserts',
-    imageUrl: '/images/dishes/chocolate-lava-cake.jpg',
+    imageUrl: gulabJamunImg,
     isAvailable: true,
   },
 ];

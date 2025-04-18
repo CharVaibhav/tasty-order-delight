@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { api, MenuItem } from '@/lib/api/api';
 import { useCart } from '@/lib/context/CartContext';
@@ -6,7 +6,6 @@ import { Layout } from '@/components/layout/Layout';
 import { useToast } from '@/components/ui/use-toast';
 import CategorySelector from '@/components/CategorySelector';
 import FoodCard from '@/components/FoodCard';
-import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 import { categories, menuItems as defaultMenuItems } from '@/data/menuData';
 
 interface MenuPageProps {
@@ -18,8 +17,14 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [priceRange, setPriceRange] = useState<number>(2000);
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
   const { toast } = useToast();
+
+  // Calculate max price from menu items
+  const maxPrice = useMemo(() => {
+    return Math.ceil(Math.max(...menuItems.map(item => item.price)));
+  }, [menuItems]);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -43,7 +48,6 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     try {
       addItem(item);
       
-      // Record in MongoDB
       await api.addToCart(customerId, {
         productId: item._id,
         quantity: 1,
@@ -81,48 +85,44 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     }
   };
 
-  const filteredItems = selectedCategory === 'all' 
-    ? menuItems 
-    : menuItems.filter(item => {
-        const categoryMap: Record<string, string> = {
-          'appetizers': 'Appetizers',
-          'main-dishes': 'Main Courses',
-          'sides': 'Sides',
-          'desserts': 'Desserts',
-          'beverages': 'Drinks'
-        };
-        return item.category === categoryMap[selectedCategory];
-      });
+  // Filter items based on category and price range
+  const filteredItems = useMemo(() => {
+    return menuItems.filter(item => {
+      const categoryMatch = selectedCategory === 'all' 
+        ? true 
+        : item.category === categories.find(cat => cat.id === selectedCategory)?.name;
+      const priceMatch = item.price <= priceRange;
+      return categoryMatch && priceMatch;
+    }).sort((a, b) => a.price - b.price); // Sort by price
+  }, [menuItems, selectedCategory, priceRange]);
 
   const content = (
     <div className="space-y-8">
-      <PopularItemsMarquee 
-        items={menuItems.filter(item => item.category === "Main Courses")}
-        onAddToCart={handleAddToCart}
-        onRemoveFromCart={removeItem}
-        onUpdateQuantity={handleUpdateQuantity}
-        cartItems={items}
-      />
-
       <div className="mt-12">
         <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100">Categories</h2>
         <CategorySelector 
           categories={categories}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          maxPrice={maxPrice}
+          priceRange={priceRange}
+          onPriceRangeChange={setPriceRange}
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.length === 0 ? (
           <div className="col-span-full text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400">No dishes found in this category.</p>
+            <p className="text-gray-500 dark:text-gray-400">No dishes found in this category within the selected price range.</p>
             <Button
               variant="link"
-              onClick={() => setSelectedCategory('all')}
+              onClick={() => {
+                setSelectedCategory('all');
+                setPriceRange(maxPrice);
+              }}
               className="text-food-orange hover:text-food-orange-dark mt-2"
             >
-              View all dishes
+              Reset filters
             </Button>
           </div>
         ) : (
