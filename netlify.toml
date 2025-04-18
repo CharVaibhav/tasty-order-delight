@@ -1,11 +1,1 @@
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200 
+﻿[build]`ncommand = "npm run build"`npublish = "dist"`n`n[build.environment]`nNODE_VERSION = "18"`n`n[[redirects]]`nfrom = "/*"`nto = "/index.html"`nstatus = 200
