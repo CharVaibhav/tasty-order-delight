@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../../lib/context/CartContext';
 
@@ -9,6 +9,9 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { totalItems } = useCart();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,8 +22,29 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             The Digital Diner
           </Link>
           <nav className="flex items-center space-x-6">
-            <Link to="/" className="hover:text-food-cream transition-colors">
+            <Link 
+              to="/" 
+              className={`hover:text-food-cream transition-colors ${
+                isActive('/') ? 'text-food-cream' : ''
+              }`}
+            >
               Menu
+            </Link>
+            <Link 
+              to="/about" 
+              className={`hover:text-food-cream transition-colors ${
+                isActive('/about') ? 'text-food-cream' : ''
+              }`}
+            >
+              About
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`hover:text-food-cream transition-colors ${
+                isActive('/contact') ? 'text-food-cream' : ''
+              }`}
+            >
+              Contact
             </Link>
             <Link to="/cart" className="relative hover:text-food-cream transition-colors">
               <ShoppingCart className="h-6 w-6" />
@@ -29,9 +53,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {totalItems}
                 </span>
               )}
-            </Link>
-            <Link to="/orders" className="hover:text-food-cream transition-colors">
-              My Orders
             </Link>
           </nav>
         </div>
