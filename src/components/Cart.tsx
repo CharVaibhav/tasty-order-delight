@@ -73,24 +73,35 @@ const Cart: React.FC<CartProps> = ({
             <div className="space-y-4">
               {displayItems.map((item) => (
                 <div key={item._id} className="flex flex-col p-4 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex-1">
-                      <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {formatPrice(item.price)}
-                      </p>
+                  <div className="flex items-center space-x-4 mb-2">
+                    {item.imageUrl && (
+                      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-1 items-center justify-between">
+                      <div>
+                        <h3 className="font-medium">{item.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {formatPrice(item.price)}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive/90"
+                        onClick={() => handleRemoveItem(item._id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive hover:text-destructive/90"
-                      onClick={() => handleRemoveItem(item._id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between pl-20">
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="outline"

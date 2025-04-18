@@ -10,6 +10,7 @@ import { OrderConfirmation } from './OrderConfirmation';
 import { api } from '@/lib/api/api';
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
+import { useNavigate } from 'react-router-dom';
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -24,6 +25,7 @@ const OrderSummary = ({
   onBackToCart,
   onOrderComplete,
 }: OrderSummaryProps) => {
+  const navigate = useNavigate();
   const { customerId } = useCart();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -81,6 +83,24 @@ const OrderSummary = ({
         setShowConfirmation(false);
         onOrderComplete();
       }, 5000);
+
+      // Navigate to payment page with order details
+      navigate('/payment', {
+        state: {
+          orderDetails: {
+            items: cartItems,
+            subtotal,
+            tax,
+            deliveryFee,
+            total,
+            customerName: name,
+            customerPhone: phone,
+            customerAddress: address,
+            notes,
+            customerId
+          }
+        }
+      });
     } catch (error) {
       console.error('Order creation error:', error);
       toast({
