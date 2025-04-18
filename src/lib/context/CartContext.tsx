@@ -51,7 +51,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
     setItems(prevItems => {
       // Check if item already exists in cart
-      const existingItemIndex = prevItems.findIndex(i => i.id === item.id);
+      const existingItemIndex = prevItems.findIndex(i => i._id === item._id);
       
       if (existingItemIndex >= 0) {
         // Update quantity if item exists
@@ -67,7 +67,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Remove item from cart
   const removeItem = (id: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
+    setItems(prevItems => prevItems.filter(item => item._id !== id));
   };
 
   // Update item quantity
@@ -79,7 +79,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     setItems(prevItems => 
       prevItems.map(item => 
-        item.id === id ? { ...item, quantity } : item
+        item._id === id ? { ...item, quantity } : item
       )
     );
   };
@@ -106,7 +106,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-// Custom hook to use cart context
+// Custom hook to use the cart context
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {

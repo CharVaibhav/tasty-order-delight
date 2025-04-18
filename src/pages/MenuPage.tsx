@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,11 +41,13 @@ export const MenuPage: React.FC = () => {
       
       // Add to local cart state
       addItem({
-        productId: item._id,
+        _id: item._id,
         name: item.name,
+        description: item.description,
         price: item.price,
-        quantity: 1,
         category: item.category,
+        imageUrl: item.imageUrl,
+        isAvailable: item.isAvailable,
       });
 
       // Record in MongoDB
@@ -76,11 +77,11 @@ export const MenuPage: React.FC = () => {
   };
 
   const isItemInCart = (itemId: string) => {
-    return items.findIndex(cartItem => cartItem.productId === itemId) !== -1;
+    return items.findIndex(cartItem => cartItem._id === itemId) !== -1;
   };
 
   const getCartItem = (itemId: string) => {
-    return items.find(cartItem => cartItem.productId === itemId);
+    return items.find(cartItem => cartItem._id === itemId);
   };
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
