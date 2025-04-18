@@ -5,6 +5,7 @@ import { useCart } from '@/lib/context/CartContext';
 import Marquee from 'react-fast-marquee';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,8 +25,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-food-orange text-white shadow-md">
+    <div className="min-h-screen flex flex-col dark:bg-gray-900">
+      <header className="bg-food-orange text-white shadow-md dark:bg-gray-800">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center mb-4">
             <Link to="/" className="text-2xl font-bold">
@@ -53,7 +54,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   className={cn(
                     "pl-8 pr-4 py-1 w-full bg-white/10 border-transparent text-white placeholder:text-white/70",
                     "focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-white/20",
-                    "transition-all duration-300 ease-in-out",
+                    "transition-all duration-300 ease-in-out dark:bg-gray-700 dark:focus:bg-gray-600",
                     !isSearchExpanded && "cursor-pointer"
                   )}
                 />
@@ -86,16 +87,17 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Link to="/cart" className="relative hover:text-food-cream transition-colors">
                   <Soup className="h-6 w-6" />
                   {totalItems > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium">
+                    <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium dark:bg-gray-200">
                       {totalItems}
                     </span>
                   )}
                 </Link>
+                <ThemeToggle />
               </nav>
             </div>
           </div>
         </div>
-        <div className="bg-food-orange-dark py-2">
+        <div className="bg-food-orange-dark py-2 dark:bg-gray-700">
           <Marquee
             gradient={false}
             speed={40}
@@ -114,11 +116,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      <main className="flex-grow">
+      <main className="flex-grow dark:text-white">
         {children}
       </main>
 
-      <footer className="bg-food-orange text-white py-4 mt-8">
+      <footer className="bg-food-orange text-white py-4 mt-8 dark:bg-gray-800">
         <div className="container mx-auto px-4 text-center">
           <p>&copy; {new Date().getFullYear()} The Digital Diner. All rights reserved.</p>
         </div>
