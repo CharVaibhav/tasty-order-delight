@@ -99,6 +99,21 @@ mongoose.connect(process.env.MONGODB_URI, mongoOptions)
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Promise Rejection:', err);
-  // Close server & exit process
-  server.close(() => process.exit(1));
+  // Don't exit the process in production, just log the error
+  if (process.env.NODE_ENV === 'development') {
+    process.exit(1);
+  }
+});
+
+// Handle MongoDB connection errors after initial connection
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error after initial connection:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected. Attempting to reconnect...');
+});
+
+mongoose.connection.on('reconnected', () => {
+  console.log('MongoDB reconnected successfully');
 }); 

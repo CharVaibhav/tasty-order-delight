@@ -98,14 +98,14 @@ router.put('/:id', protect, authorize('admin'), async (req, res, next) => {
 router.delete('/:id', protect, authorize('admin'), async (req, res, next) => {
   try {
     const menuItem = await MenuItem.findByIdAndDelete(req.params.id);
-
+    
     if (!menuItem) {
       return res.status(404).json({
         success: false,
         error: 'Menu item not found'
       });
     }
-
+    
     res.status(200).json({
       success: true,
       data: {}
