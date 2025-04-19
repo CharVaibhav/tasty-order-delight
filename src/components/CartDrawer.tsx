@@ -14,14 +14,16 @@ export const CartDrawer = () => {
   const navigate = useNavigate();
   const total = subtotal;
   const [isOpen, setIsOpen] = useState(false);
+  const [previousItemCount, setPreviousItemCount] = useState(totalItems);
 
   // Automatically open drawer when items are added to cart
   useEffect(() => {
-    if (items.length > 0) {
-      // Optional: Only open if item count increases
-      // This way it doesn't open when removing items or changing quantity
+    // Only open if total item count has increased
+    if (totalItems > previousItemCount) {
+      setIsOpen(true);
     }
-  }, [items.length]);
+    setPreviousItemCount(totalItems);
+  }, [totalItems, previousItemCount]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

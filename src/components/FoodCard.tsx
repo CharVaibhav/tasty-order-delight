@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -25,15 +26,14 @@ const FoodCard = ({
   
   const handleAddToCart = () => {
     setIsAddingToCart(true);
-    setTimeout(() => {
-      onAddToCart({ ...item, quantity: 1 });
-      setIsAddingToCart(false);
-      toast({
-        title: "Added to cart",
-        description: `${item.name} has been added to your cart.`,
-        duration: 2000,
-      });
-    }, 300);
+    // Remove the setTimeout to add items immediately
+    onAddToCart({ ...item, quantity: 1 });
+    setIsAddingToCart(false);
+    toast({
+      title: "Added to cart",
+      description: `${item.name} has been added to your cart.`,
+      duration: 2000,
+    });
   };
 
   const handleIncreaseQuantity = () => {
