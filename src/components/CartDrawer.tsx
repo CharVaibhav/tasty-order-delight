@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Bowl } from 'lucide-react';
+import { ShoppingBag, Trash2, Minus, Plus } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ export const CartDrawer = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <Bowl className="h-6 w-6 transition-colors hover:text-primary" />
+          <ShoppingBag className="h-6 w-6 transition-colors hover:text-primary" />
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in">
               {totalItems}
