@@ -1,12 +1,10 @@
-
 import React from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { MenuPage } from './MenuPage';
 import { HeroBanner } from '@/components/HeroBanner';
 
 export const Index = () => {
   return (
-    <Layout>
+    <>
       <HeroBanner />
       <main>
         <section id="menu-section" className="py-12 bg-background">
@@ -15,7 +13,7 @@ export const Index = () => {
           </div>
         </section>
       </main>
-    </Layout>
+    </>
   );
 };
 
