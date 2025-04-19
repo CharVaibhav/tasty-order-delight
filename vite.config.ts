@@ -39,7 +39,7 @@ export default defineConfig({
       output: {
         assetFileNames: 'assets/[name].[hash][extname]'
       },
-      external: ['lovable-tagger', '@tanstack/react-query', '@radix-ui/react-tooltip', 'sonner', 'react-type-animation', 'react-fast-marquee', '@radix-ui/react-slider', '@radix-ui/react-scroll-area', '@radix-ui/react-separator'],
+      external: ['lovable-tagger', '@tanstack/react-query', '@radix-ui/react-tooltip', 'sonner', 'react-type-animation', 'react-fast-marquee', '@radix-ui/react-slider', '@radix-ui/react-scroll-area', '@radix-ui/react-separator', 'pg', 'uuid'],
     }
   }
 });
