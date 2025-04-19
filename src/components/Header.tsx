@@ -1,14 +1,12 @@
 import React from 'react';
 import Marquee from 'react-fast-marquee';
 import { Link } from 'react-router-dom';
-import { Salad, Menu } from 'lucide-react';
-import { useCart } from '@/lib/context/CartContext';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/utils/formatters';
+import CartDrawer from './CartDrawer';
 
 const Header: React.FC = () => {
-  const { items: cartItems } = useCart();
-  const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
@@ -54,19 +52,10 @@ const Header: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Cart Icon */}
+          {/* Cart and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="relative">
-                <Salad className="h-6 w-6 text-gray-700 hover:text-food-orange transition-colors" />
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-food-orange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-cart-bounce">
-                    {cartItemCount}
-                  </span>
-                )}
-              </Button>
-            </Link>
-
+            <CartDrawer />
+            
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"

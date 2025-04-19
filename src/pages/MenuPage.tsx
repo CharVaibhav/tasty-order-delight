@@ -103,26 +103,26 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
 
   const content = (
     <div className="space-y-12">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
-        <p className="text-food-gray dark:text-gray-300 mb-8">Discover our delicious dishes</p>
-        
-        <div className="max-w-4xl mx-auto space-y-8">
-          <SearchBar 
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search by dish name or description..."
-          />
-          
-          <CategorySelector 
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            maxPrice={maxPrice}
-            priceRange={priceRange}
-            onPriceRangeChange={setPriceRange}
-          />
+      <div className="text-center max-w-4xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
+          <p className="text-food-gray dark:text-gray-300">Discover our delicious dishes</p>
         </div>
+        
+        <SearchBar 
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search by dish name or description..."
+        />
+        
+        <CategorySelector 
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          maxPrice={maxPrice}
+          priceRange={priceRange}
+          onPriceRangeChange={setPriceRange}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">

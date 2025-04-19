@@ -8,55 +8,45 @@ export const HeroBanner = () => {
   const scrollToMenu = () => {
     const menuSection = document.getElementById('menu-section');
     if (menuSection) {
-      const yOffset = -80; // Account for header height
-      const y = menuSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const headerHeight = 64; // Height of the fixed header
+      const y = menuSection.getBoundingClientRect().top + window.scrollY - headerHeight;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
   return (
-    <section className="relative h-[50vh] bg-gradient-to-r from-food-orange/10 to-food-orange/5 dark:from-food-orange/5 dark:to-gray-900/50 overflow-hidden">
-      <div className="absolute inset-0 bg-pattern opacity-10"></div>
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5 dark:from-primary/10 dark:to-primary/5">
       <ParticleBackground />
-      <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-8"
-        >
+      <div className="container mx-auto px-4 py-12 relative z-10">
+        <div className="flex flex-col items-center justify-center space-y-8 text-center">
           <div className="h-24 flex items-center justify-center">
             <TypeAnimation
               sequence={[
-                'Let\'s Kill Your Hunger',
-                2000,
-                'Cravings?',
-                2000,
-                'Hey, we missed you!!',
-                2000,
+                "Hungry?",
+                1000,
+                "Craving something delicious?",
+                1000,
+                "Looking for the perfect meal?",
+                1000,
               ]}
               wrapper="h2"
               speed={50}
+              className="text-4xl md:text-5xl font-bold text-primary dark:text-primary-foreground"
               repeat={Infinity}
-              className="text-4xl md:text-5xl font-bold text-food-orange dark:text-food-orange"
             />
           </div>
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+            Discover our mouthwatering selection of dishes, crafted with love and
+            served with care. Your perfect meal is just a click away.
+          </p>
+          <Button
+            size="lg"
+            onClick={scrollToMenu}
+            className="transform hover:scale-105 transition-transform"
           >
-            <Button
-              onClick={scrollToMenu}
-              size="lg"
-              className="relative bg-white/10 backdrop-blur-md border border-white/20 text-food-orange dark:text-food-orange px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-white/20 dark:hover:bg-white/5"
-            >
-              <span className="relative z-10">Browse Menu</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-food-orange/20 to-food-orange/10 dark:from-food-orange/10 dark:to-transparent rounded-full blur-sm"></div>
-            </Button>
-          </motion.div>
-        </motion.div>
+            Browse Menu
+          </Button>
+        </div>
       </div>
     </section>
   );
