@@ -9,7 +9,7 @@ export default defineConfig({
     port: 8080,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,
       },
     },
@@ -37,9 +37,15 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        assetFileNames: 'assets/[name].[hash][extname]'
+        assetFileNames: 'assets/[name].[hash][extname]',
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
       },
       external: ['lovable-tagger', '@tanstack/react-query', '@radix-ui/react-tooltip', 'sonner', 'react-type-animation', 'react-fast-marquee', '@radix-ui/react-slider', '@radix-ui/react-scroll-area', '@radix-ui/react-separator', 'pg', 'uuid'],
     }
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   }
 });
