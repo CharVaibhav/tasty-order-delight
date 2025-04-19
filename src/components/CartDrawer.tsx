@@ -2,19 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
+import { Bowl } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import CouponInput from './CouponInput';
 
 export const CartDrawer = () => {
-  const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
+  const { items, removeItem, updateQuantity, subtotal, totalItems, discount, setDiscount } = useCart();
   const navigate = useNavigate();
-  const total = subtotal;
   const [isOpen, setIsOpen] = useState(false);
   const [previousItemCount, setPreviousItemCount] = useState(totalItems);
+
+  const total = subtotal * (1 - discount);
 
   // Debug logs to help troubleshoot
   console.log('Current total items:', totalItems);
@@ -35,7 +37,7 @@ export const CartDrawer = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <ShoppingBag className="h-6 w-6 transition-colors hover:text-primary" />
+          <Bowl className="h-6 w-6 transition-colors hover:text-primary" />
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in">
               {totalItems}
@@ -115,31 +117,47 @@ export const CartDrawer = () => {
             </div>
           )}
         </ScrollArea>
-
+        
         {items.length > 0 && (
-          <div className="border-t pt-4 mt-4 space-y-4">
-            <div className="flex items-center justify-between text-lg">
-              <span className="font-medium">Total</span>
-              <span className="font-bold text-primary">{formatPrice(total)}</span>
+          <div className="border-t pt-4 mt-4 space-y-4 flex-shrink-0">
+            <div className="mb-4">
+              <CouponInput onApplyCoupon={setDiscount} />
             </div>
-            <div className="space-y-2">
+            <Separator />
+            
+            <div className="flex items-center justify-between font-medium">
+              <span>Subtotal</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+            {discount > 0 && (
+              <div className="flex items-center justify-between font-medium text-green-600">
+                <span>Discount (50% OFF)</span>
+                <span>-{formatPrice(subtotal * discount)}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between font-medium">
+              <span>Total</span>
+              <span>{formatPrice(total)}</span>
+            </div>
+            <div className="space-y-2 pb-4">
               <Button 
-                className="w-full bg-secondary hover:bg-secondary/90"
-                onClick={() => {
-                  setIsOpen(false);
-                  navigate('/cart');
-                }}
-              >
-                View Cart
-              </Button>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
                 onClick={() => {
                   setIsOpen(false);
                   navigate('/checkout');
                 }}
               >
                 Checkout
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  navigate('/cart');
+                  setIsOpen(false);
+                }}
+              >
+                View Cart
               </Button>
             </div>
           </div>
