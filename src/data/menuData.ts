@@ -23,6 +23,7 @@ export interface MenuItem {
   category: string;
   imageUrl: string;
   isAvailable: boolean;
+  label?: 'vegetarian' | 'non-vegetarian' | 'vegan' | 'spicy';
 }
 
 export type CartItem = MenuItem & {
@@ -46,6 +47,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: dalMakhaniImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '2',
@@ -55,6 +57,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: masalaDosaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '3',
@@ -64,6 +67,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: steakImg,
     isAvailable: true,
+    label: 'non-vegetarian'
   },
   {
     _id: '4',
@@ -73,6 +77,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: pizzaMargheritaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '5',
@@ -82,6 +87,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: biryaniImg,
     isAvailable: true,
+    label: 'non-vegetarian'
   },
   {
     _id: '6',
@@ -91,6 +97,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: biryaniImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '7',
@@ -100,6 +107,7 @@ export const menuItems: MenuItem[] = [
     category: 'Main Dishes',
     imageUrl: pizzaMargheritaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '8',
@@ -109,6 +117,7 @@ export const menuItems: MenuItem[] = [
     category: 'Sides',
     imageUrl: biryaniImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '9',
@@ -118,6 +127,7 @@ export const menuItems: MenuItem[] = [
     category: 'Sides',
     imageUrl: pizzaMargheritaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '10',
@@ -127,6 +137,7 @@ export const menuItems: MenuItem[] = [
     category: 'Sides',
     imageUrl: mangoLassiImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '11',
@@ -136,6 +147,7 @@ export const menuItems: MenuItem[] = [
     category: 'Sides',
     imageUrl: samosaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '12',
@@ -145,6 +157,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: mangoLassiImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '13',
@@ -154,6 +167,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: gulabJamunImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '14',
@@ -163,6 +177,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: mangoLassiImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '15',
@@ -172,6 +187,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: sushiImg,
     isAvailable: true,
+    label: 'vegan'
   },
   {
     _id: '16',
@@ -181,6 +197,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: mangoLassiImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '17',
@@ -190,6 +207,7 @@ export const menuItems: MenuItem[] = [
     category: 'Beverages',
     imageUrl: dessertImg,
     isAvailable: true,
+    label: 'vegan'
   },
   {
     _id: '18',
@@ -199,6 +217,7 @@ export const menuItems: MenuItem[] = [
     category: 'Appetizers',
     imageUrl: samosaImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '19',
@@ -208,6 +227,7 @@ export const menuItems: MenuItem[] = [
     category: 'Desserts',
     imageUrl: gulabJamunImg,
     isAvailable: true,
+    label: 'vegetarian'
   },
   {
     _id: '20',
@@ -217,5 +237,6 @@ export const menuItems: MenuItem[] = [
     category: 'Desserts',
     imageUrl: rasmalaiImg,
     isAvailable: true,
+    label: 'vegetarian'
   }
 ];

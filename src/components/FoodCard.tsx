@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -73,14 +72,17 @@ const FoodCard = ({
         </div>
         <p className="text-gray-500 text-sm mb-4 flex-grow">{item.description}</p>
         <div className="flex mt-auto">
-          {item.category === "Appetizers" && (
-            <Badge variant="outline" className="mr-1 text-xs border-food-green text-food-green">
-              Vegetarian
-            </Badge>
-          )}
-          {item.category === "Main Courses" && (
-            <Badge variant="outline" className="mr-1 text-xs border-food-red text-food-red">
-              Spicy
+          {item.label && (
+            <Badge 
+              variant="outline" 
+              className={`mr-1 text-xs ${
+                item.label === 'vegetarian' ? 'border-green-500 text-green-500' :
+                item.label === 'non-vegetarian' ? 'border-red-500 text-red-500' :
+                item.label === 'vegan' ? 'border-emerald-500 text-emerald-500' :
+                item.label === 'spicy' ? 'border-orange-500 text-orange-500' : ''
+              }`}
+            >
+              {item.label.charAt(0).toUpperCase() + item.label.slice(1)}
             </Badge>
           )}
         </div>
