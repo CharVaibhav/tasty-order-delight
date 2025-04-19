@@ -25,8 +25,8 @@ const FoodCard = ({
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   
   const handleAddToCart = () => {
+    console.log('Adding item to cart:', item.name);
     setIsAddingToCart(true);
-    // Remove the setTimeout to add items immediately
     onAddToCart({ ...item, quantity: 1 });
     setIsAddingToCart(false);
     toast({

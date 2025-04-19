@@ -1,3 +1,4 @@
+
 import React, { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Soup, Search } from 'lucide-react';
@@ -6,6 +7,7 @@ import Marquee from 'react-fast-marquee';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { CartDrawer } from '@/components/CartDrawer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -86,14 +88,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 >
                   Contact
                 </Link>
-                <Link to="/cart" className="relative hover:text-food-cream transition-colors">
-                  <Soup className="h-6 w-6" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium dark:bg-gray-200">
-                      {cartCount}
-                    </span>
-                  )}
-                </Link>
+                <CartDrawer />
                 <ThemeToggle />
               </nav>
             </div>

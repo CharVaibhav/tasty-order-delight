@@ -16,10 +16,16 @@ export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [previousItemCount, setPreviousItemCount] = useState(totalItems);
 
+  // Debug logs to help troubleshoot
+  console.log('Current total items:', totalItems);
+  console.log('Previous item count:', previousItemCount);
+  console.log('Is drawer open:', isOpen);
+
   // Automatically open drawer when items are added to cart
   useEffect(() => {
     // Only open if total item count has increased
     if (totalItems > previousItemCount) {
+      console.log('Opening cart drawer - items increased');
       setIsOpen(true);
     }
     setPreviousItemCount(totalItems);
