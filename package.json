@@ -5,16 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
     "build": "vite build",
-    "prebuild": "npm install",
+    "preview": "vite preview",
     "server:build": "tsc -p tsconfig.server.json",
     "server:start": "node dist/server/index.js",
     "server:dev": "nodemon --exec ts-node server/index.ts",
-    "client:start": "react-scripts start",
-    "client:build": "react-scripts build",
-    "dev:full": "concurrently \"npm run server:dev\" \"npm run client:start\""
+    "dev:full": "concurrently \"npm run server:dev\" \"npm run dev\""
   },
   "engines": {
     "node": ">=18.0.0"
@@ -61,7 +58,6 @@
     "react-fast-marquee": "^1.6.4",
     "react-hook-form": "^7.50.1",
     "react-router-dom": "^6.22.2",
-    "react-scripts": "5.0.1",
     "react-type-animation": "^3.2.0",
     "sonner": "^1.4.0",
     "tailwind-merge": "^2.2.1",
@@ -90,7 +86,6 @@
     "eslint-config-next": "^14.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "lovable-tagger": "^1.0.0",
     "nodemon": "^3.1.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",

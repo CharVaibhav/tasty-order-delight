@@ -48,11 +48,12 @@ export default defineConfig({
             '@radix-ui/react-tooltip',
             '@radix-ui/react-slider',
             '@radix-ui/react-scroll-area',
-            '@radix-ui/react-separator'
+            '@radix-ui/react-separator',
+            '@tanstack/react-query'
           ],
         },
       },
-      external: ['lovable-tagger', '@tanstack/react-query', 'react-type-animation', 'react-fast-marquee', 'pg', 'uuid'],
+      external: ['lovable-tagger', 'react-type-animation', 'react-fast-marquee', 'pg', 'uuid'],
     }
   },
   define: {
