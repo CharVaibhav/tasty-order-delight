@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { api, MenuItem } from '@/lib/api/api';
@@ -26,7 +25,6 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
   const { toast } = useToast();
 
-  // Calculate max price from menu items
   const maxPrice = useMemo(() => {
     return Math.ceil(Math.max(...menuItems.map(item => item.price)));
   }, [menuItems]);
@@ -83,10 +81,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
       ? menuItems
       : menuItems.filter(item => item.category === selectedCategory);
     
-    // Apply price filter
     filtered = filtered.filter(item => item.price <= priceRange);
     
-    // Apply search filter
     if (searchQuery.trim() !== '') {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(item => 
@@ -105,64 +101,65 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">Our Menu</h1>
       
-      <PopularItemsMarquee 
-        items={popularItems}
-        onAddToCart={handleAddToCart}
-        onRemoveFromCart={removeItem}
-        onUpdateQuantity={updateQuantity}
-        cartItems={items}
-      />
+      <div className="mb-12">
+        <h2 className="text-2xl font-semibold text-center mb-6">Popular Dishes</h2>
+        <PopularItemsMarquee 
+          items={popularItems}
+          onAddToCart={handleAddToCart}
+          onRemoveFromCart={removeItem}
+          onUpdateQuantity={updateQuantity}
+          cartItems={items}
+        />
+      </div>
       
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="md:col-span-1 space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Search</h2>
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search for dishes..."
-            />
-          </div>
-          
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Categories</h2>
-            <CategorySelector
-              categories={[{ id: 'all', name: 'All' }, ...categories]}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-            />
-          </div>
-          
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Price</h2>
-            <PriceRangeSlider
-              maxPrice={maxPrice}
-              value={priceRange}
-              onValueChange={setPriceRange}
-            />
-          </div>
+      <div className="max-w-2xl mx-auto mb-12 space-y-8">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Search</h2>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search for dishes..."
+          />
         </div>
         
-        <div className="md:col-span-3">
-          {filteredMenuItems.length === 0 ? (
-            <p className="text-center mt-8 text-gray-500 dark:text-gray-400">
-              No dishes found with the current filters.
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {filteredMenuItems.map((item) => (
-                <FoodCard
-                  key={item._id}
-                  item={item}
-                  onAddToCart={handleAddToCart}
-                  itemInCart={items.find(cartItem => cartItem._id === item._id)}
-                  onRemoveFromCart={removeItem}
-                  onUpdateQuantity={updateQuantity}
-                />
-              ))}
-            </div>
-          )}
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Categories</h2>
+          <CategorySelector
+            categories={[{ id: 'all', name: 'All' }, ...categories]}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
         </div>
+        
+        <div className="max-w-md mx-auto">
+          <h2 className="text-xl font-semibold mb-4 text-center">Price Range</h2>
+          <PriceRangeSlider
+            maxPrice={maxPrice}
+            value={priceRange}
+            onValueChange={setPriceRange}
+          />
+        </div>
+      </div>
+      
+      <div className="mt-12">
+        {filteredMenuItems.length === 0 ? (
+          <p className="text-center mt-8 text-gray-500 dark:text-gray-400">
+            No dishes found with the current filters.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMenuItems.map((item) => (
+              <FoodCard
+                key={item._id}
+                item={item}
+                onAddToCart={handleAddToCart}
+                itemInCart={items.find(cartItem => cartItem._id === item._id)}
+                onRemoveFromCart={removeItem}
+                onUpdateQuantity={updateQuantity}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
