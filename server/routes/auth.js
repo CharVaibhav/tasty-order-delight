@@ -11,7 +11,7 @@ const {
   verifyEmail,
   forgotPassword,
   resetPassword
-} = require('../controllers/auth');
+} = require('../controllers/authController');
 const {
   authLimiter,
   passwordResetLimiter,

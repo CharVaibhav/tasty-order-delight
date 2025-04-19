@@ -3,15 +3,22 @@ services:
     name: tasty-order-delight-api
     env: node
     buildCommand: npm install
-    startCommand: node ./server/index.js
+    startCommand: npm run server:start
     envVars:
-      - key: PORT
-        value: 5000
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: FRONTEND_URL
-        value: https://tasty-order-delight.netlify.app 
+      - key: PORT
+        value: 5000
+
+  - type: web
+    name: tasty-order-delight-client
+    env: node
+    buildCommand: npm install && npm run client:build
+    startCommand: npm run client:start
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://tasty-order-delight-api.onrender.com 

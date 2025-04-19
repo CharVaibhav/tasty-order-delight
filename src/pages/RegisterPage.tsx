@@ -46,7 +46,7 @@ export default function RegisterPage() {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof FormData],
+          ...(prev[parent as keyof FormData] as { [key: string]: string }),
           [child]: value,
         },
       }));

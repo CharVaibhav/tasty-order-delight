@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const { generalLimiter } = require('./middleware/rateLimiter');
+const rateLimit = require('express-rate-limit');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -14,6 +14,13 @@ dotenv.config();
 
 // Create Express app
 const app = express();
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 // CORS configuration
 const allowedOrigins = [
@@ -41,7 +48,6 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(generalLimiter); // Apply rate limiting to all routes
 
 // Routes
 app.get('/', (req, res) => {
