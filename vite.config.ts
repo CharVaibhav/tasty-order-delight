@@ -39,7 +39,7 @@ export default defineConfig({
       output: {
         assetFileNames: 'assets/[name].[hash][extname]'
       },
-      external: ['lovable-tagger'],
+      external: ['lovable-tagger', '@tanstack/react-query'],
     }
   }
 });
