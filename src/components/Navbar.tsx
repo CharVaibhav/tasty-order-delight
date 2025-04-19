@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bowl, Menu, X } from 'lucide-react'; // Replace ShoppingCart with Bowl
+import { Soup, Menu, X } from 'lucide-react'; // Changed Bowl to Soup
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CartItem } from '@/data/menuData';
@@ -59,7 +60,7 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
               variant="outline" 
               className="relative border-food-orange text-food-orange hover:bg-food-orange hover:text-white transition-all"
             >
-              <Bowl className="h-5 w-5 mr-2" />
+              <Soup className="h-5 w-5 mr-2" /> {/* Changed Bowl to Soup */}
               <span>Cart</span>
               {totalItems > 0 && (
                 <Badge 
@@ -81,7 +82,7 @@ const Navbar = ({ cartItems, toggleCart }: NavbarProps) => {
             className="relative mr-2 border-food-orange text-food-orange"
             size="sm"
           >
-            <Bowl className="h-5 w-5" /> {/* Updated icon */}
+            <Soup className="h-5 w-5" /> {/* Changed Bowl to Soup */}
             {totalItems > 0 && (
               <Badge 
                 className={`absolute -top-2 -right-2 bg-food-orange text-white 

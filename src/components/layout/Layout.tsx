@@ -24,6 +24,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     // You can implement the search logic here or pass it to a parent component
   };
 
+  const cartCount = getCartCount();
+
   return (
     <div className="min-h-screen flex flex-col dark:bg-gray-900">
       <header className="bg-food-orange text-white shadow-md dark:bg-gray-800">
@@ -86,9 +88,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
                 <Link to="/cart" className="relative hover:text-food-cream transition-colors">
                   <Soup className="h-6 w-6" />
-                  {getCartCount() > 0 && (
+                  {cartCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-white text-food-orange rounded-full h-5 w-5 flex items-center justify-center text-xs font-medium dark:bg-gray-200">
-                      {getCartCount()}
+                      {cartCount}
                     </span>
                   )}
                 </Link>

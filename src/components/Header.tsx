@@ -1,7 +1,8 @@
+
 import React from 'react';
 import Marquee from 'react-fast-marquee';
 import { Link } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Soup } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/utils/formatters';
 import { CartDrawer } from './CartDrawer';
