@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MenuItem } from '../types/menu';
-
-export interface CartItem extends MenuItem {
-  quantity: number;
-}
+import { MenuItem, CartItem } from '../data/menuData';
 
 export interface UseCartReturn {
   cartItems: CartItem[];
@@ -29,10 +25,10 @@ export const useCart = (): UseCartReturn => {
 
   const addToCart = (item: MenuItem) => {
     setCartItems(currentItems => {
-      const existingItem = currentItems.find(cartItem => cartItem.id === item.id);
+      const existingItem = currentItems.find(cartItem => cartItem._id === item._id);
       if (existingItem) {
         return currentItems.map(cartItem =>
-          cartItem.id === item.id
+          cartItem._id === item._id
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         );
@@ -43,7 +39,7 @@ export const useCart = (): UseCartReturn => {
 
   const removeFromCart = (itemId: string) => {
     setCartItems(currentItems => 
-      currentItems.filter(item => item.id !== itemId)
+      currentItems.filter(item => item._id !== itemId)
     );
   };
 
@@ -54,7 +50,7 @@ export const useCart = (): UseCartReturn => {
     }
     setCartItems(currentItems =>
       currentItems.map(item =>
-        item.id === itemId ? { ...item, quantity } : item
+        item._id === itemId ? { ...item, quantity } : item
       )
     );
   };

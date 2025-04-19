@@ -1,81 +1,124 @@
 import React from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Salad } from 'lucide-react';
-import { useCart } from '@/lib/context/CartContext';
+import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
+import { useCartContext } from '@/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { useNavigate } from 'react-router-dom';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 
-const CartDrawer = () => {
-  const { items, totalItems, total } = useCart();
+export const CartDrawer = () => {
+  const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCartContext();
   const navigate = useNavigate();
+  const totalItems = getCartCount();
+  const total = getCartTotal();
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <Salad className="h-6 w-6 text-gray-700 hover:text-food-orange transition-colors" />
+          <ShoppingBag className="h-6 w-6 transition-colors hover:text-primary" />
           {totalItems > 0 && (
-            <span className="absolute -top-2 -right-2 bg-food-orange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-cart-bounce">
+            <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in">
               {totalItems}
             </span>
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-[400px] sm:w-[540px]">
-        <SheetHeader>
-          <SheetTitle>Order Summary</SheetTitle>
+      <SheetContent className="w-full sm:max-w-md flex flex-col h-full">
+        <SheetHeader className="space-y-1">
+          <SheetTitle className="text-2xl">Your Cart</SheetTitle>
+          {cartItems.length > 0 && (
+            <p className="text-sm text-muted-foreground">
+              {totalItems} {totalItems === 1 ? 'item' : 'items'} in your cart
+            </p>
+          )}
         </SheetHeader>
-        <div className="mt-8 space-y-4">
-          {items.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">Your cart is empty</p>
+        <Separator className="my-4" />
+        
+        <ScrollArea className="flex-1 pr-4 -mr-4">
+          {cartItems.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[50vh] py-8">
+              <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">Your cart is empty</p>
               <Button 
                 onClick={() => navigate('/menu')}
-                className="bg-food-orange hover:bg-food-orange-dark text-white"
+                variant="outline"
+                className="font-medium"
               >
                 Browse Menu
               </Button>
             </div>
           ) : (
-            <>
-              <div className="space-y-4">
-                {items.map(item => (
-                  <div key={item._id} className="flex justify-between items-center">
+            <div className="space-y-4">
+              {cartItems.map(item => (
+                <div key={item._id} className="flex flex-col p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow">
+                  <div className="flex justify-between items-start mb-3">
                     <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                      <h3 className="font-medium text-card-foreground">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground">{formatPrice(item.price)}</p>
                     </div>
-                    <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => removeFromCart(item._id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
-                ))}
-              </div>
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <p className="font-semibold">Total:</p>
-                  <p className="font-semibold">{formatPrice(total)}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => updateQuantity(item._id, Math.max(0, item.quantity - 1))}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-8 text-center font-medium">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <span className="font-medium text-card-foreground">{formatPrice(item.price * item.quantity)}</span>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Button 
-                    className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
-                    onClick={() => navigate('/cart')}
-                  >
-                    View Cart
-                  </Button>
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => navigate('/checkout')}
-                  >
-                    Checkout
-                  </Button>
-                </div>
-              </div>
-            </>
+              ))}
+            </div>
           )}
-        </div>
+        </ScrollArea>
+
+        {cartItems.length > 0 && (
+          <div className="border-t pt-4 mt-4 space-y-4">
+            <div className="flex items-center justify-between text-lg">
+              <span className="font-medium">Total</span>
+              <span className="font-bold text-primary">{formatPrice(total)}</span>
+            </div>
+            <div className="space-y-2">
+              <Button 
+                className="w-full bg-secondary hover:bg-secondary/90"
+                onClick={() => navigate('/cart')}
+              >
+                View Cart
+              </Button>
+              <Button 
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => navigate('/checkout')}
+              >
+                Checkout
+              </Button>
+            </div>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );
-};
-
-export default CartDrawer; 
+}; 
