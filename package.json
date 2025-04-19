@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "vite build",
     "server:start": "node dist/server/index.js",
     "server:dev": "nodemon --exec ts-node server/index.ts",
     "client:start": "react-scripts start",
