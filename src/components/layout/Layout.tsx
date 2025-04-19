@@ -1,10 +1,8 @@
-
 import React, { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Soup, Search } from 'lucide-react';
+import { Soup } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
 import Marquee from 'react-fast-marquee';
-import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -16,17 +14,9 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { totalItems } = useCart();
   const location = useLocation();
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const cartCount = totalItems;
 
   const isActive = (path: string) => location.pathname === path;
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    // You can implement the search logic here or pass it to a parent component
-  };
-
-  const cartCount = totalItems;
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-gray-900">
@@ -37,32 +27,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               The Digital Diner
             </Link>
             <div className="flex items-center space-x-6">
-              <div 
-                className={cn(
-                  "relative transition-all duration-300 ease-in-out",
-                  isSearchExpanded ? "w-64" : "w-8"
-                )}
-                onMouseEnter={() => setIsSearchExpanded(true)}
-                onMouseLeave={() => {
-                  if (!searchTerm) {
-                    setIsSearchExpanded(false);
-                  }
-                }}
-              >
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder={isSearchExpanded ? "Search dishes..." : ""}
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  className={cn(
-                    "pl-8 pr-4 py-1 w-full bg-white/10 border-transparent text-white placeholder:text-white/70",
-                    "focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-white/20",
-                    "transition-all duration-300 ease-in-out dark:bg-gray-700 dark:focus:bg-gray-600",
-                    !isSearchExpanded && "cursor-pointer"
-                  )}
-                />
-              </div>
               <nav className="flex items-center space-x-6">
                 <Link 
                   to="/" 
