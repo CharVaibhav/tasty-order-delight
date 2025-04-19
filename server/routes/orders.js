@@ -1,84 +1,108 @@
 const express = require('express');
 const Order = require('../models/Order');
-const auth = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Create new order
-router.post('/', auth, async (req, res) => {
+router.post('/', protect, async (req, res, next) => {
   try {
     const order = new Order({
       ...req.body,
       user: req.user._id
     });
     await order.save();
-    res.status(201).json(order);
+    res.status(201).json({
+      success: true,
+      data: order
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 });
 
 // Get user's orders
-router.get('/', auth, async (req, res) => {
+router.get('/', protect, async (req, res, next) => {
   try {
     const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 });
-    res.json(orders);
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      data: orders
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
 // Get specific order
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', protect, async (req, res, next) => {
   try {
     const order = await Order.findOne({ _id: req.params.id, user: req.user._id });
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
     }
-    res.json(order);
+    res.status(200).json({
+      success: true,
+      data: order
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
 // Update order status (admin only)
-router.patch('/:id/status', auth, async (req, res) => {
+router.patch('/:id/status', protect, authorize('admin'), async (req, res, next) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Not authorized' });
-    }
-
     const order = await Order.findById(req.params.id);
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
     }
 
     order.status = req.body.status;
     await order.save();
-    res.json(order);
+    res.status(200).json({
+      success: true,
+      data: order
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 });
 
 // Cancel order
-router.patch('/:id/cancel', auth, async (req, res) => {
+router.patch('/:id/cancel', protect, async (req, res, next) => {
   try {
     const order = await Order.findOne({ _id: req.params.id, user: req.user._id });
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
     }
 
     if (order.status !== 'pending') {
-      return res.status(400).json({ error: 'Cannot cancel order at this stage' });
+      return res.status(400).json({
+        success: false,
+        error: 'Cannot cancel order at this stage'
+      });
     }
 
     order.status = 'cancelled';
     await order.save();
-    res.json(order);
+    res.status(200).json({
+      success: true,
+      data: order
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 });
 

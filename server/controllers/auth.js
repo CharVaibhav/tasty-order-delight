@@ -17,66 +17,26 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, phone, address } = req.body;
-
-    // Validate password
-    const passwordValidation = User.schema.methods.isPasswordValid(password);
-    if (!passwordValidation.isValid) {
-      return res.status(400).json({
-        success: false,
-        error: passwordValidation.message,
-      });
-    }
-
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
-      return res.status(400).json({
-        success: false,
-        error: 'User already exists',
-      });
-    }
+    const { name, email, password } = req.body;
 
     // Create user
     const user = await User.create({
       name,
       email,
       password,
-      phone,
-      address,
     });
 
-    // Generate email verification token
-    const verificationToken = user.getEmailVerificationToken();
-    await user.save();
+    // Generate token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '30d',
+    });
 
-    // Create verification URL
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Email Verification - Tasty Order Delight',
-        html: getVerificationEmailTemplate(user.name, verificationUrl),
-      });
-
-      res.status(201).json({
-        success: true,
-        message: 'Registration successful. Please check your email to verify your account.',
-      });
-    } catch (err) {
-      user.emailVerificationToken = undefined;
-      user.emailVerificationExpire = undefined;
-      await user.save();
-
-      return res.status(500).json({
-        success: false,
-        error: 'Email could not be sent',
-      });
-    }
-  } catch (err) {
-    next(err);
+    res.status(201).json({
+      success: true,
+      token,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -127,72 +87,69 @@ exports.forgotPassword = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'No user found with that email',
+        error: 'There is no user with that email',
       });
     }
 
     // Get reset token
     const resetToken = user.getResetPasswordToken();
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
-    // Create reset URL
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    // Create reset url
+    const resetUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/api/auth/reset-password/${resetToken}`;
+
+    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Password Reset - Tasty Order Delight',
-        html: getPasswordResetEmailTemplate(user.name, resetUrl),
+        subject: 'Password reset token',
+        message,
       });
 
       res.status(200).json({
         success: true,
-        message: 'Password reset email sent',
+        data: 'Email sent',
       });
     } catch (err) {
+      console.log(err);
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
-      await user.save();
+
+      await user.save({ validateBeforeSave: false });
 
       return res.status(500).json({
         success: false,
         error: 'Email could not be sent',
       });
     }
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 // @desc    Reset password
-// @route   PUT /api/auth/reset-password/:token
+// @route   PUT /api/auth/reset-password/:resettoken
 // @access  Public
 exports.resetPassword = async (req, res, next) => {
   try {
     // Get hashed token
-    const hashedToken = crypto
+    const resetPasswordToken = crypto
       .createHash('sha256')
-      .update(req.params.token)
+      .update(req.params.resettoken)
       .digest('hex');
 
     const user = await User.findOne({
-      resetPasswordToken: hashedToken,
+      resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
     });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid or expired reset token',
-      });
-    }
-
-    // Validate new password
-    const passwordValidation = User.schema.methods.isPasswordValid(req.body.password);
-    if (!passwordValidation.isValid) {
-      return res.status(400).json({
-        success: false,
-        error: passwordValidation.message,
+        error: 'Invalid token',
       });
     }
 
@@ -202,31 +159,17 @@ exports.resetPassword = async (req, res, next) => {
     user.resetPasswordExpire = undefined;
     await user.save();
 
-    // Send confirmation email
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Password Changed Successfully - Tasty Order Delight',
-        html: `
-          <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-            <h2 style="color: #333; text-align: center;">Password Changed Successfully</h2>
-            <p style="color: #666;">Hi ${user.name},</p>
-            <p style="color: #666;">Your password has been successfully changed. If you did not make this change, please contact our support team immediately.</p>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-            <p style="color: #999; font-size: 12px; text-align: center;">This is an automated email, please do not reply.</p>
-          </div>
-        `,
-      });
-    } catch (err) {
-      console.error('Error sending password change confirmation email:', err);
-    }
+    // Generate token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '30d',
+    });
 
     res.status(200).json({
       success: true,
-      message: 'Password reset successful',
+      token,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -237,7 +180,15 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Check for user email
+    // Validate email & password
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide an email and password',
+      });
+    }
+
+    // Check for user
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
@@ -257,38 +208,32 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check if email is verified
-    if (!user.isEmailVerified) {
-      return res.status(401).json({
-        success: false,
-        error: 'Please verify your email address',
-      });
-    }
-
-    // Create token
-    const token = generateToken(user._id);
-
-    res.json({
-      success: true,
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token,
-      },
+    // Generate token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '30d',
     });
-  } catch (err) {
-    next(err);
+
+    res.status(200).json({
+      success: true,
+      token,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
-exports.getMe = async (req, res) => {
-  res.json({
-    success: true,
-    data: req.user,
-  });
+exports.getMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
 }; 
