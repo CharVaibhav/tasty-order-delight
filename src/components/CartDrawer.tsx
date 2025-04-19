@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
@@ -13,9 +13,18 @@ export const CartDrawer = () => {
   const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
   const navigate = useNavigate();
   const total = subtotal;
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Automatically open drawer when items are added to cart
+  useEffect(() => {
+    if (items.length > 0) {
+      // Optional: Only open if item count increases
+      // This way it doesn't open when removing items or changing quantity
+    }
+  }, [items.length]);
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <ShoppingBag className="h-6 w-6 transition-colors hover:text-primary" />
@@ -43,7 +52,10 @@ export const CartDrawer = () => {
               <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground mb-4">Your cart is empty</p>
               <Button 
-                onClick={() => navigate('/menu')}
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/menu');
+                }}
                 variant="outline"
                 className="font-medium"
               >
@@ -105,13 +117,19 @@ export const CartDrawer = () => {
             <div className="space-y-2">
               <Button 
                 className="w-full bg-secondary hover:bg-secondary/90"
-                onClick={() => navigate('/cart')}
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/cart');
+                }}
               >
                 View Cart
               </Button>
               <Button 
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={() => navigate('/checkout')}
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/checkout');
+                }}
               >
                 Checkout
               </Button>
