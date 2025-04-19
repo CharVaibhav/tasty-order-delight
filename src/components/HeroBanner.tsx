@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { Button } from '@/components/ui/button';
+import { ParticleBackground } from './ParticleBackground';
 
 export const HeroBanner = () => {
   const scrollToMenu = () => {
@@ -14,9 +15,10 @@ export const HeroBanner = () => {
   };
 
   return (
-    <section className="relative h-[50vh] bg-gradient-to-r from-food-orange/10 to-food-orange/5 dark:from-food-orange/5 dark:to-gray-900/50">
+    <section className="relative h-[50vh] bg-gradient-to-r from-food-orange/10 to-food-orange/5 dark:from-food-orange/5 dark:to-gray-900/50 overflow-hidden">
       <div className="absolute inset-0 bg-pattern opacity-10"></div>
-      <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center text-center">
+      <ParticleBackground />
+      <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -48,9 +50,10 @@ export const HeroBanner = () => {
             <Button
               onClick={scrollToMenu}
               size="lg"
-              className="bg-food-orange hover:bg-food-orange-dark text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="relative bg-white/10 backdrop-blur-md border border-white/20 text-food-orange dark:text-food-orange px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-white/20 dark:hover:bg-white/5"
             >
-              Browse Menu
+              <span className="relative z-10">Browse Menu</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-food-orange/20 to-food-orange/10 dark:from-food-orange/10 dark:to-transparent rounded-full blur-sm"></div>
             </Button>
           </motion.div>
         </motion.div>

@@ -1,32 +1,30 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 
 interface SearchBarProps {
-  onSearch: (searchTerm: string) => void;
-  className?: string;
+  value: string;
+  onChange: (value: string) => void;
   placeholder?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
-  onSearch,
-  className,
-  placeholder = "Search for dishes...",
+const SearchBar: React.FC<SearchBarProps> = ({ 
+  value, 
+  onChange, 
+  placeholder = "Search for dishes..." 
 }) => {
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(event.target.value);
-  };
-
   return (
-    <div className={cn("relative", className)}>
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-      <Input
-        type="text"
-        placeholder={placeholder}
-        onChange={handleSearch}
-        className="pl-10 w-full bg-white border-gray-200 focus:border-food-orange focus:ring-food-orange"
-      />
+    <div className="relative w-full max-w-md mx-auto">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <Input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="pl-10 pr-4 py-2 w-full rounded-full border-gray-200 dark:border-gray-700 focus:border-food-orange dark:focus:border-food-orange bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+        />
+      </div>
     </div>
   );
 };

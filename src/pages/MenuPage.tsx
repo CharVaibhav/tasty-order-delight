@@ -5,6 +5,7 @@ import { useCart } from '@/lib/context/CartContext';
 import { Layout } from '@/components/layout/Layout';
 import { useToast } from '@/components/ui/use-toast';
 import CategorySelector from '@/components/CategorySelector';
+import SearchBar from '@/components/SearchBar';
 import FoodCard from '@/components/FoodCard';
 import { categories, menuItems as defaultMenuItems } from '@/data/menuData';
 
@@ -18,6 +19,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<number>(2000);
+  const [searchQuery, setSearchQuery] = useState('');
   const { items, addItem, updateQuantity, removeItem, customerId } = useCart();
   const { toast } = useToast();
 
@@ -85,46 +87,58 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     }
   };
 
-  // Filter items based on category and price range
+  // Filter items based on category, price range, and search query
   const filteredItems = useMemo(() => {
     return menuItems.filter(item => {
       const categoryMatch = selectedCategory === 'all' 
         ? true 
         : item.category === categories.find(cat => cat.id === selectedCategory)?.name;
       const priceMatch = item.price <= priceRange;
-      return categoryMatch && priceMatch;
-    }).sort((a, b) => a.price - b.price); // Sort by price
-  }, [menuItems, selectedCategory, priceRange]);
+      const searchMatch = searchQuery === '' || 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && priceMatch && searchMatch;
+    }).sort((a, b) => a.price - b.price);
+  }, [menuItems, selectedCategory, priceRange, searchQuery]);
 
   const content = (
-    <div className="space-y-8">
-      <div className="flex flex-col items-center mb-12">
-        <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100 text-center">Categories</h2>
-        <div className="w-full max-w-4xl">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            <div className="md:flex-1">
-              <CategorySelector 
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-                maxPrice={maxPrice}
-                priceRange={priceRange}
-                onPriceRangeChange={setPriceRange}
-              />
-            </div>
-          </div>
+    <div className="space-y-12">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
+        <p className="text-food-gray dark:text-gray-300 mb-8">Discover our delicious dishes</p>
+        
+        <div className="max-w-4xl mx-auto space-y-8">
+          <SearchBar 
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search by dish name or description..."
+          />
+          
+          <CategorySelector 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            maxPrice={maxPrice}
+            priceRange={priceRange}
+            onPriceRangeChange={setPriceRange}
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {filteredItems.length === 0 ? (
           <div className="col-span-full text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400">No dishes found in this category within the selected price range.</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              {searchQuery 
+                ? 'No dishes found matching your search criteria.' 
+                : 'No dishes found in this category within the selected price range.'}
+            </p>
             <Button
               variant="link"
               onClick={() => {
                 setSelectedCategory('all');
                 setPriceRange(maxPrice);
+                setSearchQuery('');
               }}
               className="text-food-orange hover:text-food-orange-dark mt-2"
             >
@@ -185,10 +199,6 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
-          <p className="text-food-gray dark:text-gray-300">Discover our delicious dishes</p>
-        </div>
         {content}
       </div>
     </Layout>
