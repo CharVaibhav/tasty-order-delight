@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/utils/formatters';
-import CartDrawer from './CartDrawer';
+import { CartDrawer } from './CartDrawer';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);

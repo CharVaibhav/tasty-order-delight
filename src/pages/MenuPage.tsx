@@ -8,6 +8,7 @@ import CategorySelector from '@/components/CategorySelector';
 import SearchBar from '@/components/SearchBar';
 import FoodCard from '@/components/FoodCard';
 import { categories, menuItems as defaultMenuItems } from '@/data/menuData';
+import PopularItemsMarquee from '@/components/PopularItemsMarquee';
 
 interface MenuPageProps {
   hideLayout?: boolean;
@@ -87,77 +88,41 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
     }
   };
 
-  // Filter items based on category, price range, and search query
-  const filteredItems = useMemo(() => {
-    return menuItems.filter(item => {
-      const categoryMatch = selectedCategory === 'all' 
-        ? true 
-        : item.category === categories.find(cat => cat.id === selectedCategory)?.name;
-      const priceMatch = item.price <= priceRange;
-      const searchMatch = searchQuery === '' || 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return categoryMatch && priceMatch && searchMatch;
-    }).sort((a, b) => a.price - b.price);
-  }, [menuItems, selectedCategory, priceRange, searchQuery]);
+  const filteredMenuItems = selectedCategory === 'all'
+    ? menuItems
+    : menuItems.filter(item => item.category === selectedCategory);
 
   const content = (
-    <div className="space-y-12">
-      <div className="text-center max-w-4xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold text-food-gray-dark dark:text-gray-100 mb-2">Our Menu</h1>
-          <p className="text-food-gray dark:text-gray-300">Discover our delicious dishes</p>
-        </div>
-        
-        <SearchBar 
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search by dish name or description..."
-        />
-        
-        <CategorySelector 
-          categories={categories}
+    <div className="container mx-auto px-4 py-8">
+      <PopularItemsMarquee 
+        items={menuItems.filter(item => item.category === 'Main Dishes')}
+        onAddToCart={handleAddToCart}
+        onRemoveFromCart={removeItem}
+        onUpdateQuantity={handleUpdateQuantity}
+        cartItems={items}
+      />
+      <div className="mt-8">
+        <CategorySelector
+          categories={[{ id: 'all', name: 'All' }, ...categories]}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          maxPrice={maxPrice}
-          priceRange={priceRange}
-          onPriceRangeChange={setPriceRange}
         />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {filteredItems.length === 0 ? (
-          <div className="col-span-full text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400">
-              {searchQuery 
-                ? 'No dishes found matching your search criteria.' 
-                : 'No dishes found in this category within the selected price range.'}
-            </p>
-            <Button
-              variant="link"
-              onClick={() => {
-                setSelectedCategory('all');
-                setPriceRange(maxPrice);
-                setSearchQuery('');
-              }}
-              className="text-food-orange hover:text-food-orange-dark mt-2"
-            >
-              Reset filters
-            </Button>
-          </div>
-        ) : (
-          filteredItems.map(item => (
+      {filteredMenuItems.length === 0 ? (
+        <p className="text-center mt-8 text-gray-500 dark:text-gray-400">
+          No dishes found in this category.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {filteredMenuItems.map((item) => (
             <FoodCard
               key={item._id}
               item={item}
               onAddToCart={handleAddToCart}
-              itemInCart={getCartItem(item._id)}
-              onRemoveFromCart={removeItem}
-              onUpdateQuantity={handleUpdateQuantity}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 

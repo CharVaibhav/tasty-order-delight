@@ -1,13 +1,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 interface CategorySelectorProps {
-  categories: string[];
+  categories: Category[];
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
 }
 
-export const CategorySelector: React.FC<CategorySelectorProps> = ({
+const CategorySelector: React.FC<CategorySelectorProps> = ({
   categories,
   selectedCategory,
   onSelectCategory,
@@ -16,18 +21,20 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
     <div className="flex flex-wrap gap-3 justify-center">
       {categories.map((category) => (
         <Button
-          key={category}
-          variant={selectedCategory === category ? 'default' : 'outline'}
-          onClick={() => onSelectCategory(category)}
+          key={category.id}
+          variant={selectedCategory === category.id ? 'default' : 'outline'}
+          onClick={() => onSelectCategory(category.id)}
           className={`rounded-full ${
-            selectedCategory === category
+            selectedCategory === category.id
               ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
               : 'hover:bg-primary/10'
           }`}
         >
-          {category.charAt(0).toUpperCase() + category.slice(1)}
+          {category.name}
         </Button>
       ))}
     </div>
   );
 };
+
+export default CategorySelector;

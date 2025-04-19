@@ -30,11 +30,11 @@ export type CartItem = MenuItem & {
 };
 
 export const categories = [
-  { id: 'appetizers', name: 'Appetizers' },
-  { id: 'main-dishes', name: 'Main Dishes' },
-  { id: 'sides', name: 'Sides' },
-  { id: 'desserts', name: 'Desserts' },
-  { id: 'beverages', name: 'Beverages' },
+  { id: 'Appetizers', name: 'Appetizers' },
+  { id: 'Main Dishes', name: 'Main Dishes' },
+  { id: 'Sides', name: 'Sides' },
+  { id: 'Desserts', name: 'Desserts' },
+  { id: 'Beverages', name: 'Beverages' },
 ];
 
 export const menuItems: MenuItem[] = [
