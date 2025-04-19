@@ -4,11 +4,11 @@ import { Layout } from '@/components/layout/Layout';
 import { MenuPage } from './MenuPage';
 import { HeroBanner } from '@/components/HeroBanner';
 import PopularItemsMarquee from '@/components/PopularItemsMarquee';
-import { useCartContext } from '@/context/CartContext';
+import { useCart } from '@/lib/context/CartContext';
 import { menuItems } from '@/data/menuData';
 
 export const Index = () => {
-  const { cartItems, addToCart, removeFromCart, updateQuantity } = useCartContext();
+  const { items, addItem, removeItem, updateQuantity } = useCart();
   const popularItems = menuItems.filter(item => item.category === "Main Dishes");
 
   return (
@@ -22,10 +22,10 @@ export const Index = () => {
             </h2>
             <PopularItemsMarquee 
               items={popularItems}
-              onAddToCart={addToCart}
-              onRemoveFromCart={removeFromCart}
+              onAddToCart={addItem}
+              onRemoveFromCart={removeItem}
               onUpdateQuantity={updateQuantity}
-              cartItems={cartItems}
+              cartItems={items}
             />
           </div>
         </section>

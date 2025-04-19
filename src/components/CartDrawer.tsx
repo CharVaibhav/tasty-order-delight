@@ -1,18 +1,18 @@
+
 import React from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
-import { useCartContext } from '@/context/CartContext';
+import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 
 export const CartDrawer = () => {
-  const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCartContext();
+  const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
   const navigate = useNavigate();
-  const totalItems = getCartCount();
-  const total = getCartTotal();
+  const total = subtotal;
 
   return (
     <Sheet>
@@ -29,7 +29,7 @@ export const CartDrawer = () => {
       <SheetContent className="w-full sm:max-w-md flex flex-col h-full">
         <SheetHeader className="space-y-1">
           <SheetTitle className="text-2xl">Your Cart</SheetTitle>
-          {cartItems.length > 0 && (
+          {items.length > 0 && (
             <p className="text-sm text-muted-foreground">
               {totalItems} {totalItems === 1 ? 'item' : 'items'} in your cart
             </p>
@@ -38,7 +38,7 @@ export const CartDrawer = () => {
         <Separator className="my-4" />
         
         <ScrollArea className="flex-1 pr-4 -mr-4">
-          {cartItems.length === 0 ? (
+          {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[50vh] py-8">
               <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground mb-4">Your cart is empty</p>
@@ -52,7 +52,7 @@ export const CartDrawer = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cartItems.map(item => (
+              {items.map(item => (
                 <div key={item._id} className="flex flex-col p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow">
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -63,7 +63,7 @@ export const CartDrawer = () => {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => removeFromCart(item._id)}
+                      onClick={() => removeItem(item._id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -96,7 +96,7 @@ export const CartDrawer = () => {
           )}
         </ScrollArea>
 
-        {cartItems.length > 0 && (
+        {items.length > 0 && (
           <div className="border-t pt-4 mt-4 space-y-4">
             <div className="flex items-center justify-between text-lg">
               <span className="font-medium">Total</span>
@@ -121,4 +121,4 @@ export const CartDrawer = () => {
       </SheetContent>
     </Sheet>
   );
-}; 
+};

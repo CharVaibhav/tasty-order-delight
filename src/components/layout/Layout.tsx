@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Soup, Search } from 'lucide-react';
-import { useCartContext } from '@/context/CartContext';
+import { useCart } from '@/lib/context/CartContext';
 import Marquee from 'react-fast-marquee';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -12,7 +12,7 @@ interface LayoutProps {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { getCartCount } = useCartContext();
+  const { totalItems } = useCart();
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,7 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     // You can implement the search logic here or pass it to a parent component
   };
 
-  const cartCount = getCartCount();
+  const cartCount = totalItems;
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-gray-900">
