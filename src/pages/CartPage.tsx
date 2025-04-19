@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useCart } from '@/lib/context/CartContext';
@@ -14,8 +15,9 @@ export const CartPage: React.FC = () => {
     updateQuantity, 
     removeItem, 
     clearCart, 
-    totalItems, 
-    totalPrice 
+    totalItems,
+    subtotal, // Use subtotal instead of totalPrice
+    total
   } = useCart();
   const navigate = useNavigate();
 
@@ -136,7 +138,7 @@ export const CartPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total:</span>
-                    <span>{formatPrice(totalPrice)}</span>
+                    <span>{formatPrice(total || subtotal)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -146,7 +148,7 @@ export const CartPage: React.FC = () => {
                   className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
                   disabled={items.length === 0}
                 >
-                  {`Proceed to Checkout (${formatPrice(totalPrice)})`}
+                  {`Proceed to Checkout (${formatPrice(total || subtotal)})`}
                 </Button>
                 <Button
                   variant="outline"
