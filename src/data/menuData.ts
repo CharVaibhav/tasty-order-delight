@@ -23,6 +23,9 @@ import papadumImg from '../assets/images/dishes/papudum.jpeg';
 import sweetLassiImg from '../assets/images/dishes/sweet-lassi.jpeg';
 import butterChickenImg from '../assets/images/dishes/butter-chicken-ac2ff98.jpg';
 import coconutWaterImg from '../assets/images/dishes/Coconut-Juice.jpg';
+import paneerTikkaMasalaImg from '../assets/images/dishes/panner-tikka-masala.webp';
+import masalaChaiImg from '../assets/images/dishes/Masala-Chai.jpg';
+import limeSodaImg from '../assets/images/dishes/lime-soda.jpg';
 
 export interface MenuItem {
   _id: string;
@@ -84,7 +87,7 @@ export const menuItems: MenuItem[] = [
     description: 'Grilled cottage cheese cubes in a spiced creamy tomato gravy',
     price: 299,
     category: 'Main Dishes',
-    imageUrl: pizzaMargheritaImg, // Keep using this image as there's no specific paneer tikka masala image
+    imageUrl: paneerTikkaMasalaImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -174,7 +177,7 @@ export const menuItems: MenuItem[] = [
     description: 'Traditional Indian spiced tea with milk',
     price: 79,
     category: 'Beverages',
-    imageUrl: gulabJamunImg,
+    imageUrl: masalaChaiImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -194,20 +197,11 @@ export const menuItems: MenuItem[] = [
     description: 'Refreshing lime soda with your choice of sweet, salt, or mixed',
     price: 89,
     category: 'Beverages',
-    imageUrl: sushiImg,
+    imageUrl: limeSodaImg,
     isAvailable: true,
     label: 'vegan'
   },
-  {
-    _id: '16',
-    name: 'Buttermilk',
-    description: 'Spiced yogurt-based drink with curry leaves and cumin',
-    price: 69,
-    category: 'Beverages',
-    imageUrl: mangoLassiImg,
-    isAvailable: true,
-    label: 'vegetarian'
-  },
+
   {
     _id: '17',
     name: 'Fresh Coconut Water',

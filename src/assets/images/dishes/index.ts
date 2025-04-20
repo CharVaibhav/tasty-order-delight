@@ -15,6 +15,9 @@ import papadumImage from './papudum.jpeg';
 import sweetLassiImage from './sweet-lassi.jpeg';
 import butterChickenImage from './butter-chicken-ac2ff98.jpg';
 import coconutWaterImage from './Coconut-Juice.jpg';
+import paneerTikkaMasalaImage from './panner-tikka-masala.webp';
+import masalaChaiImage from './Masala-Chai.jpg';
+import limeSodaImage from './lime-soda.jpg';
 
 // Export images
 export const images = {
@@ -34,4 +37,7 @@ export const images = {
   sweetLassi: sweetLassiImage,
   butterChicken: butterChickenImage,
   coconutWater: coconutWaterImage,
+  paneerTikkaMasala: paneerTikkaMasalaImage,
+  masalaChai: masalaChaiImage,
+  limeSoda: limeSodaImage,
 } as const;
