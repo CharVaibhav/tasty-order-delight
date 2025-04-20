@@ -27,14 +27,16 @@ This guide will walk you through deploying the Tasty Order Delight backend API t
 3. Connect your Git repository
 4. Configure the service:
    - Name: `tasty-order-delight-api`
-   - Environment: `Docker`
+   - Environment: `Node`
    - Branch: `main` (or your default branch)
    - Root Directory: Leave empty
+   - Build Command: `cd server && npm install`
+   - Start Command: `cd server && npm start`
    - Plan: Free (or select a paid plan for production)
 5. Add the following environment variables:
    - `NODE_ENV`: `production`
    - `PORT`: `5000`
-   - `MONGODB_URI`: Your MongoDB connection string
+   - `MONGODB_URI`: Your MongoDB connection string (make sure it's correctly formatted)
    - `JWT_SECRET`: A secure random string for JWT token generation
    - `FRONTEND_URL`: Your Netlify frontend URL (e.g., `https://tasty-order-delight.netlify.app`)
 6. Click "Create Web Service"
@@ -47,8 +49,18 @@ This guide will walk you through deploying the Tasty Order Delight backend API t
 4. Connect your Git repository
 5. Render will automatically detect the `render.yaml` file and create the services
 6. Add the secret environment variables that were marked with `sync: false` in the YAML file:
-   - `MONGODB_URI`: Your MongoDB connection string
+   - `MONGODB_URI`: Your MongoDB connection string (make sure it's correctly formatted)
    - `JWT_SECRET`: A secure random string for JWT token generation
+
+#### Important Notes About MongoDB Connection String
+
+When setting up your MongoDB connection string, ensure:
+
+1. The format is correct: `mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority`
+2. Special characters in your password are URL encoded
+3. The database name is explicitly included in the connection string
+4. Your MongoDB Atlas cluster allows connections from anywhere (IP address: `0.0.0.0/0`)
+5. The database user has the correct permissions (at least "readWrite" on your database)
 
 ### 3. Update Frontend Configuration on Netlify
 

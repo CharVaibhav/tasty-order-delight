@@ -36,7 +36,9 @@ export const AuthPage = () => {
       console.log('API URL:', apiUrl);
       
       // For registration, we need to use the correct endpoint
+      // Let's log the exact URL we're using
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      console.log('Full URL:', `${apiUrl}${endpoint}`);
       console.log('Making request to:', apiUrl + endpoint);
       
       // Add baseURL to axios request
