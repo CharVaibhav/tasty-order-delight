@@ -108,7 +108,7 @@ export const CheckoutPage = () => {
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount (50% OFF)</span>
+                  <span>Discount (Coupon Applied)</span>
                   <span>-{formatPrice(subtotal * discount)}</span>
                 </div>
               )}

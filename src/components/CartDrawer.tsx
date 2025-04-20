@@ -131,7 +131,7 @@ export const CartDrawer = () => {
             </div>
             {discount > 0 && (
               <div className="flex items-center justify-between font-medium text-green-600">
-                <span>Discount (50% OFF)</span>
+                <span>Discount (Coupon Applied)</span>
                 <span>-{formatPrice(subtotal * discount)}</span>
               </div>
             )}

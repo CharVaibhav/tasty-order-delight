@@ -136,9 +136,19 @@ export const CartPage: React.FC = () => {
                     <span className="text-gray-600">Total Items:</span>
                     <span>{totalItems}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span>{formatPrice(subtotal)}</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Discount (Coupon Applied):</span>
+                      <span>-{formatPrice(subtotal * discount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total:</span>
-                    <span>{formatPrice(total || subtotal)}</span>
+                    <span>{formatPrice(total)}</span>
                   </div>
                 </div>
               </CardContent>

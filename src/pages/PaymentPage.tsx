@@ -31,17 +31,7 @@ export const PaymentPage = () => {
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Check if user is authenticated
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to proceed with payment",
-        variant: "destructive"
-      });
-      navigate('/auth');
-    }
-  }, [isAuthenticated, loading, navigate, toast]);
+  // No longer requiring authentication for payment
 
   useEffect(() => {
     const storedInfo = localStorage.getItem('checkout-info');
@@ -97,28 +87,18 @@ export const PaymentPage = () => {
     setIsProcessing(true);
     
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to complete your order",
-          variant: "destructive"
-        });
-        navigate('/auth');
-        return;
-      }
-      
       // Get the API URL from environment variables
       const apiUrl = import.meta.env.VITE_API_URL || '';
+      
+      // Get token from localStorage (if available)
+      const token = localStorage.getItem('token');
       
       // Create order in database
       const response = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         body: JSON.stringify({
           items: checkoutInfo.items,
@@ -178,7 +158,7 @@ export const PaymentPage = () => {
             </div>
             {checkoutInfo.discount > 0 && (
               <div className="flex justify-between text-green-600">
-                <span>Discount (50% OFF)</span>
+                <span>Discount (Coupon Applied)</span>
                 <span>-{formatPrice(checkoutInfo.subtotal * checkoutInfo.discount)}</span>
               </div>
             )}

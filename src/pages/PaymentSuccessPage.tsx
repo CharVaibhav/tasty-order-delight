@@ -25,14 +25,6 @@ export const PaymentSuccessPage = () => {
           >
             Return to Menu
           </Button>
-          
-          <Button
-            onClick={() => navigate('/orders')}
-            variant="outline"
-            className="w-full"
-          >
-            View Orders
-          </Button>
         </div>
       </div>
     </div>

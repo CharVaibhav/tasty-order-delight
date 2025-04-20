@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { Layout } from '@/components/layout/Layout';
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
@@ -100,7 +100,10 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      // Get the API URL from environment variables
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,10 +121,10 @@ export default function RegisterPage() {
 
       if (response.ok) {
         toast({
-          title: 'Success!',
-          description: 'Please check your email to verify your account.',
+          title: 'Account created successfully!',
+          description: 'You can now sign in with your credentials.',
         });
-        navigate('/login');
+        navigate('/auth');
       } else {
         toast({
           variant: 'destructive',
@@ -141,9 +144,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto py-8">
-        <Card className="w-full max-w-2xl mx-auto">
+    <div className="container mx-auto py-8">
+      <Card className="w-full max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle>Create an Account</CardTitle>
             <CardDescription>
@@ -275,7 +277,7 @@ export default function RegisterPage() {
               <p className="text-sm text-center text-muted-foreground">
                 Already have an account?{' '}
                 <Link
-                  to="/login"
+                  to="/auth"
                   className="text-primary hover:underline"
                 >
                   Sign in
@@ -285,6 +287,5 @@ export default function RegisterPage() {
           </form>
         </Card>
       </div>
-    </Layout>
   );
 } 

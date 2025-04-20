@@ -15,7 +15,7 @@ const generateToken = (id) => {
 // @access  Public
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, address } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -28,6 +28,8 @@ const register = async (req, res) => {
       name,
       email,
       password,
+      phone,
+      address,
     });
 
     if (user) {
