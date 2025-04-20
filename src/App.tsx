@@ -17,6 +17,7 @@ import { CheckoutPage } from "./pages/CheckoutPage";
 import { PaymentPage } from "./pages/PaymentPage";
 import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
 import { AuthPage } from "./pages/AuthPage";
+import RegisterPage from "./pages/RegisterPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ function App() {
                 <Layout>
                   <Routes>
                     <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="/" element={<Index />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />

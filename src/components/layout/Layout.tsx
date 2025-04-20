@@ -1,12 +1,14 @@
 
 import React, { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Soup } from 'lucide-react';
+import { Soup, UserPlus } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
+import { useAuth } from '@/lib/context/AuthContext';
 import Marquee from 'react-fast-marquee';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { CartDrawer } from '@/components/CartDrawer';
+import { Button } from '@/components/ui/button';
 
 interface LayoutProps {
   children: ReactNode;
@@ -14,6 +16,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { totalItems } = useCart();
+  const { isAuthenticated, user } = useAuth();
   const location = useLocation();
   const cartCount = totalItems;
 
@@ -53,6 +56,26 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 >
                   Contact
                 </Link>
+                {isAuthenticated ? (
+                  <Link 
+                    to="/profile" 
+                    className={`hover:text-food-cream transition-colors ${
+                      isActive('/profile') ? 'text-food-cream' : ''
+                    }`}
+                  >
+                    {user?.name || 'Profile'}
+                  </Link>
+                ) : (
+                  <Link 
+                    to="/register" 
+                    className={`hover:text-food-cream transition-colors flex items-center ${
+                      isActive('/register') ? 'text-food-cream' : ''
+                    }`}
+                  >
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    Register
+                  </Link>
+                )}
                 <CartDrawer />
                 <ThemeToggle />
               </nav>

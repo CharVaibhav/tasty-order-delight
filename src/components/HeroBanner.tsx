@@ -15,7 +15,7 @@ export const HeroBanner = () => {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-r from-food-orange/20 to-gray-900/30 dark:from-food-orange/10 dark:to-gray-900/70">
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-r from-food-orange/10 to-food-orange/5 dark:from-food-orange/5 dark:to-gray-900/20">
       <ParticleBackground />
       <div className="container mx-auto px-4 py-12 relative z-10">
         <motion.div 

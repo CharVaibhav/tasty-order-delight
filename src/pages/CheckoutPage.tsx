@@ -19,17 +19,8 @@ export const CheckoutPage = () => {
     address: '',
   });
   
-  // Check if user is authenticated
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to proceed with checkout",
-        variant: "destructive"
-      });
-      navigate('/auth');
-    }
-  }, [isAuthenticated, loading, navigate, toast]);
+  // No longer requiring authentication for checkout
+  // Just pre-fill the form if the user happens to be logged in
   
   // Pre-fill form with user data if available
   useEffect(() => {
