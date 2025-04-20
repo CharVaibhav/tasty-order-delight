@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Trash2, Minus, Plus } from 'lucide-react';
+import { Soup, Trash2, Minus, Plus } from 'lucide-react';
 import { useCart } from '@/lib/context/CartContext';
 import { formatPrice } from '@/utils/formatters';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ export const CartDrawer = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <ShoppingBag className="h-6 w-6 transition-colors hover:text-primary" />
+          <Soup className="h-6 w-6 transition-colors hover:text-primary" />
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in">
               {totalItems}
@@ -59,7 +59,7 @@ export const CartDrawer = () => {
         <ScrollArea className="flex-1 pr-4 -mr-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[50vh] py-8">
-              <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
+              <Soup className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground mb-4">Your cart is empty</p>
               <Button 
                 onClick={() => {

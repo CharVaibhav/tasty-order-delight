@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MenuPage } from './MenuPage';
 import { HeroBanner } from '@/components/HeroBanner';
