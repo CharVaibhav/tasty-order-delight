@@ -4,7 +4,6 @@ import { useCart } from '@/lib/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/utils/formatters';
-import { Layout } from '@/components/Layout';
 
 interface CheckoutInfo {
   name: string;
@@ -97,92 +96,90 @@ export const PaymentPage = () => {
   }
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Payment Details</h1>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6">Payment Details</h1>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>{formatPrice(checkoutInfo.subtotal)}</span>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>{formatPrice(checkoutInfo.subtotal)}</span>
+            </div>
+            {checkoutInfo.discount > 0 && (
+              <div className="flex justify-between text-green-600">
+                <span>Discount (50% OFF)</span>
+                <span>-{formatPrice(checkoutInfo.subtotal * checkoutInfo.discount)}</span>
               </div>
-              {checkoutInfo.discount > 0 && (
-                <div className="flex justify-between text-green-600">
-                  <span>Discount (50% OFF)</span>
-                  <span>-{formatPrice(checkoutInfo.subtotal * checkoutInfo.discount)}</span>
-                </div>
-              )}
-              <div className="flex justify-between font-bold border-t pt-2">
-                <span>Total</span>
-                <span>{formatPrice(checkoutInfo.total)}</span>
-              </div>
+            )}
+            <div className="flex justify-between font-bold border-t pt-2">
+              <span>Total</span>
+              <span>{formatPrice(checkoutInfo.total)}</span>
             </div>
           </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="cardNumber" className="block text-sm font-medium mb-2">
+              Card Number
+            </label>
+            <Input
+              id="cardNumber"
+              name="cardNumber"
+              type="text"
+              required
+              placeholder="1234 5678 9012 3456"
+              value={cardInfo.cardNumber}
+              onChange={handleInputChange}
+              className="w-full"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="cardNumber" className="block text-sm font-medium mb-2">
-                Card Number
+              <label htmlFor="expiryDate" className="block text-sm font-medium mb-2">
+                Expiry Date
               </label>
               <Input
-                id="cardNumber"
-                name="cardNumber"
+                id="expiryDate"
+                name="expiryDate"
                 type="text"
                 required
-                placeholder="1234 5678 9012 3456"
-                value={cardInfo.cardNumber}
+                placeholder="MM/YY"
+                value={cardInfo.expiryDate}
                 onChange={handleInputChange}
                 className="w-full"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="expiryDate" className="block text-sm font-medium mb-2">
-                  Expiry Date
-                </label>
-                <Input
-                  id="expiryDate"
-                  name="expiryDate"
-                  type="text"
-                  required
-                  placeholder="MM/YY"
-                  value={cardInfo.expiryDate}
-                  onChange={handleInputChange}
-                  className="w-full"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cvv" className="block text-sm font-medium mb-2">
-                  CVV
-                </label>
-                <Input
-                  id="cvv"
-                  name="cvv"
-                  type="text"
-                  required
-                  placeholder="123"
-                  value={cardInfo.cvv}
-                  onChange={handleInputChange}
-                  className="w-full"
-                />
-              </div>
+            <div>
+              <label htmlFor="cvv" className="block text-sm font-medium mb-2">
+                CVV
+              </label>
+              <Input
+                id="cvv"
+                name="cvv"
+                type="text"
+                required
+                placeholder="123"
+                value={cardInfo.cvv}
+                onChange={handleInputChange}
+                className="w-full"
+              />
             </div>
+          </div>
 
-            <Button 
-              type="submit" 
-              className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
-              disabled={!isFormValid() || isProcessing}
-            >
-              {isProcessing ? 'Processing...' : `Pay ${formatPrice(checkoutInfo.total)}`}
-            </Button>
-          </form>
-        </div>
+          <Button 
+            type="submit" 
+            className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
+            disabled={!isFormValid() || isProcessing}
+          >
+            {isProcessing ? 'Processing...' : `Pay ${formatPrice(checkoutInfo.total)}`}
+          </Button>
+        </form>
       </div>
-    </Layout>
+    </div>
   );
 }; 
