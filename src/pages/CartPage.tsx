@@ -8,6 +8,7 @@ import { Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '@/utils/formatters';
 import { Slider } from '@/components/ui/slider';
+import CouponInput from '@/components/CouponInput';
 
 export const CartPage: React.FC = () => {
   const { 
@@ -16,7 +17,8 @@ export const CartPage: React.FC = () => {
     removeItem, 
     clearCart, 
     totalItems,
-    subtotal, // Use subtotal instead of totalPrice
+    subtotal,
+    discount,
     total
   } = useCart();
   const navigate = useNavigate();
@@ -131,24 +133,31 @@ export const CartPage: React.FC = () => {
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Total Items:</span>
-                    <span>{totalItems}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Subtotal:</span>
-                    <span>{formatPrice(subtotal)}</span>
-                  </div>
-                  {discount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Discount (Coupon Applied):</span>
-                      <span>-{formatPrice(subtotal * discount)}</span>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Total Items:</span>
+                      <span>{totalItems}</span>
                     </div>
-                  )}
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total:</span>
-                    <span>{formatPrice(total)}</span>
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>{formatPrice(subtotal)}</span>
+                    </div>
+                    {discount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Discount (Coupon Applied):</span>
+                        <span>-{formatPrice(subtotal * discount)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total:</span>
+                      <span>{formatPrice(total)}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2">
+                    <p className="text-sm font-medium mb-2">Have a coupon?</p>
+                    <CouponInput onApplyCoupon={(discount) => useCart().setDiscount(discount)} />
                   </div>
                 </div>
               </CardContent>

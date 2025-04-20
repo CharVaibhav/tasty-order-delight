@@ -77,12 +77,13 @@ export default function RegisterPage() {
       return false;
     }
 
-    const phoneRegex = /^\+?[1-9]\d{9,11}$/;
+    // Indian phone number format: 10 digits, optionally starting with +91 or 0
+    const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Please enter a valid phone number',
+        description: 'Please enter a valid Indian phone number (e.g., 9876543210 or +91 9876543210)',
       });
       return false;
     }
@@ -208,7 +209,7 @@ export default function RegisterPage() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    placeholder="+1234567890"
+                    placeholder="+91 9876543210"
                     required
                     value={formData.phone}
                     onChange={handleChange}
