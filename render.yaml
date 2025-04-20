@@ -7,6 +7,8 @@ services:
     buildCommand: cd server && npm install
     startCommand: cd server && npm start
     rootDir: .
+    healthCheckPath: /api/health
+    numInstances: 1
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,4 +19,4 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://tasty-order-delight.netlify.app
+        value: https://digital-diner.netlify.app

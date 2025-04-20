@@ -11,7 +11,23 @@ const mongooseOptions = {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
+  // Additional options for better stability
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+  maxPoolSize: 10,
+  minPoolSize: 5,
+  maxIdleTimeMS: 60000,
+  heartbeatFrequencyMS: 10000,
+  retryWrites: true,
+  retryReads: true,
+  w: 'majority',
+  // Auto reconnect settings
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 };
 
 // Connect to MongoDB with retry logic
@@ -21,9 +37,32 @@ const connectDB = async (retries = 5, delay = 5000) => {
       console.log('Attempting to connect to MongoDB Atlas...');
       console.log(`Using URI: ${uri.replace(/:[^:]*@/, ':****@')}`);
       
+      // Disconnect if already connected
+      if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+        console.log('Disconnected from previous MongoDB connection');
+      }
+      
       await mongoose.connect(uri, mongooseOptions);
       
+      // Test the connection with a simple operation
+      await mongoose.connection.db.admin().ping();
+      
       console.log('MongoDB Atlas connection successful!');
+      
+      // Set up connection event handlers
+      mongoose.connection.on('error', (err) => {
+        console.error('MongoDB connection error:', err);
+      });
+      
+      mongoose.connection.on('disconnected', () => {
+        console.warn('MongoDB disconnected. The connection was lost.');
+      });
+      
+      mongoose.connection.on('reconnected', () => {
+        console.log('MongoDB reconnected successfully');
+      });
+      
       return mongoose.connection;
     } catch (err) {
       console.error(`MongoDB connection attempt ${i + 1} failed:`, err.message);

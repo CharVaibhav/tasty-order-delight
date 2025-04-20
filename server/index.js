@@ -110,20 +110,76 @@ const connectDB = require('./config/db');
 // Start the server after MongoDB connection
 const startServer = () => {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`==> Your service is live 🎉`);
   });
+  
+  // Handle server errors
+  server.on('error', (error) => {
+    console.error('Server error:', error);
+  });
+  
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed.');
+      mongoose.connection.close(false, () => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+      });
+    });
+    
+    // Force close if graceful shutdown takes too long
+    setTimeout(() => {
+      console.error('Forced shutdown after timeout');
+      process.exit(1);
+    }, 10000);
+  });
+  
+  process.on('SIGINT', () => {
+    console.log('SIGINT received. Shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed.');
+      mongoose.connection.close(false, () => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+      });
+    });
+  });
+  
+  return server;
 };
 
-// Connect to MongoDB and start server
-connectDB()
-  .then(() => {
-    startServer();
-  })
-  .catch(err => {
-    console.error('Failed to connect to MongoDB. Server not started:', err);
-    process.exit(1);
-  });
+// Connect to MongoDB and start server with retry logic
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 5000;
+let retries = 0;
+
+const connectWithRetry = () => {
+  console.log(`MongoDB connection attempt ${retries + 1}/${MAX_RETRIES}`);
+  
+  connectDB()
+    .then(() => {
+      console.log('MongoDB connected successfully');
+      startServer();
+    })
+    .catch(err => {
+      console.error('Failed to connect to MongoDB:', err);
+      
+      if (retries < MAX_RETRIES) {
+        retries++;
+        console.log(`Retrying in ${RETRY_DELAY/1000} seconds...`);
+        setTimeout(connectWithRetry, RETRY_DELAY);
+      } else {
+        console.error('Max retries reached. Could not connect to MongoDB.');
+        process.exit(1);
+      }
+    });
+};
+
+connectWithRetry();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
