@@ -177,21 +177,49 @@
             try {
                 statusElement.innerHTML = `Testing ${endpoint.path}...`;
                 responseElement.style.display = 'block';
-                responseElement.textContent = `Sending request to: ${apiUrl}${endpoint.path}\nWith Origin header: ${frontendUrl}`;
+                
+                // Clean up URLs to ensure they're properly formatted
+                if (apiUrl.endsWith('/') && endpoint.path.startsWith('/')) {
+                    apiUrl = apiUrl.slice(0, -1);
+                }
+                
+                if (!apiUrl.endsWith('/') && !endpoint.path.startsWith('/')) {
+                    apiUrl = apiUrl + '/';
+                }
+                
+                const fullUrl = `${apiUrl}${endpoint.path}`;
+                responseElement.textContent = `Sending request to: ${fullUrl}\nWith Origin header: ${frontendUrl}`;
                 
                 // Log the request details
-                console.log(`Testing endpoint: ${apiUrl}${endpoint.path}`);
+                console.log(`Testing endpoint: ${fullUrl}`);
                 console.log(`Using Origin: ${frontendUrl}`);
                 
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                // Try a no-cors request first to check if the server is reachable
+                try {
+                    const pingResponse = await fetch(fullUrl, { 
+                        method: 'HEAD',
+                        mode: 'no-cors',
+                        cache: 'no-cache'
+                    });
+                    console.log('Ping response:', pingResponse);
+                    responseElement.textContent += '\n\nServer is reachable (ping test successful)';
+                } catch (pingError) {
+                    console.error('Ping test failed:', pingError);
+                    responseElement.textContent += '\n\nServer ping test failed: ' + pingError.message;
+                }
                 
-                const response = await fetch(`${apiUrl}${endpoint.path}`, {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+                
+                const response = await fetch(fullUrl, {
                     method: 'GET',
                     headers: {
                         'Origin': frontendUrl,
                         'Accept': 'application/json'
                     },
+                    credentials: 'omit', // Don't send cookies
+                    mode: 'cors', // Explicitly request CORS
+                    cache: 'no-cache', // Don't use cached responses
                     signal: controller.signal
                 });
                 
@@ -241,9 +269,24 @@
                 responseElement.style.display = 'block';
                 
                 if (error.name === 'AbortError') {
-                    responseElement.textContent += `\n\nRequest timed out after 10 seconds. The API server might be down or responding too slowly.`;
+                    responseElement.textContent += `\n\nRequest timed out after 15 seconds. The API server might be down or responding too slowly.`;
                 } else {
                     responseElement.textContent += `\n\nError: ${error.message}\n\nThis could be due to:\n- API server is down\n- CORS is not configured correctly\n- Network connectivity issues\n- Invalid API URL`;
+                    
+                    // Add diagnostic information
+                    responseElement.textContent += `\n\nDiagnostic Information:`;
+                    responseElement.textContent += `\n- Browser: ${navigator.userAgent}`;
+                    responseElement.textContent += `\n- Using Fetch API: ${typeof fetch !== 'undefined'}`;
+                    responseElement.textContent += `\n- Using Promises: ${typeof Promise !== 'undefined'}`;
+                    
+                    // Try to ping a well-known service to check internet connectivity
+                    fetch('https://httpbin.org/get', { mode: 'no-cors' })
+                        .then(() => {
+                            responseElement.textContent += `\n- Internet connectivity: OK (httpbin.org reachable)`;
+                        })
+                        .catch(err => {
+                            responseElement.textContent += `\n- Internet connectivity: ISSUE (httpbin.org not reachable: ${err.message})`;
+                        });
                 }
                 
                 return { success: false, error: error.message };

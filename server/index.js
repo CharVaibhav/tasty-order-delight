@@ -30,6 +30,8 @@ const allowedOrigins = [
   'https://tasty-order-delight-1.netlify.app',
   'https://digital-diner.netlify.app',
   'http://localhost:5173',
+  'http://localhost',
+  'file://',
   // Add your custom domain here if you have one
 ];
 
@@ -37,6 +39,9 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
+    
+    // Log the origin for debugging
+    console.log(`Received request from origin: ${origin}`);
     
     if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.netlify.app')) {
       callback(null, true);
@@ -47,7 +52,8 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin'],
+  exposedHeaders: ['Access-Control-Allow-Origin'],
   optionsSuccessStatus: 200
 };
 
