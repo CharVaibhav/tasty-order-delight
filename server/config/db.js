@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Get MongoDB URI from environment variables or use the direct connection string
-const uri = process.env.MONGODB_URI || "mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGODB_URI || "mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/tasty_order_delight?retryWrites=true&w=majority";
 
 // MongoDB connection options using the Atlas recommended settings
 const mongooseOptions = {
@@ -21,13 +21,7 @@ const mongooseOptions = {
   heartbeatFrequencyMS: 10000,
   retryWrites: true,
   retryReads: true,
-  w: 'majority',
-  // Auto reconnect settings
-  autoReconnect: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 1000,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  w: 'majority'
 };
 
 // Connect to MongoDB with retry logic

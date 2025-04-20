@@ -1,17 +1,16 @@
 # Update MongoDB Connection in Render
 
-Follow these steps to update your MongoDB connection string in Render with the new password using the Atlas-provided format.
+Follow these steps to update your MongoDB connection string in Render with the correct format.
 
-## Step 1: Test the New Connection String Locally
+## Step 1: Verify Your MongoDB URI
 
-Before updating Render, test the new connection string locally to ensure it works:
+First, make sure your MongoDB URI is correct and working:
 
 ```bash
-# Run the test script with the Atlas-provided format
-node test-atlas-mongodb-connection.js
+node verify-mongodb-uri.js
 ```
 
-If the connection is successful, you'll see "Pinged your deployment. You successfully connected to MongoDB!" in the output.
+If the script shows "Connection successful!", your URI is working correctly.
 
 ## Step 2: Update Environment Variables in Render
 
@@ -19,9 +18,9 @@ If the connection is successful, you'll see "Pinged your deployment. You success
 2. Select your "tasty-order-delight-api" service
 3. Go to the "Environment" tab
 4. Find the `MONGODB_URI` environment variable
-5. Update its value to the Atlas-provided format:
+5. Update its value to the correct format with database name:
    ```
-   mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+   mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/tasty_order_delight?retryWrites=true&w=majority
    ```
 6. Click "Save Changes"
 
