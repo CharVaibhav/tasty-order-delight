@@ -1,0 +1,13 @@
+{
+  "name": "tasty-order-delight-api-test",
+  "version": "1.0.0",
+  "description": "Simple API test for Tasty Order Delight",
+  "main": "manual-api-test.js",
+  "type": "module",
+  "scripts": {
+    "test": "node manual-api-test.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .endpoint {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+        }
+        .endpoint h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #f44336;
+        }
+        .response {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Integration Test</h1>
+    
+    <div class="form-group">
+        <label for="apiUrl">API URL:</label>
+        <input type="text" id="apiUrl" value="https://tasty-order-delight-api.onrender.com" />
+    </div>
+    
+    <div class="form-group">
+        <label for="frontendUrl">Frontend URL:</label>
+        <input type="text" id="frontendUrl" value="https://digital-diner.netlify.app" />
+    </div>
+    
+    <button id="testButton">Run Tests</button>
+    
+    <div id="results" style="margin-top: 20px;">
+        <div id="healthCheck" class="endpoint">
+            <h3>Health Check</h3>
+            <div id="healthStatus">Not tested</div>
+            <div id="healthResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <div id="menuItems" class="endpoint">
+            <h3>Menu Items</h3>
+            <div id="menuStatus">Not tested</div>
+            <div id="menuResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <div id="categories" class="endpoint">
+            <h3>Categories</h3>
+            <div id="categoriesStatus">Not tested</div>
+            <div id="categoriesResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <div id="summary" class="summary" style="display: none;">
+            <h3>Summary</h3>
+            <div id="summaryContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('testButton').addEventListener('click', runTests);
+        
+        async function runTests() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const frontendUrl = document.getElementById('frontendUrl').value.trim();
+            
+            if (!apiUrl || !frontendUrl) {
+                alert('Please enter both API URL and Frontend URL');
+                return;
+            }
+            
+            document.getElementById('testButton').disabled = true;
+            document.getElementById('testButton').textContent = 'Running Tests...';
+            
+            // Reset results
+            document.getElementById('healthStatus').innerHTML = 'Testing...';
+            document.getElementById('menuStatus').innerHTML = 'Testing...';
+            document.getElementById('categoriesStatus').innerHTML = 'Testing...';
+            document.getElementById('healthResponse').style.display = 'none';
+            document.getElementById('menuResponse').style.display = 'none';
+            document.getElementById('categoriesResponse').style.display = 'none';
+            document.getElementById('summary').style.display = 'none';
+            
+            // Test endpoints
+            const endpoints = [
+                { id: 'health', name: 'Health Check', path: '/api/health' },
+                { id: 'menu', name: 'Menu Items', path: '/api/menu' },
+                { id: 'categories', name: 'Categories', path: '/api/categories' }
+            ];
+            
+            let successCount = 0;
+            
+            for (const endpoint of endpoints) {
+                const result = await testEndpoint(apiUrl, frontendUrl, endpoint);
+                if (result.success) successCount++;
+            }
+            
+            // Show summary
+            document.getElementById('summary').style.display = 'block';
+            document.getElementById('summaryContent').innerHTML = `
+                <p>${successCount}/${endpoints.length} endpoints working</p>
+                ${successCount === endpoints.length 
+                    ? '<p class="success">✅ All API endpoints are working!</p>' 
+                    : '<p class="error">⚠️ Some API endpoints are not working properly.</p>'}
+            `;
+            
+            document.getElementById('testButton').disabled = false;
+            document.getElementById('testButton').textContent = 'Run Tests';
+        }
+        
+        async function testEndpoint(apiUrl, frontendUrl, endpoint) {
+            const statusElement = document.getElementById(`${endpoint.id}Status`);
+            const responseElement = document.getElementById(`${endpoint.id}Response`);
+            
+            try {
+                statusElement.innerHTML = `Testing ${endpoint.path}...`;
+                
+                const response = await fetch(`${apiUrl}${endpoint.path}`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': frontendUrl
+                    }
+                });
+                
+                const status = response.status;
+                
+                if (status >= 200 && status < 300) {
+                    try {
+                        const data = await response.json();
+                        statusElement.innerHTML = `<span class="status success">✅ Status: ${status} (${response.statusText})</span>`;
+                        responseElement.style.display = 'block';
+                        
+                        if (Array.isArray(data)) {
+                            responseElement.textContent = `Array with ${data.length} items`;
+                            if (data.length > 0) {
+                                responseElement.textContent += `\nFirst item: ${JSON.stringify(data[0], null, 2)}`;
+                            }
+                        } else {
+                            responseElement.textContent = `Object with keys: ${Object.keys(data).join(', ')}\n${JSON.stringify(data, null, 2)}`;
+                        }
+                        
+                        return { success: true, data };
+                    } catch (e) {
+                        statusElement.innerHTML = `<span class="status error">❌ Error parsing JSON: ${e.message}</span>`;
+                        responseElement.style.display = 'block';
+                        responseElement.textContent = 'Invalid JSON response';
+                        return { success: false, error: 'Invalid JSON response' };
+                    }
+                } else {
+                    const errorText = await response.text();
+                    statusElement.innerHTML = `<span class="status error">❌ Status: ${status} (${response.statusText})</span>`;
+                    responseElement.style.display = 'block';
+                    responseElement.textContent = errorText;
+                    return { success: false, status };
+                }
+            } catch (error) {
+                statusElement.innerHTML = `<span class="status error">❌ Request failed: ${error.message}</span>`;
+                return { success: false, error: error.message };
+            }
+        }
+    </script>
+</body>
+</html>
