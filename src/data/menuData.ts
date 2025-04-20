@@ -13,7 +13,16 @@ import gulabJamunImg from '../assets/images/dishes/gulabjamun.jpeg';
 import mangoLassiImg from '../assets/images/dishes/mango-lassi.jpg';
 import samosaImg from '../assets/images/dishes/Samosas-with-Potatoes-and-Peas-2-1.jpg';
 import masalaDosaImg from '../assets/images/dishes/masala-dosa.jpg';
-import biryaniImg from '../assets/images/dishes/Chicken-Biryani.jpg';
+import chickenBiryaniImg from '../assets/images/dishes/Chicken-Biryani.jpg';
+import vegetableBiryaniImg from '../assets/images/dishes/vegetable-biryani.jpg';
+import palakPaneerImg from '../assets/images/dishes/palak-panner.jpeg';
+import jeeraRiceImg from '../assets/images/dishes/jeera-rice.jpeg';
+import garlicNaanImg from '../assets/images/dishes/garlic-naan.jpeg';
+import raitaImg from '../assets/images/dishes/raita.jpeg';
+import papadumImg from '../assets/images/dishes/papudum.jpeg';
+import sweetLassiImg from '../assets/images/dishes/sweet-lassi.jpeg';
+import butterChickenImg from '../assets/images/dishes/butter-chicken-ac2ff98.jpg';
+import coconutWaterImg from '../assets/images/dishes/Coconut-Juice.jpg';
 
 export interface MenuItem {
   _id: string;
@@ -65,7 +74,7 @@ export const menuItems: MenuItem[] = [
     description: 'Tender chicken in a rich, creamy tomato-based curry with butter and aromatic spices',
     price: 349,
     category: 'Main Dishes',
-    imageUrl: steakImg,
+    imageUrl: butterChickenImg,
     isAvailable: true,
     label: 'non-vegetarian'
   },
@@ -75,7 +84,7 @@ export const menuItems: MenuItem[] = [
     description: 'Grilled cottage cheese cubes in a spiced creamy tomato gravy',
     price: 299,
     category: 'Main Dishes',
-    imageUrl: pizzaMargheritaImg,
+    imageUrl: pizzaMargheritaImg, // Keep using this image as there's no specific paneer tikka masala image
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -85,7 +94,7 @@ export const menuItems: MenuItem[] = [
     description: 'Fragrant basmati rice cooked with tender chicken, aromatic spices, and caramelized onions',
     price: 399,
     category: 'Main Dishes',
-    imageUrl: biryaniImg,
+    imageUrl: chickenBiryaniImg,
     isAvailable: true,
     label: 'non-vegetarian'
   },
@@ -95,7 +104,7 @@ export const menuItems: MenuItem[] = [
     description: 'Aromatic rice cooked with mixed vegetables, saffron, and special biryani spices',
     price: 299,
     category: 'Main Dishes',
-    imageUrl: biryaniImg,
+    imageUrl: vegetableBiryaniImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -105,7 +114,7 @@ export const menuItems: MenuItem[] = [
     description: 'Fresh spinach curry with homemade cottage cheese cubes and aromatic spices',
     price: 279,
     category: 'Main Dishes',
-    imageUrl: pizzaMargheritaImg,
+    imageUrl: palakPaneerImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -115,7 +124,7 @@ export const menuItems: MenuItem[] = [
     description: 'Fragrant basmati rice tempered with cumin seeds',
     price: 149,
     category: 'Sides',
-    imageUrl: biryaniImg,
+    imageUrl: jeeraRiceImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -125,7 +134,7 @@ export const menuItems: MenuItem[] = [
     description: 'Soft bread topped with garlic and butter, baked in tandoor',
     price: 69,
     category: 'Sides',
-    imageUrl: pizzaMargheritaImg,
+    imageUrl: garlicNaanImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -135,7 +144,7 @@ export const menuItems: MenuItem[] = [
     description: 'Yogurt dip with mild spices and grated cucumber',
     price: 79,
     category: 'Sides',
-    imageUrl: mangoLassiImg,
+    imageUrl: raitaImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -145,7 +154,7 @@ export const menuItems: MenuItem[] = [
     description: 'Crispy lentil wafers served with chutney',
     price: 49,
     category: 'Sides',
-    imageUrl: samosaImg,
+    imageUrl: papadumImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -175,7 +184,7 @@ export const menuItems: MenuItem[] = [
     description: 'Creamy yogurt drink sweetened with rose syrup',
     price: 99,
     category: 'Beverages',
-    imageUrl: mangoLassiImg,
+    imageUrl: sweetLassiImg,
     isAvailable: true,
     label: 'vegetarian'
   },
@@ -205,7 +214,7 @@ export const menuItems: MenuItem[] = [
     description: 'Natural coconut water served in the shell',
     price: 99,
     category: 'Beverages',
-    imageUrl: dessertImg,
+    imageUrl: coconutWaterImg,
     isAvailable: true,
     label: 'vegan'
   },
