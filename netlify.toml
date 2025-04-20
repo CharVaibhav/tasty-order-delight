@@ -4,7 +4,7 @@
   status = 200
 
 [build]
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "node scripts/netlify-build.cjs"
   publish = "dist"
 
 [build.environment]
