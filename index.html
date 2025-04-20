@@ -3,11 +3,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon-new.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-new.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-new.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-new.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>The Digital Diner</title>
     <meta name="description" content="A modern food ordering application" />
     <meta name="author" content="Digital Diner" />
@@ -25,5 +29,15 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Force favicon refresh
+      document.addEventListener('DOMContentLoaded', function() {
+        const favicons = document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]');
+        favicons.forEach(favicon => {
+          const originalHref = favicon.getAttribute('href');
+          favicon.setAttribute('href', originalHref + '?v=' + new Date().getTime());
+        });
+      });
+    </script>
   </body>
 </html>
