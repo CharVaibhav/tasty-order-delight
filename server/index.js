@@ -71,51 +71,26 @@ app.use((err, req, res, next) => {
   });
 });
 
-// MongoDB connection options
-const mongoOptions = {
-  serverApi: {
-    version: '1',
-    strict: true,
-    deprecationErrors: true,
-  },
-  retryWrites: true,
-  w: 'majority',
-  maxPoolSize: 10,
-  minPoolSize: 5,
-  socketTimeoutMS: 45000,
-  connectTimeoutMS: 10000,
-  heartbeatFrequencyMS: 10000,
-  retryReads: true,
-  maxIdleTimeMS: 30000,
+// Import the MongoDB connection module
+const connectDB = require('./config/db');
+
+// Start the server after MongoDB connection
+const startServer = () => {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 };
 
-// Connect to MongoDB with retry logic
-const connectWithRetry = async (retries = 5, delay = 5000) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, mongoOptions);
-      console.log('Connected to MongoDB');
-      // Start server only after successful database connection
-      const PORT = process.env.PORT || 5000;
-      app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
-      return;
-    } catch (err) {
-      console.error(`MongoDB connection attempt ${i + 1} failed:`, err);
-      if (i < retries - 1) {
-        console.log(`Retrying in ${delay/1000} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      } else {
-        console.error('Max retries reached. Exiting...');
-        process.exit(1);
-      }
-    }
-  }
-};
-
-// Start connection process
-connectWithRetry();
+// Connect to MongoDB and start server
+connectDB()
+  .then(() => {
+    startServer();
+  })
+  .catch(err => {
+    console.error('Failed to connect to MongoDB. Server not started:', err);
+    process.exit(1);
+  });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

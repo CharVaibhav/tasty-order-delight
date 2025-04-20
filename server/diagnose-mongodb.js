@@ -1,4 +1,4 @@
-const connectionString = "mongodb+srv://23r11a05j1:VaibhavJ1@cluster0.bgrefss.mongodb.net/tasty_order_delight?retryWrites=true&w=majority";
+const connectionString = "mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/tasty_order_delight?retryWrites=true&w=majority";
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const dns = require('dns');
