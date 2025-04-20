@@ -1,19 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/lib/context/CartContext';
+import { useAuth } from '@/lib/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/utils/formatters';
+import { useToast } from '@/components/ui/use-toast';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, subtotal, discount, total } = useCart();
+  const { isAuthenticated, user, loading } = useAuth();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     address: '',
   });
+  
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to proceed with checkout",
+        variant: "destructive"
+      });
+      navigate('/auth');
+    }
+  }, [isAuthenticated, loading, navigate, toast]);
+  
+  // Pre-fill form with user data if available
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

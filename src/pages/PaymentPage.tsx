@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/lib/context/CartContext';
+import { useAuth } from '@/lib/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/utils/formatters';
+import { useToast } from '@/components/ui/use-toast';
 
 interface CheckoutInfo {
   name: string;
@@ -19,6 +21,8 @@ interface CheckoutInfo {
 export const PaymentPage = () => {
   const navigate = useNavigate();
   const { clearCart } = useCart();
+  const { isAuthenticated, loading } = useAuth();
+  const { toast } = useToast();
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutInfo | null>(null);
   const [cardInfo, setCardInfo] = useState({
     cardNumber: '',
@@ -26,6 +30,18 @@ export const PaymentPage = () => {
     cvv: '',
   });
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to proceed with payment",
+        variant: "destructive"
+      });
+      navigate('/auth');
+    }
+  }, [isAuthenticated, loading, navigate, toast]);
 
   useEffect(() => {
     const storedInfo = localStorage.getItem('checkout-info');
@@ -80,15 +96,65 @@ export const PaymentPage = () => {
 
     setIsProcessing(true);
     
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Clear cart and checkout info
-    clearCart();
-    localStorage.removeItem('checkout-info');
-    
-    // Navigate to success page
-    navigate('/payment-success');
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to complete your order",
+          variant: "destructive"
+        });
+        navigate('/auth');
+        return;
+      }
+      
+      // Create order in database
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          items: checkoutInfo.items,
+          customerInfo: {
+            name: checkoutInfo.name,
+            email: checkoutInfo.email,
+            phone: checkoutInfo.phone,
+            address: checkoutInfo.address
+          },
+          paymentInfo: {
+            cardNumber: cardInfo.cardNumber.replace(/\s/g, '').slice(-4), // Only store last 4 digits
+            paymentMethod: 'Credit Card'
+          },
+          subtotal: checkoutInfo.subtotal,
+          discount: checkoutInfo.discount,
+          total: checkoutInfo.total
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create order');
+      }
+      
+      // Clear cart and checkout info
+      clearCart();
+      localStorage.removeItem('checkout-info');
+      
+      // Navigate to success page
+      navigate('/payment/success');
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast({
+        title: "Order failed",
+        description: "There was a problem processing your order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (!checkoutInfo) {
