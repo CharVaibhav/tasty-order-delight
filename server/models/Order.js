@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: false // Allow guest orders
   },
+  // Reference to PostgreSQL order ID for cross-database reference
+  pgOrderId: {
+    type: Number,
+    required: false
+  },
   items: [{
     _id: {
       type: String,

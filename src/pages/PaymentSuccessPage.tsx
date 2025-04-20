@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
@@ -6,39 +6,58 @@ import confetti from 'canvas-confetti';
 
 export const PaymentSuccessPage = () => {
   const navigate = useNavigate();
+  const [confettiTriggered, setConfettiTriggered] = useState(false);
 
   // Trigger confetti effect when the component mounts
   useEffect(() => {
+    // Only trigger confetti once
+    if (confettiTriggered) return;
+    
+    setConfettiTriggered(true);
+    
     // Create a simple confetti effect
     const duration = 3 * 1000;
     const end = Date.now() + duration;
 
     const runConfetti = () => {
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#FF7E33', '#FFB74D', '#FFF176']
-      });
-      
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#FF7E33', '#FFB74D', '#FFF176']
-      });
+      try {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#FF7E33', '#FFB74D', '#FFF176']
+        });
+        
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#FF7E33', '#FFB74D', '#FFF176']
+        });
 
-      if (Date.now() < end) {
-        requestAnimationFrame(runConfetti);
+        if (Date.now() < end) {
+          requestAnimationFrame(runConfetti);
+        }
+      } catch (e) {
+        console.error('Confetti error:', e);
       }
     };
 
-    try {
+    // Start the confetti with a slight delay to ensure the page is fully loaded
+    setTimeout(() => {
       runConfetti();
-    } catch (e) {
-      console.error('Confetti error:', e);
+    }, 300);
+  }, [confettiTriggered]);
+
+  // Check if user came from payment page or navigated directly
+  useEffect(() => {
+    const referrer = document.referrer;
+    const isFromPayment = referrer.includes('/payment') && !referrer.includes('/success');
+    
+    if (!isFromPayment) {
+      console.log('User navigated directly to success page');
     }
   }, []);
 
@@ -68,7 +87,7 @@ export const PaymentSuccessPage = () => {
             onClick={() => navigate('/')}
             className="w-full bg-food-orange hover:bg-food-orange-dark text-white"
           >
-            Return to Menu
+            Return to Home
           </Button>
           
           <Button
@@ -77,7 +96,7 @@ export const PaymentSuccessPage = () => {
             className="w-full"
           >
             <ShoppingBag className="mr-2 h-4 w-4" />
-            Continue Shopping
+            Browse Menu
           </Button>
         </div>
       </div>

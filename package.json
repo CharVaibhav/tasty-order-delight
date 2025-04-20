@@ -12,7 +12,9 @@
     "server:start": "node dist/server/index.js",
     "server:dev": "nodemon --exec ts-node server/index.ts",
     "dev:full": "concurrently \"npm run server:dev\" \"npm run dev\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:postgres": "node server/scripts/seed-postgres.js",
+    "db:setup": "npm run seed:postgres"
   },
   "engines": {
     "node": ">=18.0.0"

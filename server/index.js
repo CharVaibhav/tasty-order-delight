@@ -9,6 +9,10 @@ const authRoutes = require('./routes/auth');
 const orderRoutes = require('./routes/orders');
 const menuRoutes = require('./routes/menu');
 
+// Import database connections
+const connectMongoDB = require('./config/db');
+const postgres = require('./config/postgres');
+
 // Load environment variables
 dotenv.config();
 
@@ -67,13 +71,39 @@ app.get('/', (req, res) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
+app.get('/api/health', async (req, res) => {
+  const health = {
     status: 'success',
     message: 'API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
+    environment: process.env.NODE_ENV,
+    databases: {
+      mongodb: {
+        status: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+      },
+      postgresql: {
+        status: 'checking'
+      }
+    }
+  };
+  
+  // Check PostgreSQL connection
+  try {
+    const pgConnected = await postgres.testConnection();
+    health.databases.postgresql.status = pgConnected ? 'connected' : 'disconnected';
+  } catch (error) {
+    health.databases.postgresql.status = 'error';
+    health.databases.postgresql.error = error.message;
+  }
+  
+  // If both databases are connected, return 200
+  if (health.databases.mongodb.status === 'connected' && 
+      health.databases.postgresql.status === 'connected') {
+    return res.status(200).json(health);
+  }
+  
+  // If any database is disconnected, return 503 Service Unavailable
+  res.status(503).json(health);
 });
 
 // Categories endpoint
@@ -104,10 +134,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Import the MongoDB connection module
-const connectDB = require('./config/db');
-
-// Start the server after MongoDB connection
+// Start the server after database connections
 const startServer = () => {
   const PORT = process.env.PORT || 5000;
   const server = app.listen(PORT, () => {
@@ -127,7 +154,11 @@ const startServer = () => {
       console.log('Server closed.');
       mongoose.connection.close(false, () => {
         console.log('MongoDB connection closed.');
-        process.exit(0);
+        // Close PostgreSQL pool
+        postgres.pool.end().then(() => {
+          console.log('PostgreSQL connection closed.');
+          process.exit(0);
+        });
       });
     });
     
@@ -144,7 +175,11 @@ const startServer = () => {
       console.log('Server closed.');
       mongoose.connection.close(false, () => {
         console.log('MongoDB connection closed.');
-        process.exit(0);
+        // Close PostgreSQL pool
+        postgres.pool.end().then(() => {
+          console.log('PostgreSQL connection closed.');
+          process.exit(0);
+        });
       });
     });
   });
@@ -152,34 +187,74 @@ const startServer = () => {
   return server;
 };
 
-// Connect to MongoDB and start server with retry logic
+// Connect to databases and start server with retry logic
 const MAX_RETRIES = 5;
 const RETRY_DELAY = 5000;
-let retries = 0;
+let mongoRetries = 0;
+let pgRetries = 0;
 
-const connectWithRetry = () => {
-  console.log(`MongoDB connection attempt ${retries + 1}/${MAX_RETRIES}`);
+const initializeDatabases = async () => {
+  let mongoConnected = false;
+  let pgConnected = false;
   
-  connectDB()
-    .then(() => {
-      console.log('MongoDB connected successfully');
-      startServer();
-    })
-    .catch(err => {
-      console.error('Failed to connect to MongoDB:', err);
-      
-      if (retries < MAX_RETRIES) {
-        retries++;
-        console.log(`Retrying in ${RETRY_DELAY/1000} seconds...`);
-        setTimeout(connectWithRetry, RETRY_DELAY);
-      } else {
-        console.error('Max retries reached. Could not connect to MongoDB.');
-        process.exit(1);
-      }
-    });
+  // Try to connect to MongoDB
+  try {
+    console.log(`MongoDB connection attempt ${mongoRetries + 1}/${MAX_RETRIES}`);
+    await connectMongoDB();
+    console.log('MongoDB connected successfully');
+    mongoConnected = true;
+  } catch (err) {
+    console.error('Failed to connect to MongoDB:', err);
+    if (mongoRetries < MAX_RETRIES) {
+      mongoRetries++;
+      console.log(`Will retry MongoDB in ${RETRY_DELAY/1000} seconds...`);
+     // We'll retry in the next iteration
+    } else {
+      console.error('Max retries reached. Could not connect to MongoDB.');
+      // Continue with PostgreSQL only
+    }
+  }
+  
+  // Try to connect to PostgreSQL
+  try {
+    console.log(`PostgreSQL connection attempt ${pgRetries + 1}/${MAX_RETRIES}`);
+    pgConnected = await postgres.testConnection();
+    if (pgConnected) {
+      // Initialize PostgreSQL tables
+      await postgres.initDatabase();
+    }
+  } catch (err) {
+    console.error('Failed to connect to PostgreSQL:', err);
+    if (pgRetries < MAX_RETRIES) {
+      pgRetries++;
+      console.log(`Will retry PostgreSQL in ${RETRY_DELAY/1000} seconds...`);
+      // We'll retry in the next iteration
+     } else {
+      console.error('Max retries reached. Could not connect to PostgreSQL.');
+      // Continue with MongoDB only
+    }
+  }
+  
+  // If at least one database is connected, start the server
+  if (mongoConnected || pgConnected) {
+    startServer();
+    return true;
+  }
+  
+  // If both databases failed to connect and we haven't reached max retries
+  if ((mongoRetries < MAX_RETRIES || pgRetries < MAX_RETRIES)) {
+    console.log(`Retrying database connections in ${RETRY_DELAY/1000} seconds...`);
+    setTimeout(initializeDatabases, RETRY_DELAY);
+    return false;
+  }
+  
+  // If we've reached max retries for both databases
+  console.error('Could not connect to any database after maximum retries.');
+  process.exit(1);
 };
 
-connectWithRetry();
+// Start the initialization process
+initializeDatabases();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
