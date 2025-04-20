@@ -167,10 +167,8 @@ export const CartPage: React.FC = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <CartContent />
-      </div>
-    </Layout>
+    <div className="container mx-auto px-4 py-8">
+      <CartContent />
+    </div>
   );
 };

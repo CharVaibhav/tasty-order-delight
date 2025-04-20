@@ -3,13 +3,11 @@ import { motion } from 'framer-motion';
 import { Clock, MapPin, Phone, Mail, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Layout } from '@/components/layout/Layout';
 
 const AboutPage = () => {
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
+    <div className="container mx-auto px-4 py-8">
+      <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -107,7 +105,6 @@ const AboutPage = () => {
           </div>
         </motion.div>
       </div>
-    </Layout>
   );
 };
 

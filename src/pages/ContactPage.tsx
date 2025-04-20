@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
-import { Layout } from '@/components/layout/Layout';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -72,9 +71,8 @@ const ContactPage = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
+    <div className="container mx-auto px-4 py-8">
+      <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -229,7 +227,6 @@ const ContactPage = () => {
           </div>
         </motion.div>
       </div>
-    </Layout>
   );
 };
 

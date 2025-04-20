@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '@/components/layout/Layout';
 import { useCart } from '@/lib/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/utils/formatters';
+import { Layout } from '@/components/Layout';
 
 interface CheckoutInfo {
   name: string;

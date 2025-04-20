@@ -180,40 +180,34 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-food-orange"></div>
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-food-orange"></div>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center p-8">
-            <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
-            <p>{error}</p>
-            <Button 
-              className="mt-4" 
-              onClick={() => window.location.reload()}
-            >
-              Try Again
-            </Button>
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center p-8">
+          <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+          <p>{error}</p>
+          <Button 
+            className="mt-4" 
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        {content}
-      </div>
-    </Layout>
+    <div className="container mx-auto px-4 py-8">
+      {content}
+    </div>
   );
 };
