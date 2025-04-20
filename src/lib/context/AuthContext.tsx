@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Get the API URL from environment variables
       const apiUrl = import.meta.env.VITE_API_URL || '';
-      console.log('API URL for user fetch:', apiUrl);
       
       // Add a timeout to prevent hanging requests
       const controller = new AbortController();
@@ -46,7 +45,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       
       clearTimeout(timeoutId);
-      console.log('User data:', response.data);
       
       // Transform the response data to match the User interface
       const userData: User = {
@@ -57,10 +55,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setUser(userData);
     } catch (error) {
-      console.warn('Failed to fetch user data:', error);
       // Don't remove token on network errors to prevent unnecessary logouts
       if (axios.isAxiosError(error) && error.response) {
-        console.error('Error response:', error.response.data);
         localStorage.removeItem('token');
       }
     } finally {

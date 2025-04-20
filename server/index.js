@@ -27,6 +27,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:3000',
   'https://tasty-order-delight.netlify.app',
   'https://tastyorderdelight.netlify.app',
+  'https://tasty-order-delight-1.netlify.app',
   // Add your custom domain here if you have one
 ];
 

@@ -110,8 +110,11 @@ export const PaymentPage = () => {
         return;
       }
       
+      // Get the API URL from environment variables
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      
       // Create order in database
-      const response = await fetch('/api/orders', {
+      const response = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

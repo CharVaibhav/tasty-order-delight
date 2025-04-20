@@ -33,17 +33,12 @@ export const AuthPage = () => {
     try {
       // Get the API URL from environment variables
       const apiUrl = import.meta.env.VITE_API_URL || '';
-      console.log('API URL:', apiUrl);
       
       // For registration, we need to use the correct endpoint
-      // Let's log the exact URL we're using
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      console.log('Full URL:', `${apiUrl}${endpoint}`);
-      console.log('Making request to:', apiUrl + endpoint);
       
       // Add baseURL to axios request
       const response = await axios.post(apiUrl + endpoint, data);
-      console.log('Response:', response.data);
       
       // The API returns a token directly in the response
       if (response.data && response.data.token) {
