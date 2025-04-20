@@ -176,47 +176,76 @@
             
             try {
                 statusElement.innerHTML = `Testing ${endpoint.path}...`;
+                responseElement.style.display = 'block';
+                responseElement.textContent = `Sending request to: ${apiUrl}${endpoint.path}\nWith Origin header: ${frontendUrl}`;
+                
+                // Log the request details
+                console.log(`Testing endpoint: ${apiUrl}${endpoint.path}`);
+                console.log(`Using Origin: ${frontendUrl}`);
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
                 
                 const response = await fetch(`${apiUrl}${endpoint.path}`, {
                     method: 'GET',
                     headers: {
-                        'Origin': frontendUrl
-                    }
+                        'Origin': frontendUrl,
+                        'Accept': 'application/json'
+                    },
+                    signal: controller.signal
                 });
                 
+                clearTimeout(timeoutId);
+                
                 const status = response.status;
+                const headers = Array.from(response.headers.entries())
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join('\n');
+                
+                responseElement.textContent += `\n\nResponse Status: ${status} (${response.statusText})\n\nResponse Headers:\n${headers}`;
                 
                 if (status >= 200 && status < 300) {
                     try {
                         const data = await response.json();
                         statusElement.innerHTML = `<span class="status success">✅ Status: ${status} (${response.statusText})</span>`;
-                        responseElement.style.display = 'block';
                         
                         if (Array.isArray(data)) {
-                            responseElement.textContent = `Array with ${data.length} items`;
+                            responseElement.textContent += `\n\nResponse Body: Array with ${data.length} items`;
                             if (data.length > 0) {
                                 responseElement.textContent += `\nFirst item: ${JSON.stringify(data[0], null, 2)}`;
                             }
                         } else {
-                            responseElement.textContent = `Object with keys: ${Object.keys(data).join(', ')}\n${JSON.stringify(data, null, 2)}`;
+                            responseElement.textContent += `\n\nResponse Body: Object with keys: ${Object.keys(data).join(', ')}\n${JSON.stringify(data, null, 2)}`;
                         }
                         
                         return { success: true, data };
                     } catch (e) {
                         statusElement.innerHTML = `<span class="status error">❌ Error parsing JSON: ${e.message}</span>`;
-                        responseElement.style.display = 'block';
-                        responseElement.textContent = 'Invalid JSON response';
+                        responseElement.textContent += `\n\nError parsing JSON response: ${e.message}`;
                         return { success: false, error: 'Invalid JSON response' };
                     }
                 } else {
-                    const errorText = await response.text();
+                    let errorText;
+                    try {
+                        errorText = await response.text();
+                    } catch (e) {
+                        errorText = 'Could not read response body';
+                    }
+                    
                     statusElement.innerHTML = `<span class="status error">❌ Status: ${status} (${response.statusText})</span>`;
-                    responseElement.style.display = 'block';
-                    responseElement.textContent = errorText;
+                    responseElement.textContent += `\n\nResponse Body: ${errorText}`;
                     return { success: false, status };
                 }
             } catch (error) {
                 statusElement.innerHTML = `<span class="status error">❌ Request failed: ${error.message}</span>`;
+                responseElement.style.display = 'block';
+                
+                if (error.name === 'AbortError') {
+                    responseElement.textContent += `\n\nRequest timed out after 10 seconds. The API server might be down or responding too slowly.`;
+                } else {
+                    responseElement.textContent += `\n\nError: ${error.message}\n\nThis could be due to:\n- API server is down\n- CORS is not configured correctly\n- Network connectivity issues\n- Invalid API URL`;
+                }
+                
                 return { success: false, error: error.message };
             }
         }

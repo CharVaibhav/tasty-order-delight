@@ -28,6 +28,8 @@ const allowedOrigins = [
   'https://tasty-order-delight.netlify.app',
   'https://tastyorderdelight.netlify.app',
   'https://tasty-order-delight-1.netlify.app',
+  'https://digital-diner.netlify.app',
+  'http://localhost:5173',
   // Add your custom domain here if you have one
 ];
 
@@ -39,10 +41,13 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.netlify.app')) {
       callback(null, true);
     } else {
+      console.log(`CORS blocked request from origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   optionsSuccessStatus: 200
 };
 
@@ -53,6 +58,28 @@ app.use(express.json());
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Tasty Order Delight API' });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'success',
+    message: 'API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
+  });
+});
+
+// Categories endpoint
+app.get('/api/categories', async (req, res, next) => {
+  try {
+    // Get unique categories from menu items
+    const MenuItem = require('./models/Menu');
+    const categories = await MenuItem.distinct('category');
+    res.status(200).json(categories);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use('/api/auth', authRoutes);
