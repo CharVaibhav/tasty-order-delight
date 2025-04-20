@@ -32,21 +32,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = async (token: string) => {
     try {
+      // Get the API URL from environment variables
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      console.log('API URL for user fetch:', apiUrl);
+      
       // Add a timeout to prevent hanging requests
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       
-      const response = await axios.get('/api/auth/me', {
+      const response = await axios.get(`${apiUrl}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
         signal: controller.signal
       });
       
       clearTimeout(timeoutId);
+      console.log('User data:', response.data);
       setUser(response.data);
     } catch (error) {
       console.warn('Failed to fetch user data:', error);
       // Don't remove token on network errors to prevent unnecessary logouts
       if (axios.isAxiosError(error) && error.response) {
+        console.error('Error response:', error.response.data);
         localStorage.removeItem('token');
       }
     } finally {

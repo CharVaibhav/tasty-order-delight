@@ -31,8 +31,17 @@ export const AuthPage = () => {
 
   const onSubmit = async (data: AuthFormData) => {
     try {
+      // Get the API URL from environment variables
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      console.log('API URL:', apiUrl);
+      
+      // For registration, we need to use the correct endpoint
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const response = await axios.post(endpoint, data);
+      console.log('Making request to:', apiUrl + endpoint);
+      
+      // Add baseURL to axios request
+      const response = await axios.post(apiUrl + endpoint, data);
+      console.log('Response:', response.data);
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
@@ -43,10 +52,27 @@ export const AuthPage = () => {
         navigate('/');
       }
     } catch (error: any) {
+      console.error('Auth error:', error);
+      
+      // More detailed error information
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Error request:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', error.message);
+      }
+      
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: error.response?.data?.message || 'Something went wrong',
+        description: error.response?.data?.message || error.message || 'Something went wrong',
       });
     }
   };
