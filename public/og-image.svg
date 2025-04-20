@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#FF7E33"/>
+  <rect x="50" y="50" width="1100" height="530" rx="15" fill="#FFFFFF"/>
+  <text x="600" y="250" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#FF7E33">The Digital Diner</text>
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="36" text-anchor="middle" fill="#333333">Delicious food, delivered to your door</text>
+  <path d="M600 450 C580 430 550 420 520 430 C490 440 470 470 470 500 C470 540 500 570 540 570 C560 570 580 560 600 540 C620 560 640 570 660 570 C700 570 730 540 730 500 C730 470 710 440 680 430 C650 420 620 430 600 450Z" fill="#FF7E33"/>
+</svg>
