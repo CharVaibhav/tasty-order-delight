@@ -43,13 +43,21 @@ export const AuthPage = () => {
       const response = await axios.post(apiUrl + endpoint, data);
       console.log('Response:', response.data);
       
-      if (response.data.token) {
+      // The API returns a token directly in the response
+      if (response.data && response.data.token) {
         localStorage.setItem('token', response.data.token);
         toast({
           title: isLogin ? 'Welcome back!' : 'Account created!',
           description: isLogin ? 'Successfully logged in.' : 'Your account has been created.',
         });
         navigate('/');
+      } else {
+        console.warn('No token in response:', response.data);
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Error',
+          description: 'Could not authenticate. Please try again.',
+        });
       }
     } catch (error: any) {
       console.error('Auth error:', error);

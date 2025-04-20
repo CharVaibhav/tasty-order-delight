@@ -47,7 +47,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       clearTimeout(timeoutId);
       console.log('User data:', response.data);
-      setUser(response.data);
+      
+      // Transform the response data to match the User interface
+      const userData: User = {
+        id: response.data._id,
+        name: response.data.name,
+        email: response.data.email
+      };
+      
+      setUser(userData);
     } catch (error) {
       console.warn('Failed to fetch user data:', error);
       // Don't remove token on network errors to prevent unnecessary logouts
