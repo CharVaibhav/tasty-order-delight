@@ -3,15 +3,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-// Conditionally import componentTagger if available
-let componentTagger = () => null;
-try {
-  componentTagger = require('lovable-tagger').componentTagger;
-} catch (e) {
-  // Module not found, using fallback
-  console.warn('lovable-tagger not found, using fallback');
-}
-
 export default defineConfig(({ mode }) => ({
   base: '/',
   server: {
@@ -26,8 +17,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' && (typeof componentTagger === 'function' ? componentTagger() : null),
-  ].filter(Boolean),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -55,7 +45,7 @@ export default defineConfig(({ mode }) => ({
           ],
         },
       },
-      external: ['lovable-tagger', 'react-type-animation', 'react-fast-marquee', 'pg', 'uuid'],
+      external: ['pg', 'uuid'],
     }
   },
   define: {
