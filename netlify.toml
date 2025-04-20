@@ -10,7 +10,8 @@
 [build.environment]
   NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
-  VITE_API_URL = "https://your-api-url.com"
+  # Use a mock API URL for now - this will be replaced with the real API URL later
+  VITE_API_URL = ""
 
 [dev]
   command = "npm run dev"

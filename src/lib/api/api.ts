@@ -1,5 +1,12 @@
 // API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+// Helper function to handle API errors gracefully
+const handleApiError = (error: any) => {
+  console.error('API Error:', error);
+  // Return null instead of throwing an error to prevent app crashes
+  return null;
+};
 
 // Types
 export interface MenuItem {
@@ -41,27 +48,45 @@ export interface CustomerData {
 export const api = {
   // Menu endpoints
   async getMenuItems(): Promise<MenuItem[]> {
-    const response = await fetch(`${API_BASE_URL}/menu`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch menu items');
+    try {
+      const response = await fetch(`${API_BASE_URL}/menu`);
+      if (!response.ok) {
+        console.warn('Failed to fetch menu items, using default data');
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return [];
     }
-    return response.json();
   },
 
   async getMenuItemsByCategory(category: string): Promise<MenuItem[]> {
-    const response = await fetch(`${API_BASE_URL}/menu/category/${category}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch menu items for category: ${category}`);
+    try {
+      const response = await fetch(`${API_BASE_URL}/menu/category/${category}`);
+      if (!response.ok) {
+        console.warn(`Failed to fetch menu items for category: ${category}, using default data`);
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return [];
     }
-    return response.json();
   },
 
-  async getMenuItemById(id: string): Promise<MenuItem> {
-    const response = await fetch(`${API_BASE_URL}/menu/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch menu item with id: ${id}`);
+  async getMenuItemById(id: string): Promise<MenuItem | null> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/menu/${id}`);
+      if (!response.ok) {
+        console.warn(`Failed to fetch menu item with id: ${id}`);
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return null;
     }
-    return response.json();
   },
 
   // Cart endpoints
@@ -74,22 +99,28 @@ export const api = {
       category: string;
     };
   }) {
-    const response = await fetch(`${API_BASE_URL}/cart/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        customerId,
-        productData,
-      }),
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/cart/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId,
+          productData,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to add item to cart');
+      if (!response.ok) {
+        console.warn('Failed to add item to cart');
+        return { success: false };
+      }
+
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return { success: false };
     }
-
-    return response.json();
   },
 
   async removeFromCart(customerId: string, productData: {
@@ -101,65 +132,95 @@ export const api = {
       category: string;
     };
   }) {
-    const response = await fetch(`${API_BASE_URL}/cart/remove`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        customerId,
-        productData,
-      }),
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId,
+          productData,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to remove item from cart');
+      if (!response.ok) {
+        console.warn('Failed to remove item from cart');
+        return { success: false };
+      }
+
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return { success: false };
     }
-
-    return response.json();
   },
 
   async getCartHistory(customerId: string) {
-    const response = await fetch(`${API_BASE_URL}/cart/history/${customerId}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch cart history');
+    try {
+      const response = await fetch(`${API_BASE_URL}/cart/history/${customerId}`);
+      if (!response.ok) {
+        console.warn('Failed to fetch cart history');
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return [];
     }
-    return response.json();
   },
 
   // Order endpoints
-  async createOrder(customerData: CustomerData, cartItems: OrderItem[]): Promise<Order> {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        customerData,
-        cartItems,
-      }),
-    });
+  async createOrder(customerData: CustomerData, cartItems: OrderItem[]): Promise<Order | null> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerData,
+          cartItems,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to create order');
+      if (!response.ok) {
+        console.warn('Failed to create order');
+        return null;
+      }
+
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return null;
     }
-
-    return response.json();
   },
 
   async getOrdersByCustomerId(customerId: string): Promise<Order[]> {
-    const response = await fetch(`${API_BASE_URL}/orders/customer/${customerId}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch orders');
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/customer/${customerId}`);
+      if (!response.ok) {
+        console.warn('Failed to fetch orders');
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return [];
     }
-    return response.json();
   },
 
-  async getOrderById(orderId: string): Promise<Order> {
-    const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch order with id: ${orderId}`);
+  async getOrderById(orderId: string): Promise<Order | null> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+      if (!response.ok) {
+        console.warn(`Failed to fetch order with id: ${orderId}`);
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      handleApiError(error);
+      return null;
     }
-    return response.json();
   },
 }; 

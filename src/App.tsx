@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./lib/context/CartContext";
 import { AuthProvider } from "./lib/context/AuthContext";
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import { Layout } from "./components/Layout";
+import { Layout } from "./components/layout/Layout";
 import Index from "./pages/Index";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";

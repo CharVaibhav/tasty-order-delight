@@ -34,7 +34,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
       try {
         setLoading(true);
         const fetchedItems = await api.getMenuItems();
-        setMenuItems(fetchedItems.length > 0 ? fetchedItems : defaultMenuItems);
+        // Always use default menu items if API returns empty array
+        setMenuItems(fetchedItems && fetchedItems.length > 0 ? fetchedItems : defaultMenuItems);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch menu items, using default data:', err);
@@ -44,14 +45,21 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
       }
     };
 
-    fetchMenuItems();
+    // Use a timeout to ensure the component is mounted
+    const timer = setTimeout(() => {
+      fetchMenuItems();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAddToCart = async (item: MenuItem) => {
     try {
+      // Add to local cart first
       addItem(item);
       
-      await api.addToCart(customerId, {
+      // Try to add to API cart, but don't block the UI
+      api.addToCart(customerId, {
         productId: item._id,
         quantity: 1,
         productDetails: {
@@ -59,6 +67,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ hideLayout = false }) => {
           price: item.price,
           category: item.category,
         },
+      }).catch(err => {
+        console.warn('API call to add to cart failed, but item was added to local cart:', err);
       });
 
       toast({
