@@ -4,10 +4,10 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false // Allow guest orders
   },
   items: [{
-    productId: {
+    _id: {
       type: String,
       required: true
     },
@@ -23,9 +23,54 @@ const orderSchema = new mongoose.Schema({
     price: {
       type: Number,
       required: true
+    },
+    image: {
+      type: String,
+      required: false
+    },
+    category: {
+      type: String,
+      required: false
     }
   }],
-  totalAmount: {
+  customerInfo: {
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    }
+  },
+  paymentInfo: {
+    cardNumber: {
+      type: String,
+      required: true
+    },
+    paymentMethod: {
+      type: String,
+      required: true
+    }
+  },
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  discount: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  total: {
     type: Number,
     required: true
   },
@@ -37,15 +82,8 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: {
     type: String,
     enum: ['pending', 'completed', 'failed'],
-    default: 'pending'
-  },
-  deliveryAddress: {
-    street: String,
-    city: String,
-    state: String,
-    zipCode: String
-  },
-  specialInstructions: String
+    default: 'completed'
+  }
 }, {
   timestamps: true
 });

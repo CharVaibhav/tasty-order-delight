@@ -4,20 +4,28 @@ const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Create new order
-router.post('/', protect, async (req, res, next) => {
+// Create new order - allows both authenticated and guest orders
+router.post('/', async (req, res, next) => {
   try {
+    // Check if user is authenticated
+    const userId = req.user ? req.user._id : null;
+    
     const order = new Order({
       ...req.body,
-      user: req.user._id
+      user: userId // Will be null for guest orders
     });
+    
     await order.save();
     res.status(201).json({
       success: true,
       data: order
     });
   } catch (error) {
-    next(error);
+    console.error('Order creation error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 });
 
