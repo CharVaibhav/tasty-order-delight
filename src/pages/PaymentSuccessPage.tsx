@@ -51,14 +51,10 @@ export const PaymentSuccessPage = () => {
     }, 300);
   }, [confettiTriggered]);
 
-  // Check if user came from payment page or navigated directly
+  // Always allow access to success page
   useEffect(() => {
-    const referrer = document.referrer;
-    const isFromPayment = referrer.includes('/payment') && !referrer.includes('/success');
-    
-    if (!isFromPayment) {
-      console.log('User navigated directly to success page');
-    }
+    // Log for debugging purposes only
+    console.log('Payment success page loaded');
   }, []);
 
   return (
