@@ -5,6 +5,9 @@ require('dotenv').config();
 // Get MongoDB URI from environment variables or use the direct connection string
 const uri = process.env.MONGODB_URI || "mongodb+srv://23r11a05j1:UN8rMW9ZH9fhCQxQ@cluster0.bgrefss.mongodb.net/tasty_order_delight?retryWrites=true&w=majority";
 
+// Log the MongoDB URI (with password masked for security)
+console.log('MongoDB URI:', uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'));
+
 // MongoDB connection options using the Atlas recommended settings
 const mongooseOptions = {
   serverApi: {

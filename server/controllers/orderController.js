@@ -5,12 +5,33 @@ const PgCustomer = require('../models/pg/Customer');
 // Create a new order - stores in both MongoDB and PostgreSQL
 exports.createOrder = async (req, res) => {
   try {
+    console.log('Received order creation request');
+    console.log('Request body:', JSON.stringify(req.body));
+    
     const { customerInfo, items, subtotal, discount, total, paymentInfo } = req.body;
+    
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error('Invalid items data:', items);
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid items data. Items must be a non-empty array.'
+      });
+    }
+    
+    if (!customerInfo || !customerInfo.email) {
+      console.error('Invalid customer info:', customerInfo);
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid customer information. Email is required.'
+      });
+    }
     
     // Check if user is authenticated
     const userId = req.user ? req.user._id : null;
+    console.log('User ID:', userId || 'Guest order (no user ID)');
     
     // 1. Store in MongoDB (for backward compatibility and quick access)
+    console.log('Creating MongoDB order...');
     const mongoOrder = new MongoOrder({
       user: userId,
       items,
@@ -23,19 +44,26 @@ exports.createOrder = async (req, res) => {
       paymentStatus: 'completed'
     });
     
-    await mongoOrder.save();
+    console.log('Saving MongoDB order...');
+    const savedMongoOrder = await mongoOrder.save();
+    console.log('MongoDB order saved successfully with ID:', savedMongoOrder._id);
     
     // 2. Store in PostgreSQL (for relational data and complex queries)
     try {
+      console.log('Attempting to save order in PostgreSQL...');
+      
       // Find or create customer in PostgreSQL
+      console.log('Finding or creating customer in PostgreSQL...');
       const pgCustomer = await PgCustomer.findOrCreate({
         name: customerInfo.name,
         email: customerInfo.email,
         phone: customerInfo.phone,
         address: customerInfo.address
       });
+      console.log('PostgreSQL customer:', pgCustomer);
       
       // Format items for PostgreSQL
+      console.log('Formatting items for PostgreSQL...');
       const pgItems = items.map(item => ({
         product_id: item._id,
         product_name: item.name,
@@ -45,6 +73,7 @@ exports.createOrder = async (req, res) => {
       }));
       
       // Create order in PostgreSQL
+      console.log('Creating PostgreSQL order...');
       const pgOrder = await PgOrder.create({
         customer_id: pgCustomer.id,
         subtotal,
@@ -54,12 +83,15 @@ exports.createOrder = async (req, res) => {
         payment_status: 'completed',
         items: pgItems
       });
+      console.log('PostgreSQL order created with ID:', pgOrder.id);
       
       // Add PostgreSQL order ID to MongoDB order for reference
+      console.log('Updating MongoDB order with PostgreSQL order ID...');
       mongoOrder.pgOrderId = pgOrder.id;
       await mongoOrder.save();
       
       // Return success response with MongoDB order (for backward compatibility)
+      console.log('Order successfully created in both databases');
       return res.status(201).json({
         success: true,
         data: mongoOrder,
@@ -70,6 +102,7 @@ exports.createOrder = async (req, res) => {
       console.error('PostgreSQL order creation error:', pgError);
       // If PostgreSQL fails, we still have the MongoDB order
       // Log the error but don't fail the request
+      console.log('Order created in MongoDB only');
       return res.status(201).json({
         success: true,
         data: mongoOrder,

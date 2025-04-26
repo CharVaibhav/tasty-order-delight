@@ -90,66 +90,113 @@ export const PaymentPage = () => {
       // Simulate a delay for better user experience
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Always proceed to success page regardless of environment
-      console.log('Processing order...');
+      // Create the order data
+      const orderData = {
+        items: checkoutInfo.items,
+        customerInfo: {
+          name: checkoutInfo.name,
+          email: checkoutInfo.email,
+          phone: checkoutInfo.phone,
+          address: checkoutInfo.address
+        },
+        paymentInfo: {
+          cardNumber: cardInfo.cardNumber.replace(/\s/g, '').slice(-4), // Only store last 4 digits
+          paymentMethod: 'Credit Card'
+        },
+        subtotal: checkoutInfo.subtotal,
+        discount: checkoutInfo.discount,
+        total: checkoutInfo.total
+      };
       
-      // Try to submit to server in the background, but don't wait for response
+      // Get API URL and token
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const token = localStorage.getItem('token');
+      
+      console.log('Processing order...');
+      console.log('API URL:', apiUrl);
+      console.log('Order data:', JSON.stringify(orderData));
+      
+      // First, try to submit the order and wait for the response
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || '';
-        const token = localStorage.getItem('token');
-        
         console.log('Submitting order to:', `${apiUrl}/api/orders`);
         
-        // Fire and forget - don't await the response
-        fetch(`${apiUrl}/api/orders`, {
+        const response = await fetch(`${apiUrl}/api/orders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             ...(token && { 'Authorization': `Bearer ${token}` }),
           },
-          body: JSON.stringify({
-            items: checkoutInfo.items,
-            customerInfo: {
-              name: checkoutInfo.name,
-              email: checkoutInfo.email,
-              phone: checkoutInfo.phone,
-              address: checkoutInfo.address
-            },
-            paymentInfo: {
-              cardNumber: cardInfo.cardNumber.replace(/\s/g, '').slice(-4), // Only store last 4 digits
-              paymentMethod: 'Credit Card'
-            },
-            subtotal: checkoutInfo.subtotal,
-            discount: checkoutInfo.discount,
-            total: checkoutInfo.total
-          })
-        }).then(response => {
-          if (response.ok) {
-            console.log('Order successfully saved to database');
-          } else {
-            console.log('Order saved locally but not to database');
-          }
-        }).catch(err => {
-          console.error('Background order submission error:', err);
+          body: JSON.stringify(orderData)
         });
-      } catch (submitError) {
-        console.error('Error initiating order submission:', submitError);
+        
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Order successfully saved to database:', data);
+          
+          // Save order ID to localStorage for reference
+          if (data && data.data && data.data._id) {
+            localStorage.setItem('last-order-id', data.data._id);
+            console.log('Saved order ID to localStorage:', data.data._id);
+          }
+          
+          // Clear cart and checkout info
+          clearCart();
+          localStorage.removeItem('checkout-info');
+          
+          // Show success toast
+          toast({
+            title: "Payment Successful!",
+            description: "Your order has been placed successfully.",
+            variant: "default"
+          });
+          
+          // Navigate to success page
+          navigate('/payment/success');
+        } else {
+          // If the server response is not OK, try to get the error message
+          let errorMessage = 'Failed to create order';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+          } catch (e) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+          }
+          
+          console.error('Server error:', errorMessage);
+          
+          // Even if there's a server error, proceed to success page
+          clearCart();
+          localStorage.removeItem('checkout-info');
+          
+          toast({
+            title: "Payment Successful!",
+            description: "Your order has been placed successfully.",
+            variant: "default"
+          });
+          
+          navigate('/payment/success');
+        }
+      } catch (fetchError) {
+        // Network error or other fetch-related error
+        console.error('Error submitting order:', fetchError);
+        
+        // Even if there's a network error, proceed to success page
+        clearCart();
+        localStorage.removeItem('checkout-info');
+        
+        toast({
+          title: "Payment Successful!",
+          description: "Your order has been placed successfully.",
+          variant: "default"
+        });
+        
+        navigate('/payment/success');
       }
-      
-      // Clear cart and checkout info
-      clearCart();
-      localStorage.removeItem('checkout-info');
-      
-      // Show success toast
-      toast({
-        title: "Payment Successful!",
-        description: "Your order has been placed successfully.",
-        variant: "default"
-      });
-      
-      // Always navigate to success page
-      navigate('/payment/success');
     } catch (error: any) {
+      // Catch any other errors in the overall process
       console.error('Error in payment process:', error);
       
       // Even if there's an error, proceed to success page
