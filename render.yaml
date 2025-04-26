@@ -20,3 +20,13 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://digital-diner.netlify.app
+      - key: PG_USER
+        sync: false
+      - key: PG_HOST
+        sync: false
+      - key: PG_DATABASE
+        sync: false
+      - key: PG_PASSWORD
+        sync: false
+      - key: PG_PORT
+        sync: false
