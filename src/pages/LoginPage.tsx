@@ -32,14 +32,14 @@ export default function LoginPage() {
       // Get the API URL from environment variables
       const apiUrl = import.meta.env.VITE_API_URL || '';
       
-      console.log('Submitting login to:', `${apiUrl}/api/auth/login`);
+      console.log('Submitting login to:', `${apiUrl}/auth/login`);
       console.log('Login data:', { email: formData.email });
       
       // Simulate successful login in case of server issues
       let simulateSuccess = false;
       
       try {
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
+        const response = await fetch(`${apiUrl}/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

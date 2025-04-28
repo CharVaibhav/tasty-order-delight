@@ -104,7 +104,7 @@ export default function RegisterPage() {
       // Get the API URL from environment variables
       const apiUrl = import.meta.env.VITE_API_URL || '';
       
-      console.log('Submitting registration to:', `${apiUrl}/api/auth/register`);
+      console.log('Submitting registration to:', `${apiUrl}/auth/register`);
       console.log('Registration data:', {
         name: formData.name,
         email: formData.email,
@@ -117,7 +117,7 @@ export default function RegisterPage() {
       let simulateSuccess = false;
       
       try {
-        const response = await fetch(`${apiUrl}/api/auth/register`, {
+        const response = await fetch(`${apiUrl}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
