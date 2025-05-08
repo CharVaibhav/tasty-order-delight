@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, ArrowLeft } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ArrowLeft, Paperclip } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,9 @@ const ContactPage = () => {
     subject: '',
     message: '',
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +26,19 @@ const ContactPage = () => {
     try {
       // Here you would typically send the form data to your backend
       // For now, we'll simulate a successful submission
+      
+      // In a real implementation, you would create a FormData object
+      // and append both the form fields and the file
+      const formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+      
+      if (selectedFile) {
+        formDataToSend.append('attachment', selectedFile);
+      }
+      
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
@@ -31,6 +46,7 @@ const ContactPage = () => {
         description: "Thank you for contacting us. We'll get back to you soon.",
       });
       
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -38,6 +54,10 @@ const ContactPage = () => {
         subject: '',
         message: '',
       });
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -67,6 +87,14 @@ const ContactPage = () => {
         ...prev,
         [name]: value,
       }));
+    }
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    } else {
+      setSelectedFile(null);
     }
   };
 
@@ -172,6 +200,30 @@ const ContactPage = () => {
                     rows={4}
                     className="dark:bg-gray-800 dark:text-gray-100"
                   />
+                </div>
+                
+                <div>
+                  <label htmlFor="file" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Attachment (Optional)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="file"
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="dark:bg-gray-800 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-food-orange/10 file:text-food-orange hover:file:bg-food-orange/20"
+                    />
+                    {selectedFile && (
+                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <Paperclip className="h-4 w-4 mr-1" />
+                        <span className="truncate max-w-[150px]">{selectedFile.name}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Upload any relevant documents or images (Max size: 5MB)
+                  </p>
                 </div>
                 
                 <Button
